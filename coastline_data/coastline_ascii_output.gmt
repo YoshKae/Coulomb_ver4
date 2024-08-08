@@ -1,0 +1,23 @@
+#
+
+# set study area first
+
+set lonmin =  -165.0
+set lonmax =  -135.0
+set latmin =    50.0
+set latmax =    70.0
+
+# set output file name
+
+set output = coastline_out.dat
+
+# set coastline resolution
+#   f: full
+#   h: high
+#   i: intermediate
+#   l: low
+#   c: crude
+
+set res = h
+
+pscoast -R$lonmin/$lonmax/$latmin/$latmax -JM12 -W -M -D$res > ${output}

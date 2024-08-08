@@ -1,0 +1,317 @@
+% 3Dプロット環境でグリッドや地理データ（海岸線、活断層、地震）を描画するための関数
+function grid_drawing_3d
+% グリッドオプションのためのグリッドメッシュ描画関数
+% この関数は、他のプロット関数の基本地図として頻繁に使用されます。
+% 
+%   coded by Shinji Toda
+%
+
+global GRID
+global XGRID YGRID
+global H_MAIN A_GRID
+global FUNC_SWITCH
+global PREF
+global ICOORD LON_GRID XY_RATIO
+global COAST_DATA AFAULT_DATA EQ_DATA
+global GPS_DATA
+
+xstart  = GRID(1,1);
+ystart  = GRID(2,1);
+xfinish = GRID(3,1);
+yfinish = GRID(4,1);
+
+% 次のコメント行は、緯度経度座標の3D回転問題が解決されたときにコメント解除する必要があります。
+% 座標系が緯度経度（ICOORD == 2）の場合、座標変換
+if ICOORD == 2 && isempty(LON_GRID) ~= 1
+    a  = xy2lonlat([GRID(1,1) GRID(2,1)]);
+    xstart = a(1);
+    ystart = a(2);
+    a = xy2lonlat([GRID(3,1) GRID(4,1)]);
+    xfinish = a(1);
+    yfinish = a(2);
+end
+
+if ICOORD == 1
+    XY_RATIO = 1;
+end
+
+% if FUNC_SWITCH ~= 1 プロットの初期設定
+figure(H_MAIN);
+set(H_MAIN,'Menubar','figure','Toolbar','figure');
+set(gcf,'Renderer','painters')
+hold off;
+    % グリッドを3Dで描画し、軸のラベルを設定
+    if ICOORD == 2 && isempty(LON_GRID) ~= 1
+        A_GRID = plot3([xstart xfinish xfinish xstart xstart],...
+        [ystart ystart yfinish yfinish ystart],[0.0 0.0 0.0 0.0 0.0]);
+        set(gca,'DataAspectRatio',[XY_RATIO 1 1],...
+        'Color',[0.9 0.9 0.9],...
+        'PlotBoxAspectRatio',[1 1 1],...
+        'XLim',[xstart,xfinish],...
+        'YLim',[ystart,yfinish]);
+        h = get(gca,'Parent');
+    	hx = xlabel('Longitude (degree)');
+        hy = ylabel('Latitude  (degree)');
+    else
+        A_GRID = plot3([xstart xfinish xfinish xstart xstart],...
+        [ystart ystart yfinish yfinish ystart],[0.0 0.0 0.0 0.0 0.0]);
+        set(gca,'DataAspectRatio',[XY_RATIO 1 1],...
+        'Color',[0.9 0.9 0.9],...
+        'PlotBoxAspectRatio',[1 1 1],...
+        'XLim',[xstart,xfinish],...
+        'YLim',[ystart,yfinish]);
+        h = get(gca,'Parent');
+        hx = xlabel('X (km)');
+        hy = ylabel('Y (km)');
+    end
+	set(hx,'FontSize',[18]);
+	set(hy,'FontSize',[18]);
+
+% グリッド線の描画
+if PREF(3,4)~=0.0 % GRIDの線幅が0.0の場合、以下のブロックをスキップします。
+    for m = 1:length(XGRID)
+        hold on;
+        if ICOORD == 2 && isempty(LON_GRID) ~= 1
+            a = xy2lonlat([XGRID(m) ystart]); % ystart is dummy
+            gridln1 = plot3([a(1) a(1)],[ystart yfinish],[0.0 0.0]);
+        else
+            gridln1 = plot3([XGRID(m) XGRID(m)],[ystart yfinish],[0.0 0.0]);
+        end
+        if FUNC_SWITCH == 1 | FUNC_SWITCH == 10
+            set(gridln1,'LineWidth',PREF(3,4),'Color',PREF(3,1:3));
+        elseif FUNC_SWITCH == 2 | FUNC_SWITCH == 3
+            set(gridln1,'LineWidth',PREF(3,4),'Color',PREF(3,1:3));
+        else
+            set(gridln1,'LineWidth',PREF(3,4),'Color',[0.5 0.5 0.5]);
+        end
+        set(gridln1,'Tag','ylines');
+    end
+
+    for n = 1:length(YGRID)
+        hold on;
+        if ICOORD == 2 && isempty(LON_GRID) ~= 1
+            a = xy2lonlat([xstart YGRID(n)]); % xstart is dummy
+            gridln2 = plot3([xstart xfinish],[a(2) a(2)],[0.0 0.0]);
+        else
+            gridln2 = plot3([xstart xfinish],[YGRID(n) YGRID(n)],[0.0 0.0]);
+        end
+        if FUNC_SWITCH == 1 | FUNC_SWITCH == 10
+            set(gridln2,'LineWidth',PREF(3,4),'Color',PREF(3,1:3));
+        elseif FUNC_SWITCH == 2 | FUNC_SWITCH == 3
+            set(gridln2,'LineWidth',PREF(3,4),'Color',PREF(3,1:3));
+        else
+            set(gridln2,'LineWidth',PREF(3,4),'Color',[0.5 0.5 0.5]);
+        end
+        set(gridln2,'Tag','xlines');
+    end
+end
+
+% repetition ???
+hold on;
+% プロットにコンテキストメニューを追加し、メニュー項目を定義
+cmenu = uicontextmenu;
+    if ICOORD == 2 && isempty(LON_GRID) ~= 1
+        A_GRID = plot3([xstart xfinish xfinish xstart xstart],...
+        [ystart ystart yfinish yfinish ystart],[0.0 0.0 0.0 0.0 0.0]);
+        set(gca,'DataAspectRatio',[XY_RATIO 1 1],...
+        'Color',[0.9 0.9 0.9],...
+        'PlotBoxAspectRatio',[1 1 1],...
+        'XLim',[xstart,xfinish],...
+        'YLim',[ystart,yfinish],...
+        'UIContextMenu', cmenu);
+        h = get(gca,'Parent');
+    	hx = xlabel('Longitude (degree)');
+        hy = ylabel('Latitude  (degree)');
+    else
+        A_GRID = plot3([xstart xfinish xfinish xstart xstart],...
+        [ystart ystart yfinish yfinish ystart],[0.0 0.0 0.0 0.0 0.0]);
+        set(gca,'DataAspectRatio',[XY_RATIO 1 1],...
+        'Color',[0.9 0.9 0.9],...
+        'PlotBoxAspectRatio',[1 1 1],...
+        'XLim',[xstart,xfinish],...
+        'YLim',[ystart,yfinish],...
+        'UIContextMenu', cmenu);
+        h = get(gca,'Parent');
+        hx = xlabel('X (km)');
+        hy = ylabel('Y (km)');
+    end
+	set(hx,'FontSize',[18]);
+	set(hy,'FontSize',[18]);
+    
+% コンテキストメニューの項目を定義
+items1 = uimenu(cmenu, 'Label', 'change study area',...
+    'Callback','change_study_area');
+items2 = uimenu(cmenu, 'Label', 'change coordinates',...
+    'Callback','change_coordinates');
+
+%---------------------------------------------
+%	Coast line plot in 3D 海岸線のプロット
+%---------------------------------------------
+h = findobj('Tag','menu_coastlines'); % タグがmenu_coastlinesであるオブジェクトを探します。
+h1 = get(h,'Checked'); % そのオブジェクトのCheckedプロパティの値を取得し、h1に格納
+if isempty(COAST_DATA)~=1 && strcmp(h1,'on')
+    [m,n] = size(COAST_DATA);
+    if n == 9   % 列数が9である場合は古いフォーマット
+        if ICOORD == 2 && isempty(LON_GRID) ~= 1
+            % 座標系が緯度経度（ICOORD == 2）の場合、COAST_DATAの列2と4を使ってx座標を、列3と5を使ってy座標を設定(rot90で配列を90度回転させながら)
+            x1 = [rot90(COAST_DATA(:,2));rot90(COAST_DATA(:,4))];
+            y1 = [rot90(COAST_DATA(:,3));rot90(COAST_DATA(:,5))];
+        else
+            % それ以外の場合、COAST_DATAの列6と8を使ってx座標を、列7と9を使ってy座標を設定
+            x1 = [rot90(COAST_DATA(:,6));rot90(COAST_DATA(:,8))];
+            y1 = [rot90(COAST_DATA(:,7));rot90(COAST_DATA(:,9))];
+        end
+    else        % new format
+        if ICOORD == 2 && isempty(LON_GRID) ~= 1
+            x1 = COAST_DATA(:,1);
+            y1 = COAST_DATA(:,2);
+        else
+            x1 = COAST_DATA(:,3);
+            y1 = COAST_DATA(:,4);
+        end
+    end
+	[mm,nn] = size(x1);
+	z1 = zeros(mm,nn);
+	hold on;    
+    h = plot3(gca,x1,y1,z1,'Color',PREF(4,1:3),'LineWidth',PREF(4,4)); % 海岸線のプロット
+    set(gca,'DataAspectRatio',[XY_RATIO 1 1],... % データアスペクト比を設定
+    'Color',[0.9 0.9 0.9],... % 背景色を設定
+    'PlotBoxAspectRatio',[1 1 1],... % プロットボックスのアスペクト比を設定
+    'XLim',[xstart,xfinish],'YLim',[ystart,yfinish]); % X軸とY軸の範囲を設定
+    set(h,'Tag','CoastlineObj'); % タグを付けて後で削除します
+	hold on;
+end
+
+%---------------------------------------------
+%	Active fault plot in 3D 活断層のプロット
+%---------------------------------------------
+h = findobj('Tag','menu_activefaults');
+h1 = get(h,'Checked');
+if isempty(AFAULT_DATA)~=1 && strcmp(h1,'on')
+    [m,n] = size(AFAULT_DATA);
+    if n == 9       % old format
+        if ICOORD == 2 && isempty(LON_GRID) ~= 1
+            x1 = [rot90(AFAULT_DATA(:,2));rot90(AFAULT_DATA(:,4))];
+            y1 = [rot90(AFAULT_DATA(:,3));rot90(AFAULT_DATA(:,5))];
+        else
+            x1 = [rot90(AFAULT_DATA(:,6));rot90(AFAULT_DATA(:,8))];
+            y1 = [rot90(AFAULT_DATA(:,7));rot90(AFAULT_DATA(:,9))];
+        end
+    else            % new format
+        if ICOORD == 2 && isempty(LON_GRID) ~= 1
+            x1 = AFAULT_DATA(:,1);
+            y1 = AFAULT_DATA(:,2);
+        else
+            x1 = AFAULT_DATA(:,3);
+            y1 = AFAULT_DATA(:,4);
+        end
+    end
+	[mm,nn] = size(x1);
+    z1 = zeros(mm,nn);
+    hold on;
+    h = plot3(gca,x1,y1,z1,'Color',PREF(6,1:3),'LineWidth',PREF(6,4));
+    set(gca,'DataAspectRatio',[XY_RATIO 1 1],...
+    'Color',[0.9 0.9 0.9],...
+    'PlotBoxAspectRatio',[1 1 1],...
+    'XLim',[xstart,xfinish],'YLim',[ystart,yfinish]);
+    set(h,'Tag','AfaultObj');        % put a tag to remove them later 
+    hold on;
+end
+
+%---------------------------------------------
+%	Earthquake plot in 3D 地震のプロット
+%---------------------------------------------
+h = findobj('Tag','menu_earthquakes'); % タグがmenu_earthquakesであるオブジェクトを探します。
+h1 = get(h,'Checked'); % そのオブジェクトのCheckedプロパティの値を取得し、h1に格納
+if isempty(EQ_DATA)~=1 && strcmp(h1,'on') % EQ_DATAが空でなく、h1が'on'である場合
+    hold on;
+    dummy1 = 0;
+    if dummy1 == 1
+        depLim = 20.0;
+        b = EQ_DATA(:,7)./depLim;
+        c1 = b <= 1.0;   c2 = b > 1.0;
+        b = b .* c1 + c2;
+        c3 = b <= 0.5;  c4 = b > 0.5;
+        g  = b.*c3*2.0 + abs(0.5-(b-0.5)).*c4*2.0;
+        r = (1.0 - b);
+    end
+    
+    if ICOORD == 2 && isempty(LON_GRID) ~= 1 % lon.lat.coordinates 経度緯度座標
+        h = scatter3(EQ_DATA(:,1),EQ_DATA(:,2),-EQ_DATA(:,7),5*PREF(5,4));
+    else
+        if dummy1 == 1
+            for k = 1:size(EQ_DATA,1)
+                hold on;
+            h = scatter3(EQ_DATA(k,16),EQ_DATA(k,17),-EQ_DATA(k,7),20.0,[r(k) g(k) b(k)]);
+            end
+        else
+        h = scatter3(EQ_DATA(:,16),EQ_DATA(:,17),-EQ_DATA(:,7),5*PREF(5,4));
+        end
+    end
+    set(h,'MarkerEdgeColor',PREF(5,1:3)); % 地震のための白いエッジカラー
+    set(h,'Tag','EqObj'); % 後で削除するためのタグを付ける
+    hold on;
+end
+
+%---------------------------------------------
+%	GPS station plot in 3D
+%---------------------------------------------
+% h = findobj('Tag','menu_gps');
+% h1 = get(h,'Checked');
+% if isempty(GPS_DATA)~=1 && strcmp(h1,'on')
+%     zero = zeros(size(GPS_DATA,1),1);
+%     hold on;
+%     if ICOORD == 2 && isempty(LON_GRID) ~= 1                % lon.lat.coordinates
+%         h = scatter3(GPS_DATA(:,1),GPS_DATA(:,2),zero,5*PREF(5,4));
+%     else
+%         h = scatter3(GPS_DATA(:,6),GPS_DATA(:,7),zero,5*PREF(5,4));
+%     end
+%     set(h,'MarkerEdgeColor','r'); % white edge color for GPS station 
+%     set(h,'Tag','GPSObj');        % put a tag to remove them later
+%     hold on;
+% end
+
+%---------------------------------------------
+%	Annotations in 3D
+%---------------------------------------------
+% *** PROBLEM *** cannot be solved so far
+% in 3D, we cannot use "[x,y] = ginput(n)" in "main_menu_window.m"
+% so now under construction unfortunately
+%
+
+% h = findobj('Tag','menu_annotations');
+% h1 = get(h,'Checked');
+% if isempty(GTEXT_DATA)~=1 && strcmp(h1,'on')
+%     hold on;
+%     if ICOORD == 2 && isempty(LON_GRID) ~= 1                % lon.lat.coordinates
+%         return; % so far under construction
+% %        h = scatter3(EQ_DATA(:,1),EQ_DATA(:,2),-EQ_DATA(:,7),5*PREF(5,4));
+%     else
+%         if isempty(GTEXT_DATA) ~= 1
+%     	n = length(GTEXT_DATA);
+%         for k = 1:n
+%         GTEXT_DATA(k).handle = text(GTEXT_DATA(k).x,GTEXT_DATA(k).y,...
+%             0.0,GTEXT_DATA(k).text);                % Now 3D text...
+%         set(GTEXT_DATA(k).handle,'Tag',num2str(k,'%3i'));
+%         set(GTEXT_DATA(k).handle,'FontSize',GTEXT_DATA(k).font);
+%         end
+%         end
+%         h = annotation_window;
+%         waitfor(h);
+%         figure(H_MAIN);
+%         if ANNOTATION_CANCELED == 1
+%             ANNOTATION_CANCELED == 0;
+%             return
+%         end
+%         [m n] = size(GTEXT_DATA);
+%         if m == 0 && n == 0
+%             n = 1;
+%         end
+%         [x,y] = ginput(1);
+%         GTEXT_DATA(n).x = x;
+%         GTEXT_DATA(n).y = y;
+%         GTEXT_DATA(n).handle = text(x,y,0.0,GTEXT_DATA(n).text);
+%         set(GTEXT_DATA(n).handle,'Tag',num2str(n,'%3i'));
+%         set(GTEXT_DATA(n).handle,'FontSize',GTEXT_DATA(n).font);
+%     end
+% end

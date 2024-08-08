@@ -1,0 +1,123 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Demo ge_windbarb</title>
+      <meta name="generator" content="MATLAB 7.2">
+      <meta name="date" content="2007-01-23">
+      <meta name="m-file" content="demo_ge_windbarb"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Demo ge_windbarb</h1>
+         <p>Example usage of the ge_windbarb function.   X, Y, DX, DY should be the same constructs as used by the quiver() function.
+            'help ge_windbarb' for more info.
+         </p><pre class="codeinput">clear
+close <span class="string">all</span>
+clc
+
+load(<span class="string">'winddata.mat'</span>)
+
+[xcoords, ycoords] = ge_windbarb(X(1,:),Y(:,1),U,V ,<span class="string">'barbScale'</span>, 1, <span class="string">'hemisphere'</span>, <span class="string">'Auto'</span>);
+
+   poly_color_str = <span class="string">'55338822'</span>;
+outline_color_str = <span class="string">'ff00ff00'</span>;
+
+barbs = ge_poly(ycoords, xcoords, <span class="string">'PolyColor'</span>, poly_color_str ,<span class="keyword">...</span>
+                                  <span class="string">'LineColor'</span>, outline_color_str,<span class="keyword">...</span>
+                                  <span class="string">'LineWidth'</span>, 2);
+
+ge_output( <span class="string">'demo_ge_windbarb.kml'</span>, barbs );
+</pre><p class="footer"><br>
+            Published with MATLAB&reg; 7.2<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Demo ge_windbarb
+% Example usage of the ge_windbarb function.
+%   X, Y, DX, DY should be the same constructs as used by the quiver() function.  
+% 'help ge_windbarb' for more info.
+
+clear 
+close all
+clc
+
+load('winddata.mat')
+
+[xcoords, ycoords] = ge_windbarb(X(1,:),Y(:,1),U,V ,'barbScale', 1, 'hemisphere', 'Auto');
+
+   poly_color_str = '55338822';
+outline_color_str = 'ff00ff00';
+
+barbs = ge_poly(ycoords, xcoords, 'PolyColor', poly_color_str ,...
+                                  'LineColor', outline_color_str,...
+                                  'LineWidth', 2);
+
+ge_output( 'demo_ge_windbarb.kml', barbs );
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

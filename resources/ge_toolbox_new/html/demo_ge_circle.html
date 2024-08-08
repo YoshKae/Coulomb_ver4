@@ -1,0 +1,129 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Demo ge_circle</title>
+      <meta name="generator" content="MATLAB 7.2">
+      <meta name="date" content="2007-02-15">
+      <meta name="m-file" content="demo_ge_circle"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Demo ge_circle</h1>
+         <p>Example usage of the ge_circle function. 'help ge_circle' for more info.</p><pre class="codeinput">x1 = -10;
+y1 = -10;
+x2 = -8;
+y2 = -10;
+x3 = -9;
+y3 = -11;
+
+output = ge_circle( x1, y1, 5000);
+output2 = ge_circle( x2, y2, 5000, <span class="keyword">...</span>
+                    <span class="string">'division'</span>, 3, <span class="keyword">...</span>
+                    <span class="string">'name'</span>, <span class="string">'Circle number 2, less divisions.'</span>, <span class="keyword">...</span>
+                    <span class="string">'LineWidth'</span>, 5.0, <span class="keyword">...</span>
+                    <span class="string">'LineColor'</span>, <span class="string">'b8200bff'</span>, <span class="keyword">...</span>
+                    <span class="string">'PolyColor'</span>, <span class="string">'b8200bff'</span>);
+output3 = ge_circle( x3, y3, 5000, <span class="keyword">...</span>
+                    <span class="string">'division'</span>, 5, <span class="keyword">...</span>
+                    <span class="string">'id'</span>, <span class="string">'ge_circle3'</span>, <span class="keyword">...</span>
+                    <span class="string">'visibility'</span>, 0 );
+
+ge_output( <span class="string">'demo_ge_circle.kml'</span>, [output output2 output3]);
+</pre><p class="footer"><br>
+            Published with MATLAB&reg; 7.2<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Demo ge_circle
+% Example usage of the ge_circle function.
+% 'help ge_circle' for more info.
+
+x1 = -10;
+y1 = -10;
+x2 = -8;
+y2 = -10;
+x3 = -9;
+y3 = -11;
+
+output = ge_circle( x1, y1, 5000);
+output2 = ge_circle( x2, y2, 5000, ...
+                    'division', 3, ...
+                    'name', 'Circle number 2, less divisions.', ...
+                    'LineWidth', 5.0, ...
+                    'LineColor', 'b8200bff', ...
+                    'PolyColor', 'b8200bff');
+output3 = ge_circle( x3, y3, 5000, ...
+                    'division', 5, ...
+                    'id', 'ge_circle3', ...
+                    'visibility', 0 );
+                
+ge_output( 'demo_ge_circle.kml', [output output2 output3]);
+
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

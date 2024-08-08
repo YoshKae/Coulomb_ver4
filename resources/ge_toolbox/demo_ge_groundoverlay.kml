@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+<Document>
+<name>
+demo_ge_groundoverlay.kml
+</name>
+<GroundOverlay id="default_groundoverlay"><name>
+ge_groundoverlay
+</name>
+<Snippet></Snippet>
+<description>
+<![CDATA[]]>
+</description>
+<color>93ffffff</color>
+<visibility>
+1
+</visibility>
+<Icon><href>map.bmp</href><viewBoundScale>0.55</viewBoundScale></Icon><LatLonBox><north>66.000000</north><south>2.000000</south><east>38.000000</east><west>-23.000000</west></LatLonBox></GroundOverlay>
+</Document>
+
+</kml>

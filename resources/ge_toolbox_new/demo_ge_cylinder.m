@@ -1,0 +1,26 @@
+%% Demo ge_cylinder
+% Example usage of the ge_cylinder function.
+% 'help ge_cylinder' for more info.
+
+x1 = -10;
+y1 = -10;
+x2 = -8;
+y2 = -10;
+x3 = -9;
+y3 = -11;
+
+output = ge_cylinder( x1, y1, 5000, 15000);
+
+output2 = ge_cylinder( x2, y2, 5000, 20000, ...
+                    'division', 3, ...
+                    'name', 'Cylinder number 2, less divisions.', ...
+                    'LineWidth', 5.0, ...
+                    'LineColor', 'b8200bff', ...
+                    'PolyColor', 'b8200bff');
+output3 = ge_cylinder( x3, y3, 5000, 25000, ...
+                    'division', 5, ...
+                    'id', 'ge_cylinder3', ...
+                    'visibility', 0 );
+                
+ge_output( 'demo_ge_cylinder.kml', [output output2 output3]);
+

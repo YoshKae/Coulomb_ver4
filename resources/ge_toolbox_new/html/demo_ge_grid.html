@@ -1,0 +1,113 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Demo ge_grid</title>
+      <meta name="generator" content="MATLAB 7.2">
+      <meta name="date" content="2007-02-15">
+      <meta name="m-file" content="demo_ge_grid"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Demo ge_grid</h1>
+         <p>Example usage of the ge_grid function. 'help ge_grid' for more info.</p><pre class="codeinput">x_max = -60;
+x_min = -90;
+y_max = 0;
+y_min = -15;
+
+output = ge_grid( x_max, x_min, y_max, y_min, <span class="keyword">...</span>
+                <span class="string">'latRes'</span>, 0.5, <span class="keyword">...</span>
+                <span class="string">'lonRes'</span>, 0.5, <span class="keyword">...</span>
+                <span class="string">'name'</span>, <span class="string">'grid example'</span>, <span class="keyword">...</span>
+                <span class="string">'LineColor'</span>, <span class="string">'ff20ff25'</span>, <span class="keyword">...</span>
+                <span class="string">'PolyColor'</span>, <span class="string">'73ffe8ed'</span> );
+
+ge_output( <span class="string">'demo_ge_grid.kml'</span>, output );
+</pre><p class="footer"><br>
+            Published with MATLAB&reg; 7.2<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Demo ge_grid
+% Example usage of the ge_grid function.
+% 'help ge_grid' for more info.
+
+x_max = -60;
+x_min = -90;
+y_max = 0;
+y_min = -15;
+
+output = ge_grid( x_max, x_min, y_max, y_min, ...
+                'latRes', 0.5, ...
+                'lonRes', 0.5, ...
+                'name', 'grid example', ...
+                'LineColor', 'ff20ff25', ...
+                'PolyColor', '73ffe8ed' );
+
+ge_output( 'demo_ge_grid.kml', output );
+##### SOURCE END #####
+-->
+   </body>
+</html>
