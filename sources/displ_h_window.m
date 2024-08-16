@@ -1,5 +1,5 @@
 function varargout = displ_h_window(varargin)
-% DISPL_H_WINDOW M-file for displ_h_window.fig
+% DISPL_H_WINDOW M-file for displ_h_window.fig %
 %      DISPL_H_WINDOW, by itself, creates a new DISPL_H_WINDOW or raises the existing
 %      singleton*.
 %
