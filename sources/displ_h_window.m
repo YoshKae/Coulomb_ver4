@@ -1,32 +1,6 @@
 function varargout = displ_h_window(varargin)
-% DISPL_H_WINDOW M-file for displ_h_window.fig %
-%      DISPL_H_WINDOW, by itself, creates a new DISPL_H_WINDOW or raises the existing
-%      singleton*.
-%
-%      H = DISPL_H_WINDOW returns the handle to a new DISPL_H_WINDOW or the handle to
-%      the existing singleton*.
-%
-%      DISPL_H_WINDOW('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in DISPL_H_WINDOW.M with the given input arguments.
-%
-%      DISPL_H_WINDOW('Property','Value',...) creates a new DISPL_H_WINDOW or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before displ_h_window_OpeningFunction gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to displ_h_window_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Copyright 2002-2003 The MathWorks, Inc.
-
-% Edit the above text to modify the response to help displ_h_window
-
-% Last Modified by GUIDE v2.5 04-Aug-2006 17:41:57
-
-% Begin initialization code - DO NOT EDIT
+% 初期化コードの開始
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -43,13 +17,13 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
-% End initialization code - DO NOT EDIT
+% 初期化コードの終了
 
 
-% --- Executes just before displ_h_window is made visible.
+% この関数は、displ_h_window が表示される直前に実行されます。
 function displ_h_window_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
+% この関数は、GUI が作成されるときに呼び出されます。
+global SCRS SCRW_X SCRW_Y % スクリーンサイズ (1x4, [x y width height]) 幅と高さ
 set(findobj('Tag','Mouse_click'),'Enable','Off');
 h = findobj('Tag','displ_h_window');
 j = get(h,'Position');
@@ -61,26 +35,24 @@ if isempty(dummy)~=1
 end
 xpos = h(1,1) + h(1,3) + 5;
 ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
-set(hObject,'Position',[xpos ypos wind_width wind_height]);
+set(hObject,'Position',[xpos ypos wind_width wind_height]); % 位置設定
 
-% Choose default command line output for displ_h_window
+% displ_h_window のデフォルトのコマンドライン出力を選択
 handles.output = hObject;
 
-% Update handles structure
+% ハンドル構造体の更新
 guidata(hObject, handles);
 
-% UIWAIT makes displ_h_window wait for user response (see UIRESUME)
-% uiwait(handles.displ_h_window);
+% UIRESUME が呼び出されるまで、displ_h_window はユーザーの応答を待ちます
 
-
-% --- Outputs from this function are returned to the command line.
+% --- この関数からの出力がコマンドラインに返されます。
 function varargout = displ_h_window_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Get default command line output from handles structure
+% ハンドル構造体からデフォルトのコマンドライン出力を取得
 varargout{1} = handles.output;
 
 %-------------------------------------------------------------------------
@@ -172,13 +144,6 @@ if x==1;
     FIXX = str2double(get(h,'String'));
     h = findobj('Tag','edit_fixy');
     FIXY = str2double(get(h,'String'));
-%     figure(H_MAIN);
-%     delete(axes('Parent',H_MAIN));
-%     hold on;
-%     FUNC_SWITCH = 2;
-%     h = findobj('Tag','slider_displ');
-% 	displ_open(get(h,'Value'));
-%     FUNC_SWITCH = 0; %reset
 end
 
 %-------------------------------------------------------------------------
@@ -192,8 +157,8 @@ global GRID
 set(findobj('Tag','Mouse_click'),'Enable','on');
 x = get(hObject,'Value');
 if x==1;
-%     d = warndlg('Make sure the study area and type lon. & lat. as a ref point');
-%     study_area;
+%    d = warndlg('Make sure the study area and type lon. & lat. as a ref point');
+%    study_area;
 %    COORD = 1;
     FIXFLAG = 2;
     mid_lon = (MIN_LON + MAX_LON) / 2.0;
@@ -205,21 +170,6 @@ if x==1;
     a = lonlat2xy([mid_lon mid_lat]);
     FIXX = a(1);
     FIXY = a(2);
-%         xs = GRID(1,1);
-%         xf = GRID(3,1);
-%         ys = GRID(2,1);
-%         yf = GRID(4,1);
-%         xinc = (xf - xs)/(MAX_LON-MIN_LON);
-%         yinc = (yf - ys)/(MAX_LAT-MIN_LAT);
-%         FIXX = xs + xinc * (mid_lon - MIN_LON);
-%         FIXY = ys + yinc * (mid_lat - MIN_LAT);
-%     figure(H_MAIN);
-%     delete(axes('Parent',H_MAIN));
-%     hold on;
-%     FUNC_SWITCH = 2;
-%     h = findobj('Tag','slider_displ');
-% 	displ_open(get(h,'Value'));
-%     FUNC_SWITCH = 0; %reset
 end
 
 %-------------------------------------------------------------------------
