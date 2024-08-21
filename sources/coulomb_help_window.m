@@ -111,86 +111,44 @@ function edit_search_word_Callback(hObject, eventdata, handles)
 % % matlabv = '7.4';
 % % matlabv = version;
 % % ==============================
-% if strcmp(matlabv,'7.4')        % for MATLAB version 7.4
-    srcword = get(hObject,'String');
-    % read help text data
-    n = 500;
-    c = cell(n);
-    hresult = cell(n);
-    help_list;  % (script...)
-    help_result;    % script
-    x = strmatch(srcword,hlist); % hlist from 'help_list'
-    if isempty(x) ~= 1
-        m = length(x);
-        a = cellstr(hlist);
-        for k = 1:m
-            c{k} = a{x(k)};
-        end
+srcword = get(hObject,'String');
+% read help text data
+n = 500;
+c = cell(n);
+hresult = cell(n);
+help_list;  % (script...)
+help_result;    % script
+x = strmatch(srcword,hlist); % hlist from 'help_list'
+if isempty(x) ~= 1
+    m = length(x);
+    a = cellstr(hlist);
+    for k = 1:m
+        c{k} = a{x(k)};
+    end
         set(findobj('Tag','listbox_help_title'),'String',strvcat(c{:}));
     else
         dummy = ['No match found';'              '];
         set(findobj('Tag','listbox_help_title'),'String',dummy);
     end
-    %-----------
-    x = 1;
-%    y = str2mat(deblank(get(findobj('Tag','listbox_help_title'),'String')));
-    y = deblank(get(findobj('Tag','listbox_help_title'),'String'));
-    if isempty(y) ~= 1
-%         keyword0 = mat2str(y(x,1:end));
-        keyword0 = y(x,1:end);
-        z = strmatch(keyword0,hlist); % hlist from 'help_list'
-        if isempty(z) ~= 1
-            m = length(z);
-            for k = 1:m
-                b = [hresult{z}];
-%                 set(findobj('Tag','edit_search_result'),'String',mat2str(b));
-                set(findobj('Tag','edit_search_result'),'String',b);
-            end
-        else
-            set(findobj('Tag','edit_search_result'),'String','No match found');
-            if ~isempty(dummy)
-            set(findobj('Tag','edit_search_result'),'String','              ');
-            end
+%-----------
+x = 1;
+y = deblank(get(findobj('Tag','listbox_help_title'),'String'));
+if isempty(y) ~= 1
+    keyword0 = y(x,1:end);
+    z = strmatch(keyword0,hlist); % hlist from 'help_list'
+    if isempty(z) ~= 1
+        m = length(z);
+        for k = 1:m
+            b = [hresult{z}];
+            set(findobj('Tag','edit_search_result'),'String',b);
+        end
+    else
+        set(findobj('Tag','edit_search_result'),'String','No match found');
+        if ~isempty(dummy)
+        set(findobj('Tag','edit_search_result'),'String','              ');
         end
     end
-% else                    % for MATLAB version 7.0-7.3
-%     srcword = get(hObject,'String');
-%     % read help text data
-%     n = 500;
-%     c = cell(n);
-%     hresult = cell(n);
-%     help_list;  % (script...)
-%     help_result;    % script
-%     x = strmatch(srcword,hlist); % hlist from 'help_list'
-%     if isempty(x) ~= 1
-%         m = length(x);
-%         for k = 1:m
-% %             c{k} = mat2str(hlist(x(k),1:end));
-%             c{k} = hlist(x(k),1:end);
-%         end
-%         %    c = strvcat
-%         set(findobj('Tag','listbox_help_title'),'String',strvcat(c{:}));
-%     else
-%         set(findobj('Tag','listbox_help_title'),'String','No match found');
-%     end
-%     %-----------
-%     x = 1;
-% %     y = str2mat(get(findobj('Tag','listbox_help_title'),'String'));
-%     y = get(findobj('Tag','listbox_help_title'),'String');
-%     if isempty(y) ~= 1
-%         keyword = mat2str(y(x,1:end));
-%         z = strmatch(keyword,hlist); % hlist from 'help_list'
-%         if isempty(z) ~= 1
-%             m = length(z);
-%             for k = 1:m
-%                 b = [hresult{z}];
-%                 set(findobj('Tag','edit_search_result'),'String',mat2str(b));
-%             end
-%         else
-%             set(findobj('Tag','edit_search_result'),'String','No match found');
-%         end
-%     end
-% end
+end
 
 % --- Executes during object creation, after setting all properties.
 function edit_search_word_CreateFcn(hObject, eventdata, handles)
@@ -207,50 +165,27 @@ function listbox_help_title_Callback(hObject, eventdata, handles)
 % matlabv = '7.4';
 % % matlabv = '7.4';
 % % matlabv = version;
-% if strcmp(matlabv,'7.4') % for MATLAB version 7.4
-    x = get(hObject,'Value');
-    n = 500;
-    hresult = cell(n);
-    help_list;      % script
-    help_result;    % script
-    % z = strmatch(keyword,hlist); % hlist from 'help_list'
-%     y = str2mat(deblank(get(findobj('Tag','listbox_help_title'),'String')));
-    y = deblank(get(findobj('Tag','listbox_help_title'),'String'));
-    if isempty(y) ~= 1
-%         keyword0 = mat2str(y(x,1:end));
-        keyword0 = y(x,1:end);
-%         z = strmatch(eval(keyword0),hlist); % hlist from 'help_list'
-        z = strmatch(keyword0,hlist); % hlist from 'help_list'
-        if isempty(z) ~= 1
-            m = length(z);
-            for k = 1:m
-                b = [hresult{z}];
-%                 set(findobj('Tag','edit_search_result'),'String',mat2str(b));
-                set(findobj('Tag','edit_search_result'),'String',b);
-            end
-        else
-            set(findobj('Tag','edit_search_result'),'String','No match found');
+
+x = get(hObject,'Value');
+n = 500;
+hresult = cell(n);
+help_list;      % script
+help_result;    % script
+y = deblank(get(findobj('Tag','listbox_help_title'),'String'));
+if isempty(y) ~= 1
+    keyword0 = y(x,1:end);
+    z = strmatch(keyword0,hlist); % hlist from 'help_list'
+    if isempty(z) ~= 1
+        m = length(z);
+        for k = 1:m
+            b = [hresult{z}];
+            set(findobj('Tag','edit_search_result'),'String',b);
         end
+    else
+        set(findobj('Tag','edit_search_result'),'String','No match found');
     end
-% else                % for MATLAB version 7.0-7.3
-%     x = get(hObject,'Value');
-%     y = str2mat(get(hObject,'String'));
-%     keyword = mat2str(y(x,1:end));
-%     n = 500;
-%     hresult = cell(n);
-%     help_list;      % script
-%     help_result;    % script
-%     z = strmatch(keyword,hlist); % hlist from 'help_list'
-%     if isempty(z) ~= 1
-%         m = length(z);
-%         for k = 1:m
-%             b = [hresult{z}];
-%             set(findobj('Tag','edit_search_result'),'String',mat2str(b));
-%         end
-%     else
-%         set(findobj('Tag','edit_search_result'),'String','No match found');
-%     end
-% end
+end
+
 
 % --- Executes during object creation, after setting all properties.
 function listbox_help_title_CreateFcn(hObject, eventdata, handles)
@@ -263,6 +198,3 @@ function listbox_help_title_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-

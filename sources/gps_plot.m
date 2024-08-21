@@ -16,8 +16,6 @@ global GPS_DATA GPS_FLAG GPS_SEQN_FLAG
     end
     offparam = 0.1; % parameter control offset of OBS and CALC for vertical
 
-    
-    
 % automatically chosen directory 'GPS_data'
     try
         cd('GPS_data');
@@ -217,4 +215,3 @@ disp('   * To save the GPS data as binary, use the following command in this win
 disp('   * save filename GPS_DATA (e.g., save mygps.mat GPS_DATA)');
 disp('   * To read the .mat formatted GPS data, use ''File -> Import Data...'' menu later.');
 disp(' ');
-

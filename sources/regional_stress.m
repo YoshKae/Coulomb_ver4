@@ -20,10 +20,7 @@ rxx = (-1.0) * (rs(1,3) + rs(1,4) * dep - m3);
 % if abs(rs(3,2)) >= abs(rs(2,2))
     ryy = (-1.0) * (rs(2,3) + rs(2,4) * dep - m3);
     rzz = 0.0;
-% else
-%     rzz = (-1.0) * (rs(2,3) + rs(2,4) * dep - m3);
-%     ryy = 0.0;
-% end
+
 rxy = 0.0;
 rxz = 0.0;
 ryz = 0.0;

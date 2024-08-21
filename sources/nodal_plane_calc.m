@@ -181,20 +181,6 @@ function [ptb,p,t,b] = sdr2pt(sdr)
             + (atan2(double(n(:,2)./cos(double(angs(:,2)))),...
             double(-n(:,3)))).*d3;
         angs(:,1) = 0.0.*c1 + d.*c2;
-      
-%          if abs(n(:,3)) == 1.0
-%            angs(:,2) = atan2(a(:,2),a(:,1));
-%            angs(:,1) = 0.0;
-%          else
-%            angs(:,2) = atan2(-n(:,1),n(:,2));
-%            if n(:,3) == 0.0
-%              angs(:,1) = 0.5*pi;
-%            elseif abs(sin(angs(:,2))) >= 0.1
-%              angs(:,1) = atan2(-n(:,1)./sin(angs(:,2)),-n(:,3));
-%            else
-%              angs(:,1) = atan2(n(:,2)./cos(angs(:,2)),-n(:,3));
-%            end
-%         end
            
          a1 = a(:,1).*cos(double(angs(:,2))) + a(:,2).*sin(double(angs(:,2)));
             c1 = abs(a1) < 0.001;
@@ -216,55 +202,25 @@ function [ptb,p,t,b] = sdr2pt(sdr)
             +((atan2(double(a2./sin(2*double(angs(:,2)))),double(a1))).*d1...
             +(acos(double(a(:,2)./sin(double(angs(:,2))))).*d2...
             +(acos(double(a1)))).*d3).*c2;
-%          if a(3) ~= 0.0
-%            angs(:,3) = atan2(-a(:,3)./sin(angs(:,1)),a1);
-%          else
-%            a2 = a(:,1).*sin(angs(:,2)) - a(:,2).*cos(angs(:,2));
-%            if abs(a2) < 0.0001
-%                a2 = 0.0;
-%            end
-%            if abs(sin(2*angs(2))) >= 0.0001
-%              angs(:,3) = atan2(a2./sin(2*angs(:,2)),a1);
-%            elseif abs(sin(angs(2))) >= 0.0001
-%              angs(:,3) = acos(a(:,2)/sin(angs(:,2)));
-%            else
-%              angs(:,3) = acos(a1);
-%            end
-%          end
-         c1 = angs(:,1) < 0.0;
-         c2 = angs(:,1) >= 0.0;
-         d1 = angs(:,3) > pi;
-         d2 = angs(:,3) <= pi;
-         angs(:,1) = (angs(:,1)+pi).*c1 + angs(:,1).*c2;
-         angs(:,3) = ((angs(:,3) - 2*pi).*d1+(pi-angs(:,3)).*d2).*c1 + angs(:,3).*c2;
-%          if angs(1) < 0.0
-%            angs(:,1) = angs(:,1) + pi;
-%            angs(:,3) = pi - angs(:,3);
-%             if angs(:,3) > pi
-%                 angs(:,3) = angs(:,3) - 2*pi;
-%             end
-%          end
-        c1 = angs(:,1) > 0.5*pi;
-        c2 = angs(:,1) <= 0.5*pi;
-        d1 = angs(:,2) >= 2*pi;
-        d2 = angs(:,2) < 2*pi;
+
+            c1 = angs(:,1) < 0.0;
+            c2 = angs(:,1) >= 0.0;
+            d1 = angs(:,3) > pi;
+            d2 = angs(:,3) <= pi;
+        angs(:,1) = (angs(:,1)+pi).*c1 + angs(:,1).*c2;
+        angs(:,3) = ((angs(:,3) - 2*pi).*d1+(pi-angs(:,3)).*d2).*c1 + angs(:,3).*c2;
+
+            c1 = angs(:,1) > 0.5*pi;
+            c2 = angs(:,1) <= 0.5*pi;
+            d1 = angs(:,2) >= 2*pi;
+            d2 = angs(:,2) < 2*pi;
         angs(:,1) = (pi - angs(:,1)).*c1 + angs(:,1).*c2;
         angs(:,2) = ((angs(:,2) - 2*pi).*d1+(angs(:,2) + pi).*d2).*c1 + angs(:,2).*c2;
         angs(:,3) = (-angs(:,3)).*c1 + angs(:,3).*c2;        
-%          if angs(1) > 0.5*pi
-%            angs(:,1) = pi - angs(:,1);
-%            angs(:,2) = angs(:,2) + pi;
-%            angs(:,3) = -angs(:,3);
-%            if angs(2) >= 2*pi
-%                angs(:,2) = angs(:,2) - 2*pi;
-%            end
-%          end
-        c1 = angs(:,2) < 0.0;
-        c2 = angs(:,2) >= 0.0;
+
+            c1 = angs(:,2) < 0.0;
+            c2 = angs(:,2) >= 0.0;
         angs(:,2) = (angs(:,2) + 2.0*pi).*c1 + angs(:,2).*c2;
-%          if angs(2) < 0.0
-%              angs(:,2) = angs(:,2) + 2.0*pi;
-%          end
 
 
 %=====================================================================
@@ -290,26 +246,13 @@ function [trpl] = v2trpl(xyz)
 xyz = double(xyz);
     c1 = abs(xyz(:,1:3)) > 0.000001;
     xyz(:,1:3) = xyz(:,1:3).*c1;
-%            if abs(xyz(:,j)) <= 0.0001
-%                xyz(:,j) = 0.0;
-%            end
+
     c1 = abs(abs(xyz(:,1:3))-1.0) < 0.00001;
     c2 = abs(abs(xyz(:,1:3))-1.0) >= 0.00001;
     xyz(:,1:3) = double(xyz(:,1:3)./abs(xyz(:,1:3))).*c1 + xyz(:,1:3).*c2;
 
-%            if abs(abs(xyz(:,j))-1.0) < 0.001
-%                xyz(:,j)=xyz(:,j)./abs(xyz(:,j));
-%            end
-% end
-
-
     c1 = abs(xyz(:,3)) == 1.0;
     c2 = abs(xyz(:,3)) ~= 1.0;
-%          if abs(xyz(3)) == 1.0 %  Plunge is +/-90 degrees
-%            trpl(1) = 0.0;
-%            trpl(2) = 0.5*pi;
-%            return
-%          end
 
     d1 = abs(xyz(:,1)) < 0.0001;
     d2 = abs(xyz(:,1)) >= 0.0001;
@@ -331,25 +274,6 @@ xyz = double(xyz);
         +(atan2(double(xyz(:,3)),double(xyz(:,2)./s))).*f2).*c2;
  
 
-%          if abs(xyz(1)) < 0.0001
-%            if xyz(2) > 0.0
-%              trpl(1) = pi/2.;
-%            elseif xyz(2) < 0.0
-%              trpl(1) = 3.0*pi/2.0;
-%            else
-%              trpl(1) = 0.0;
-%            end
-%          else
-%             trpl(1) = atan2(xyz(2),xyz(1));
-%          end
-%          c = cos(trpl(1));
-%          s = sin(trpl(1));
-%          if abs(c) >= 0.1
-%              trpl(2) = atan2(xyz(3),xyz(1)/c);
-%          end
-%          if abs(c) < 0.1
-%              trpl(2) = atan2(xyz(3),xyz(2)/s);
-%          end
     c1 = trpl(:,2) < 0.0;
     c2 = trpl(:,2) >= 0.0;
     trpl(:,2) = (-trpl(:,2)).*c1 + trpl(:,2).*c2;
@@ -357,15 +281,8 @@ xyz = double(xyz);
     c1 = trpl(:,1) < 0.0;
     c2 = trpl(:,1) >= 0.0;
     trpl(:,1) = (trpl(:,1) + 2.0*pi).*c1 + trpl(:,1).*c2; 
-%     
-%          if trpl(2) < 0.0
-%            trpl(2) = -trpl(2);
-%            trpl(1) = trpl(1) - pi;
-%          end
-%          if trpl(1) < 0.0
-%              trpl(1) = trpl(1) + 2.0*pi;
-%          end
-%          
+
+          
 %=====================================================================
     function [momten] = an2mom(a,n)
 %          SUBROUTINE AN2MOM(a,N,MOMTEN)
@@ -415,14 +332,7 @@ xyz = double(xyz);
          c1 = abs(abs(xyz(:,1:3))-1.0) < 0.00001;
          c2 = abs(abs(xyz(:,1:3))-1.0) >= 0.00001;
          xyz(:,1:3) = (xyz(:,1:3)./abs(xyz(:,1:3))).*c1 + xyz(:,1:3).*c2;
-%         for j = 1:3
-%            if abs(xyz(j)) < 0.0001
-%                xyz(j) = 0.0;
-%            end
-%            if abs(abs(xyz(j))-1.0) < 0.0001
-%                xyz(j)=xyz(j)/abs(xyz(j));
-%            end
-%         end
+
 
 %=====================================================================
 % 
@@ -475,7 +385,7 @@ function [str1,dip1,rake1,str2,dip2,rake2] = pt2sdr(p,t)
 
 %         subroutine pt2sdr(p,t,str1,dip1,rake1,str2,dip2,rake2)
 % c=======================================================================
-% c PURPOSE: pé≤,té≤Ç©ÇÁífëwñ ÇÃÉpÉâÉÅÉ^ÇåvéZÇ∑ÇÈÉvÉçÉOÉâÉÄ
+% c PURPOSE: P,T AXIS --> STRIKE,DIP,RAKE c
 % c=======================================================================
 % c INPUT ARGUMENTS:
 % c       p(1): p-axis azimth
@@ -484,11 +394,11 @@ function [str1,dip1,rake1,str2,dip2,rake2] = pt2sdr(p,t)
 % c       t(2):        pluge
 % c=======================================================================
 % c OUTPUT ARGUMENTS:
-% c       ífëwñ 
+% c       ÔøΩfÔøΩwÔøΩÔøΩ
 % c       str1:  strike
 % c       dip1:  dip
 % c       rake1: rake
-% c       ï‚èïñ 
+% c       ÔøΩ‚èïÔøΩÔøΩ
 % c       str2:  strike
 % c       dip2:  dip
 % c       rake2: rake

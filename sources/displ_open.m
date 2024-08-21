@@ -211,43 +211,31 @@ grid_drawing;
 set(H_MAIN,'NumberTitle','off','Menubar','figure');
 hold on;
 a1 = 1; %dummy
-% [C,h] = contour(XGRID,YGRID,uuz,10);
-% if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     CC = zeros(length(LAT_GRID),length(LON_GRID),'double');
-%     CC = reshape(uuz,length(LAT_GRID),length(LON_GRID));
-%     CC = CC(length(LAT_GRID):-1:1,:);
-%     buffer = 1.0;
-%     cmax = max(reshape(max(abs(CC)),length(LON_GRID),1));
-%     cmin = min(reshape(min(abs(CC)),length(LON_GRID),1));
-%     cmean = mean(reshape(mean(abs(CC)),length(LON_GRID),1));
-% else
-    CC = zeros(length(YGRID),length(XGRID),'double');
-    CC = reshape(uuz,length(YGRID),length(XGRID));
-    CC = CC(length(YGRID):-1:1,:);
-    buffer = 1.0;
-    cmax = max(reshape(max(abs(CC)),length(XGRID),1));
-    cmin = min(reshape(min(abs(CC)),length(XGRID),1));
-    cmean = mean(reshape(mean(abs(CC)),length(XGRID),1));
-% end
-% cmax = cmax + buffer;
-% cmin = 0.0;
+
+CC = zeros(length(YGRID),length(XGRID),'double');
+CC = reshape(uuz,length(YGRID),length(XGRID));
+CC = CC(length(YGRID):-1:1,:);
+buffer = 1.0;
+cmax = max(reshape(max(abs(CC)),length(XGRID),1));
+cmin = min(reshape(min(abs(CC)),length(XGRID),1));
+cmean = mean(reshape(mean(abs(CC)),length(XGRID),1));
+
 COLORSN = cmean;
 coulomb_view(cmean);
 hold on;
 fault_overlay;
 hold off;
-    a = cmax - cmin;
-%    if isempty(CONT_INTERVAL)
-    if a > 10.0
-        CONT_INTERVAL = 1;
-    elseif a > 5.0
-        CONT_INTERVAL = 0.5;
-    elseif a > 1.0
-        CONT_INTERVAL = 0.1;
-    else
-        CONT_INTERVAL = 0.01;
-    end
-%    end
+a = cmax - cmin;
+if a > 10.0
+    CONT_INTERVAL = 1;
+elseif a > 5.0
+    CONT_INTERVAL = 0.5;
+elseif a > 1.0
+    CONT_INTERVAL = 0.1;
+else
+    CONT_INTERVAL = 0.01;
+end
+
 H_VERTICAL_DISPL = vertical_displ_window;
 set(findobj('Tag','vd_slider'),'Max',cmax);
 set(findobj('Tag','vd_slider'),'Min',cmin);

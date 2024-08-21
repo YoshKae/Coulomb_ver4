@@ -89,14 +89,6 @@ else
     end
 end
 
-
-%     if u_strk < 0.0
-%         u_strk = 90.0 - u_strk;
-%     end
-
-
-
-
 % ang = u_strk - strk
 
 uu = cos(deg2rad(ang)) * uxy;

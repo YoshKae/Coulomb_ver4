@@ -15,9 +15,3 @@ c2.*(-1.0).*rad2deg(atan(dipslip./latslip));
 if rake > 180
     rake = rake - 360.0;
 end
-
-% if latslip >= 0.0
-% 	rake = 180.0 - rad2deg(atan(dipslip./latslip));
-% else
-% 	rake = -rad2deg(atan(dipslip./latslip)); 
-% end

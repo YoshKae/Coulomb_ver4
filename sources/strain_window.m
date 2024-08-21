@@ -465,8 +465,3 @@ if isempty(COAST_DATA) ~= 1 | isempty(EQ_DATA) ~= 1 | isempty(AFAULT_DATA) ~= 1
         hold on;
         overlay_drawing;
 end
-
-
-
-
-

@@ -197,19 +197,6 @@ end
             e6 = zeros(n,1,'double') + double(ELEMENT(ii,5));
             zr = zeros(n,1,'double') + double(ELEMENT(ii,6));   
         end
-%         % for point source calculation (unit: input m**3, output
-%         % m**3/km**3 -> m => thus ./(1.0E+7)
-%         if KODE(ii) == 400
-%             aw = zeros(n,1,'double') - double(ELEMENT(ii,5))./(1.0E+7);
-%             e5 = zeros(n,1,'double') + double(ELEMENT(ii,6))./(1.0E+7);
-%             e6 = zeros(n,1,'double');
-%             zr = zeros(n,1,'double');    
-%         elseif KODE(ii) == 500
-%             aw = zeros(n,1,'double');
-%             e5 = zeros(n,1,'double');
-%             e6 = zeros(n,1,'double') + double(ELEMENT(ii,5))./(1.0E+7);
-%             zr = zeros(n,1,'double') + double(ELEMENT(ii,6))./(1.0E+7);   
-%         end
 
         a = [aa x y zz dp e7 al al aw aw e5 e6 zr];
         b = zeros(n,12,'double');

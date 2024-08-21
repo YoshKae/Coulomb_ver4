@@ -74,12 +74,7 @@ for k = 1:3
         else
             berad = rad2deg(beradllp_2);
         end
-%         
-%         if a1 <= a2
-%             berad = rad2deg(beradllp_2);
-%         else
-%             berad = rad2deg(beradllp_1);
-%         end
+
 
         if berad < 0.0
             berad = berad + 180.0;
@@ -91,13 +86,8 @@ for k = 1:3
         
         pt(1,(k-1)*3+1) = berad;
         pt(1,(k-1)*3+2) = delta;
-%        if k==1
         pt(1,(k-1)*3+3) = eva(1,k);
-%         elseif k==2
-%                 pt(1,(k-1)*3+3) = eva(1,3);
-%         elseif k==3
-%                     pt(1,(k-1)*3+3) = eva(1,2);
-%         end        
+   
 end
 
 f1 = pt(3);
@@ -107,25 +97,7 @@ fall = [f1; f2; f3];
 fmin = min(fall); fmax = max(fall);
 ind_min = find(fall == fmin);
 ind_max = find(fall == fmax);
-% if ind_min == 1
-%     if ind_max == 2
-%         pt_stress = [pt(1) pt(2) pt(3) pt(7) pt(8) pt(9) pt(4) pt(5) pt(6)];
-%     elseif ind_max ==3
-%         pt_stress = [pt(1) pt(2) pt(3) pt(4) pt(5) pt(6) pt(7) pt(8) pt(9)];
-%     end
-% elseif ind_min == 2    
-%     if ind_max == 1
-%         pt_stress = [pt(4) pt(5) pt(6) pt(7) pt(8) pt(9) pt(1) pt(2) pt(3)];        
-%     elseif ind_max == 3
-%         pt_stress = [pt(4) pt(5) pt(6) pt(1) pt(2) pt(3) pt(7) pt(8) pt(9)];  
-%     end
-% elseif ind_min == 3
-%     if ind_max == 1
-%         pt_stress = [pt(7) pt(8) pt(9) pt(4) pt(5) pt(6) pt(1) pt(2) pt(3)]; 
-%     elseif ind_max == 2
-%         pt_stress = [pt(7) pt(8) pt(9) pt(1) pt(2) pt(3) pt(4) pt(5) pt(6)]; 
-%     end
-% end
+
 
 % temporal solution ???
 % (need to be clearified... I do not know the reason...)

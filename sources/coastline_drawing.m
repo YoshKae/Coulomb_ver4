@@ -26,25 +26,6 @@ catch
         cd(HOME_DIR);
     end
 end
-
-
-%     try
-%         load (fullfile(pathname, filename));    % for .mat file
-%     catch
-%         try
-%             try
-%             fid = fopen(fullfile(pathname, filename),'r');              % for ascii file
-%             % fid = fopen(filename,'r');              % for ascii file
-%             catch
-%             errordlg('The file might be corrupted or wrong one');
-%             return;
-%             end
-%         catch
-%             errordlg('The file might be corrupted. Check the content.');
-%             return;
-%         end
-%     end
-    
     
 % Chose a data file in default dialog
 if isempty(COAST_DATA)==1
@@ -61,12 +42,6 @@ if isempty(COAST_DATA)==1
     end
 fid = fopen(filename,'r');
 COAST_DIR = pathname;
-% try
-%     load (fullfile(pathname, filename));    % for .mat file
-%     return
-% catch
-%     fid = fopen(fullfile(pathname, filename),'r');
-% end
 
 % ***** TEST reading to check western hemishere? *****************
 n = 10000;  % dummy number (probably use 'end' later)
@@ -93,9 +68,6 @@ for i = 1:size(aa,1);
 end
 if max(aaa) > 180.0
     but = 'plus';
-% if min(aaa) < 0.0 | max(aaa) > 180.0
-%     but = questdlg('Western hemisphere is treated as ',...
-%         'coastline data format','positve','negative','positive');
 else
     but = 'minus';
 end
@@ -255,17 +227,6 @@ for k = 1:length(xx)
             end
             a = xy2lonlat([xx(k) yy(k)]);
             
-% old format... (until version 3.1.4)
-%             COAST_DATA(nn,1) = icount;
-%             COAST_DATA(nn,2) = a(1);
-%             COAST_DATA(nn,3) = a(2);
-%             COAST_DATA(nn,4) = b(1);
-%             COAST_DATA(nn,5) = b(2);
-%             COAST_DATA(nn,6) = xx(k);
-%             COAST_DATA(nn,7) = yy(k);
-%             COAST_DATA(nn,8) = xx(k+1);
-%             COAST_DATA(nn,9) = yy(k+1);
-% new format...
             COAST_DATA(nn,1) = a(1);
             COAST_DATA(nn,2) = a(2);
             COAST_DATA(nn,3) = xx(k);

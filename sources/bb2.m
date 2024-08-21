@@ -347,14 +347,7 @@ if ~hold_state
     delete(hhh);
 % check radial limits and ticks
     rmin = 0; rmax = v(4); rticks = max(ticks-1,2);
-%    if rticks > 5   % see if we can reduce the number
-%        if rem(rticks,2) == 0
-%            rticks = rticks/2;
-%        elseif rem(rticks,3) == 0
-%            rticks = rticks/3;
-%        end
-%    end
-	 rticks = 1;
+    rticks = 1;
 
 % define a circle
     th = 0:pi/50:2*pi;

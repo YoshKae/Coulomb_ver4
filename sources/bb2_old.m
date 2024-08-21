@@ -54,16 +54,6 @@ d2r = pi/180;
 ampy = cos(mean(centerY)*d2r)*adj;
 ampy = 1;
 
-% if ne > 1
-% 	[ds,i] = sort(diam,1,'descend');
-% 	diam = diam(i);
-% 	s1 = s1(i);
-% 	d1 = d1(i);
-% 	r1 = r1(i);
-% 	centerX = centerX(i);
-% 	centerY = centerY(i);
-% end
-
 mech = zeros(ne,1);
 j = find(r1 > 180);
 r1(j) = r1(j) - 180;
@@ -331,14 +321,7 @@ if ~hold_state
     delete(hhh);
 % check radial limits and ticks
     rmin = 0; rmax = v(4); rticks = max(ticks-1,2);
-%    if rticks > 5   % see if we can reduce the number
-%        if rem(rticks,2) == 0
-%            rticks = rticks/2;
-%        elseif rem(rticks,3) == 0
-%            rticks = rticks/3;
-%        end
-%    end
-	 rticks = 1;
+	rticks = 1;
 
 % define a circle
     th = 0:pi/50:2*pi;

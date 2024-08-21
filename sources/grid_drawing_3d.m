@@ -2,9 +2,7 @@
 function grid_drawing_3d
 % グリッドオプションのためのグリッドメッシュ描画関数
 % この関数は、他のプロット関数の基本地図として頻繁に使用されます。
-% 
 %   coded by Shinji Toda
-%
 
 global GRID
 global XGRID YGRID
@@ -252,66 +250,3 @@ if isempty(EQ_DATA)~=1 && strcmp(h1,'on') % EQ_DATAが空でなく、h1が'on'�
     set(h,'Tag','EqObj'); % 後で削除するためのタグを付ける
     hold on;
 end
-
-%---------------------------------------------
-%	GPS station plot in 3D
-%---------------------------------------------
-% h = findobj('Tag','menu_gps');
-% h1 = get(h,'Checked');
-% if isempty(GPS_DATA)~=1 && strcmp(h1,'on')
-%     zero = zeros(size(GPS_DATA,1),1);
-%     hold on;
-%     if ICOORD == 2 && isempty(LON_GRID) ~= 1                % lon.lat.coordinates
-%         h = scatter3(GPS_DATA(:,1),GPS_DATA(:,2),zero,5*PREF(5,4));
-%     else
-%         h = scatter3(GPS_DATA(:,6),GPS_DATA(:,7),zero,5*PREF(5,4));
-%     end
-%     set(h,'MarkerEdgeColor','r'); % white edge color for GPS station 
-%     set(h,'Tag','GPSObj');        % put a tag to remove them later
-%     hold on;
-% end
-
-%---------------------------------------------
-%	Annotations in 3D
-%---------------------------------------------
-% *** PROBLEM *** cannot be solved so far
-% in 3D, we cannot use "[x,y] = ginput(n)" in "main_menu_window.m"
-% so now under construction unfortunately
-%
-
-% h = findobj('Tag','menu_annotations');
-% h1 = get(h,'Checked');
-% if isempty(GTEXT_DATA)~=1 && strcmp(h1,'on')
-%     hold on;
-%     if ICOORD == 2 && isempty(LON_GRID) ~= 1                % lon.lat.coordinates
-%         return; % so far under construction
-% %        h = scatter3(EQ_DATA(:,1),EQ_DATA(:,2),-EQ_DATA(:,7),5*PREF(5,4));
-%     else
-%         if isempty(GTEXT_DATA) ~= 1
-%     	n = length(GTEXT_DATA);
-%         for k = 1:n
-%         GTEXT_DATA(k).handle = text(GTEXT_DATA(k).x,GTEXT_DATA(k).y,...
-%             0.0,GTEXT_DATA(k).text);                % Now 3D text...
-%         set(GTEXT_DATA(k).handle,'Tag',num2str(k,'%3i'));
-%         set(GTEXT_DATA(k).handle,'FontSize',GTEXT_DATA(k).font);
-%         end
-%         end
-%         h = annotation_window;
-%         waitfor(h);
-%         figure(H_MAIN);
-%         if ANNOTATION_CANCELED == 1
-%             ANNOTATION_CANCELED == 0;
-%             return
-%         end
-%         [m n] = size(GTEXT_DATA);
-%         if m == 0 && n == 0
-%             n = 1;
-%         end
-%         [x,y] = ginput(1);
-%         GTEXT_DATA(n).x = x;
-%         GTEXT_DATA(n).y = y;
-%         GTEXT_DATA(n).handle = text(x,y,0.0,GTEXT_DATA(n).text);
-%         set(GTEXT_DATA(n).handle,'Tag',num2str(n,'%3i'));
-%         set(GTEXT_DATA(n).handle,'FontSize',GTEXT_DATA(n).font);
-%     end
-% end

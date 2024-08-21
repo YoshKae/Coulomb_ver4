@@ -16,31 +16,6 @@ global PHII
 global OUTFLAG PREF_DIR HOME_DIR
 global RECEIVERS       % matrix form for regional setting (normally empty)
 
-%===== GRID SEARCH parameter for opt faults calc. (STRESS_TYPE==1)
-% if STRESS_TYPE == 1
-%     temp = 10.0;    n_gs = temp;
-%     prompt = 'Enter an interval for grid search (degree).';
-%     name = 'Grid interval';
-%     numlines = 1;
-%     options.Resize = 'on';
-%     options.WindowStyle = 'normal';
-%     defc = num2str(n_gs,'%4.1f');
-%     answer = inputdlg(prompt,name,numlines,{defc},options);
-%     if str2double(answer) <= 0.0
-%         warndlg('Put any number greather than zero. Not acceptable');
-%         return
-%     elseif  str2double(answer) >= 50.0
-%         warndlg('Too large. Not acceptable');
-%         return
-%     elseif isempty(answer)==1
-%         return
-%     end
-%     n_gr = str2double(answer);
-%     if isnan(n_gr) == 1 | isempty(n_gr) == 1
-%         n_gr = temp;
-%     end
-% end
-%==================================
 % Figure pointer (busy...)
 set(gcf,'Pointer','watch'); set(H_MAIN,'Pointer','watch'); set(H_COULOMB,'Pointer','watch');
 set(findobj('Tag','crosssection_toggle'),'Enable','on');
@@ -149,19 +124,10 @@ switch STRESS_TYPE
     nn = length(phi);
         for k = 1:nn
             if erad2(k) >= erad1(k)
-%                  phi(k) = pi/2.0 + phi(k);
-%                 phi(k) = pi/2.0;
             else
-%                phi(k) = 0.0;
             end
 
                 phi(k) = deg2rad(pt_rs(k,1));
-
-%                 if phi(k) < 0.0
-%                     phi(k) = -phi(k);
-%                 elseif phi(k) >= pi/2.0
-%                     phi(k) = phi(k) - pi/2.0;
-%                 end
         end
         PHII = rad2deg(phi);
     end

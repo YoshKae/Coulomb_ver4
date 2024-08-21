@@ -85,31 +85,12 @@ rsout1 = [rsinp(1,1) rsinp(1,2); strike_21 rsinp(2,2); strike_31 dip_3];
 rsout2 = [rsinp(1,1) rsinp(1,2); strike_21 rsinp(2,2); strike_32 dip_3];
 rsout3 = [rsinp(1,1) rsinp(1,2); strike_22 rsinp(2,2); strike_31 dip_3];
 rsout4 = [rsinp(1,1) rsinp(1,2); strike_22 rsinp(2,2); strike_32 dip_3];
-% counter = 0;
-% for k = 1:4
+
 	rsout1 = change_rs_convention(rsout1);
 	rsout2 = change_rs_convention(rsout2);
 	rsout3 = change_rs_convention(rsout3);
-	rsout4 = change_rs_convention(rsout4);
-%     rtest = rsout1 - rsout(:,:,k);
-%     sum_r1    = abs(sum(rot90(sum(rsout1))));
-%     sum_rtest = abs(sum(rot90(sum(rtest))));
-%     if sum_rtest > 0.1 && sum_r1 == 0
-%             rsout1 = rsout(:,:,k);
-%     else
-%         rtest = rsout1 - rsout(:,:,k);
-%         sum_rtest = abs(sum(rot90(sum(rtest))));
-%         sum_r2    = abs(sum(rot90(sum(rsout2))));
-%         if sum_rtest > 0.1 && sum_r2 == 0
-%             rsout2 = rsout(:,:,k);
-%         else
-%             disp('more than two combinations!');
-%         end
-%     end
-%     
-% end
-% 
-% 
+	rsout4 = change_rs_convention(rsout4); 
+
 function rout = change_rs_convention(rin)
 % To change regional stress convention
 %      INPUT: rin (3 x 2 matrix)

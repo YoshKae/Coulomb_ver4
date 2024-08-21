@@ -17,13 +17,8 @@ fc = zeros(4,2); % initialize to be all zeros to fasten the process
 angle = atan((yf-ys)/(xf-xs));
 
 dipr = deg2rad(dip);
-% if flag == 1
-    shift = (bottom-top)/tan(dipr);
-% elseif flag == 2        % for a surface line
-%     shift = 
-% else                    % for a calc depth line
-%     
-% end
+shift = (bottom-top)/tan(dipr);
+
 
 x_shift = shift * sin(angle);
 y_shift = shift * cos(angle);

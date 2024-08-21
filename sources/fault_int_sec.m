@@ -38,17 +38,6 @@ ys_bottom = fy0 + y_shift;
 xf_bottom = fx1 - x_shift;
 yf_bottom = fy1 + y_shift;
 end
-%-----------
-
-% figure;
-% hold on;
-% plot([x0 x1],[y0 y1],'Color','b');
-% hold on;
-% plot([fx0 fx1],[fy0 fy1],'Color','r');
-% hold on;
-% plot([xs_bottom xf_bottom],[ys_bottom yf_bottom],'Color','g');
-
-% distance = sqrt((x1-x0)^2+(y1-y0)^2); % total distance of xsec line
 
 %---------------------------------TOP DEPTH X Y
 a0 = (fy1-fy0)/(fx1-fx0);
@@ -228,11 +217,6 @@ else
         end
     end  
 end
-
-
-% disp(' ');
-% disp(['apparent dip (deg) = ' num2str(rad2deg(slope))])
-% disp(' ');
 
 iflag = [itop ibottom i1 i2];
 if sum(iflag) <= 1
@@ -419,13 +403,3 @@ if xp >= xmin && xp <= xmax
     end
 end
         dist = sqrt((xp-xs)^2+(yp-ys)^2);
-
-
-
-
-
-
-
-
-
-

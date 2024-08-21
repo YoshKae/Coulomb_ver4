@@ -283,26 +283,7 @@ else
         randshear    = f_stress(:,13).*ind1 + f_stress(:,19).*ind2;
         randnormal   = f_stress(:,14).*ind1 + f_stress(:,20).*ind2;
         NODAL_STRESS = f_stress(:,15).*ind1 + f_stress(:,21).*ind2;
-        % mapping
-%             CC = ones(length(LAT_GRID),length(LON_GRID),'double').*(-100000.0);
-%             latunit = abs(LAT_GRID(2)-LAT_GRID(1));
-%             lonunit = abs(LON_GRID(2)-LON_GRID(1));            
-%             for i = 1:length(LAT_GRID)
-%                 for j = 1:length(LON_GRID)
-%                     for k = 1:size(f_stress,1)
-%                         % f_stress(:,6) -> lon
-%                         % f_stress(:,7) -> lat
-%                         % f_stress(:,15) -> coulomb
-%                         if f_stress(k,7) >= LAT_GRID(i) && f_stress(k,7) < LAT_GRID(i)+latunit
-%                         if f_stress(k,6) >= LON_GRID(j) && f_stress(k,6) < LON_GRID(j)+lonunit
-%                                 if NODAL_STRESS(k,1) > CC(i,j)
-%                                     CC(i,j) = NODAL_STRESS(k,1);
-%                                 end
-%                         end
-%                         end
-%                     end
-%                 end
-%             end
+
             
     header1 = 'year,month,day,hour,minute,lon.,lat.,depth,magnitude,strike-max,dip-max,rake-max,shear,normal,coulomb';
     else                    % min delta CFF
@@ -314,26 +295,7 @@ else
         randshear    = f_stress(:,13).*ind1 + f_stress(:,19).*ind2;
         randnormal   = f_stress(:,14).*ind1 + f_stress(:,20).*ind2;
         NODAL_STRESS = f_stress(:,15).*ind1 + f_stress(:,21).*ind2;
-        % mapping
-%             CC = ones(length(LAT_GRID),length(LON_GRID),'double').*100000.0;
-%             latunit = abs(LAT_GRID(2)-LAT_GRID(1));
-%             lonunit = abs(LON_GRID(2)-LON_GRID(1));            
-%             for i = 1:length(LAT_GRID)
-%                 for j = 1:length(LON_GRID)
-%                     for k = 1:size(f_stress,1)
-%                         % f_stress(:,6) -> lon
-%                         % f_stress(:,7) -> lat
-%                         % f_stress(:,15) -> coulomb
-%                         if f_stress(k,7) >= LAT_GRID(i) && f_stress(k,7) < LAT_GRID(i)+latunit
-%                         if f_stress(k,6) >= LON_GRID(j) && f_stress(k,6) < LON_GRID(j)+lonunit
-%                                 if NODAL_STRESS(k,1) < CC(i,j)
-%                                     CC(i,j) = NODAL_STRESS(k,1);
-%                                 end
-%                         end
-%                         end
-%                     end
-%                 end
-%             end
+
 
     header1 = 'year,month,day,hour,minute,lon.,lat.,depth,magnitude,strike-min,dip-min,rake-min,shear,normal,coulomb';
     end
@@ -449,11 +411,7 @@ hold on;
                     end
                 elseif IVECTOR == 2 % beachball plot
                    if INODAL == 1
-%                     for jj = 1:length(temp3)
-%                     bb([EQ_DATA(jj,10) EQ_DATA(jj,11) EQ_DATA(jj,12)],...
-%                         a(jj,1),a(jj,2),EQ_DATA(jj,6)*PREF(5,4)*adj,...
-%                         0,c_index(ni(jj,1),1:3));
-%                     end           
+        
                     h0 = bb2([EQ_DATA(:,10) EQ_DATA(:,11) EQ_DATA(:,12)],...
                         a(:,1),a(:,2),EQ_DATA(:,6)*PREF(5,4)*adj,...
                         0,1,c_index(ni(:,1),1:3));  

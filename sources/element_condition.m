@@ -89,44 +89,6 @@ ind8 = e9(:,6) < 0.0;
 e_comp(:,3) = (180.0-b).*ind5.*ind7 + (-180.0-b).*ind5.*ind8 ...
     + (-b).*ind6;
 
-% for k = 1:m
-% % (ELEMENT: xs, ys, xf, yf, latslip, dipslip, dip, top, bottom)
-%     xs = e9(k,1);
-%     ys = e9(k,2);
-%     xf = e9(k,3);
-%     yf = e9(k,4);
-%     a = rad2deg(atan((yf-ys)/(xf-xs)));
-% % fault length
-%     f_length(k) = sqrt((xf-xs)^2+(yf-ys)^2);
-% % strike
-%     if xs > xf
-%         e_comp(k,1) = 270.0 - a;
-%     else
-%         e_comp(k,1) = 90.0 - a;
-%     end
-% % dip
-%     e_comp(k,2) = e9(k,7);
-% % rake
-%     if e9(k,5) ~= 0.0
-%         b = rad2deg(atan(e9(k,6)/e9(k,5)));
-%     else
-%         b = rad2deg(atan(e9(k,6)/0.000001));
-%     end
-%     if e9(k,5) >= 0.0
-%         if e9(k,6) >= 0.0
-%             e_comp(k,3) = 180.0 - b;
-%         else
-%             e_comp(k,3) = -180.0 - b;
-%         end
-%     else
-%         if e9(k,6) >= 0.0
-%             e_comp(k,3) = -b;
-%         else
-%             e_comp(k,3) = -b;     
-%         end
-%     end
-% end
-
 %--------------
 
 % Each fault element

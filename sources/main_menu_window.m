@@ -1308,48 +1308,8 @@ global GPS_DATA SIZE
         if isempty(H_F3D_VIEW)
             gps_plot;
             fault_overlay;  % plot fault again
-        else
-            % h = findobj('Tag','menu_gps');
-            % h1 = get(h,'Checked');
-            
+        else   
             gps_3d_overlay; % 3Dオーバーレイ
-%             if ~isempty(GPS_DATA)
-%                 zero = zeros(size(GPS_DATA,1),1);
-%                 hold on;
-% %                 if ICOORD == 2 && isempty(LON_GRID) ~= 1                % lon.lat.coordinates
-% %                 h = scatter3(GPS_DATA(:,1),GPS_DATA(:,2),zero,5*PREF(5,4));
-% %                 else
-%                 h = scatter3(GPS_DATA(:,6),GPS_DATA(:,7),zero,5*PREF(5,4));
-%                 hold on;
-%                 h1 = quiver3(GPS_DATA(:,6),GPS_DATA(:,7),zero,...
-%                     GPS_DATA(:,3)*SIZE(3),...
-%                     GPS_DATA(:,4)*SIZE(3),...
-%                     GPS_DATA(:,5)*SIZE(3),...
-%                     'Color','b');
-%                 % calc in half space
-%                     m = size(GPS_DATA(:,6),1);
-%                     ux = zeros(m,1,'double');
-%                     uy = zeros(m,1,'double');
-%                     uz = zeros(m,1,'double');
-%                     [dc3de] = dc3de_calc(GPS_DATA(:,6),GPS_DATA(:,7));
-%                     ux = dc3de(:,6);
-%                     uy = dc3de(:,7);
-%                     uz = dc3de(:,8);
-%                     hold on;
-%                     h2 = quiver3(GPS_DATA(:,6),GPS_DATA(:,7),zero,...
-%                                 ux*SIZE(3),...
-%                                 uy*SIZE(3),...
-%                                 uz*SIZE(3),...
-%                                 'Color','r');
-%                     set(h1,'Tag','GPS3D_OBS_Obj');
-%                     set(h2,'Tag','GPS3D_CALC_Obj');
-%                 %
-% %                 end
-%                 set(h,'MarkerEdgeColor',[0.1,0.2,0.9]); % white edge color for GPS station 
-%                 set(h,'Tag','GPSObj');        % put a tag to remove them later
-%                 hold on;
-%             end
-
         end
         hold on;
    end

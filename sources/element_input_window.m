@@ -406,30 +406,6 @@ if (isempty(findobj('Tag','figure_element_modification'))~=1 && isempty(H_ELEMEN
     H_ELEMENT_MOD = [];
 end
 
-%    if (isempty(findobj('Tag','figure_element_modification'))~=1 && isempty(H_ELEMENT_MOD)~=1)
-%         close(figure(H_ELEMENT_MOD))
-%         H_ELEMENT_MOD = [];
-%     subfig_clear;
-%     FUNC_SWITCH = 1;
-%     grid_drawing;
-%     fault_overlay;
-%     if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
-%             isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
-%         hold on;
-%         overlay_drawing;
-%     end
-%     FUNC_SWITCH = 0; %reset
-%     flag = check_lonlat_info;
-%     if flag == 1
-%         set(findobj('Tag','menu_coastlines'),'Enable','On');
-%         set(findobj('Tag','menu_activefaults'),'Enable','On');
-%         set(findobj('Tag','menu_earthquakes'),'Enable','On');
-%         set(findobj('Tag','menu_gps'),'Enable','On'); 
-%         set(findobj('Tag','menu_annotations'),'Enable','On'); 
-%         set(findobj('Tag','menu_clear_overlay'),'Enable','On');
-%         set(findobj('Tag','menu_trace_put_faults'),'Enable','On');     
-%     end
-%    end
 %-----------------------------
 
 
