@@ -15,149 +15,121 @@
 %   $Revision: 3.4 $  $Date: 2022/04/09$
 
 
-%===== check if the user is opening anothr Coulomb ================
-try         % weird code but it works to prevent another lauching
+% ===== Coulombがすでに起動しているか確認 =====================
+% すでにCoulombが起動している場合は新たなインスタンスの起動を防ぐ
+try
     get(H_MAIN,'HandleVisibility');
     msgbox('You already open Coulomb. Do not lauch another one.');
     return
 catch
-
+    % Coulombが起動していない場合は続行
+end
 
 clear all;
-% all global variables are expressed as capital letters in my code
-% we can check those values on workspace while program working
-%       see 'global_variable_explanatio.m' for detail.
-global H_MAIN                           % handle for main graphic window
-global SCRS SCRW_X SCRW_Y               % variable for screen size control
-% ----- read from input file (fundamental variables) -----
+% 全てのグローバル変数を初期化します。グローバル変数はすべて大文字で定義され、プログラム実行中に値を確認できます。
+% 詳細については 'global_variable_explanatio.m' を参照してください。
+
+%===== グローバル変数の定義 ============================================
+global H_MAIN                           % メイングラフィックウィンドウのハンドル
+global SCRS SCRW_X SCRW_Y               % スクリーンサイズ制御用の変数
+
+% ----- 入力ファイルから読み取る基本的な変数 -----
 global HEAD NUM POIS CALC_DEPTH YOUNG FRIC 
 global R_STRESS ID INUM KODE ELEMENT
 global FCOMMENT GRID SIZE SECTION
-% ----- study area & coordinates control variables -----
+
+% ----- 調査地域と座標制御用の変数 -----
 global ICOORD
 global XGRID YGRID XY_RATIO
 global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
 global LON_GRID LAT_GRID
-% ----- variables control calculations ------
+
+% ----- 計算制御に関する変数 ------
 global IACT
 global FUNC_SWITCH STRAIN_SWITCH
 global SHADE_TYPE STRESS_TYPE DEPTH_RANGE_TYPE
-% global AX AY AZ
 global STRIKE DIP RAKE
 global IRAKE
 global MAPTLFLAG RECEIVERS
 global IND_RAKE
 global IIRET
-% ----- outputs should be kept in the memory -----
+
+% ----- メモリ内に保持される出力 -----
 global DC3D DC3DS DC3DE S_ELEMENT CC
-% ----- variables associated with cross sections -----
+
+% ----- 断面図に関連する変数 -----
 global SEC_XS SEC_YS SEC_XF SEC_YF SEC_INCRE SEC_DEPTH SEC_DEPTHINC
 global SEC_FLAG SEC_DIP SEC_DOWNDIP_INC
-% ----- variables retaining overlay data in memory & overlay control -----
+
+% ----- オーバーレイデータとオーバーレイ制御に関連する変数 -----
 global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
-global GPS_FLAG % 'horizontal' or 'vertical'
-global GPS_SEQN_FLAG % 'on' shows sequential numbers
+global GPS_FLAG                                % 'horizontal' または 'vertical'
+global GPS_SEQN_FLAG                           % 'on' で連続番号を表示
 global VOLCANO SEISSTATION
 global OVERLAYFLAG OVERLAY_MARGIN EQPICK_WIDTH
-% ----- graphic control variables ------
-global ANATOLIA SEIS_RATE       % color codes (loaded in this file)
+
+% ----- グラフィック制御に関する変数 ------
+global ANATOLIA SEIS_RATE                      % カラーマップ用の変数（このファイルでロード）
 global C_SAT CONT_INTERVAL
-% ----- computer id, directory control and preferences ------------------
+
+% ----- コンピュータID、ディレクトリ制御、設定 ------------------
 global PLATFORM CURRENT_VERSION PREF_DIR HOME_DIR INPUT_FILE PREF 
-global OUTFLAG          % 0: output file in users folder, 1: default folder
+global OUTFLAG                                 % 0: ユーザフォルダへの出力、1: デフォルトフォルダへの出力
 global C_SLIP_SAT
 global IVECTOR
 global IMAXSHEAR
 
+% 現行バージョンの設定
 CURRENT_VERSION = '3.4.2';
+% 全ての警告を無効化
 warning ('off','all');
 
-%===== add file paths ==========================
-%    file separator & current working directory
+
+%===== ファイルパスの追加 ============================================
+% ファイルセパレータと現在の作業ディレクトリを取得
 f = filesep;
 w = cd;
-% add the following paths
+
+% 必要なパスを追加
 addpath([w f 'sources'],[w f 'sources/eq_format_filter'],[w f 'input_files'],...
     [w f 'coastline_data'],[w f 'gps_data'],...
     [w f 'slides'],[w f 'okada_source_conversion'],[w f 'output_files'],...
     [w f 'resources'],[w f 'resources/ge_toolbox'],[w f 'active_fault_data'],...
     [w f 'earthquake_data'],...
     [w f 'license'],[w f 'utm'],[w f 'preferences'],[w f 'plug_ins']);
-% PLATFORM is used to handle some troublesome functions depending on
-% platoforms
+
+% プラットフォーム依存の処理を行うためにコンピュータの種類を取得
 PLATFORM = computer;
 if ispc
-    addpath([w f 'sources/figures_for_windows']);   % windows
+    addpath([w f 'sources/figures_for_windows']);   % Windowsの場合、Windows専用のパスを追加
 else
-	addpath([w f 'sources/figures_for_mac']);       % mac
+	addpath([w f 'sources/figures_for_mac']);       % macOSの場合、macOS専用のパスを追加
 end
-% keep user's home directory into memory
+
+% ユーザのホームディレクトリをメモリに保持
 HOME_DIR = pwd;
 
-%===== check licence =========================== (NOW OFF) 82930715
-% 	flag = coulomb_registration_check;
-%     if strcmp(flag,'out');
-%         warndlg('Please register first and get the serial number.','!!!Warning!!!');
-%         return
-%     end
 
-%===== version check =========================== (NOW OFF)
-% try
-%     new_version = urlread('http://www.coulombstress.org/version/version.txt');
-% catch
-%     % in case user cannot access our site
-%     new_version = CURRENT_VERSION;
-% end
-% if ~strcmp(CURRENT_VERSION,new_version)
-%     h = questdlg(['New version ' new_version ' is released. Download now?'],'Software update',...
-%         'Yes','No','default');
-%     switch h
-%         case 'Yes'
-%             try
-% %                 web http://quake.wr.usgs.gov/research/deformation/modeling/coulomb/download.html
-%                 cd ..
-%                 ccd = pwd;
-%                 try
-%                 hm = msgbox('Downloading the new version to the parent directory... Be patient.');
-%                 disp('Downloading... Pleae be patient.');
-%                 url ='http://quake.wr.usgs.gov/research/deformation/modeling/coulomb/download/coulomb.zip';
-%                 ncmFiles = unzip(url,ccd);
-%                 close(hm);
-%                 disp('Done!');
-%                 disp('To use the new version, change the current directory to the new one,');
-%                 disp('And then, type "coulomb" in command window.');
-%                 msgbox(['The new version has been successfully downloaded into ' ccd]);
-%                 catch
-%                     errordlg('Cannot access the web.','Connection Error!');
-%                     cd(HOME_DIR)
-%                 end
-%                 cd(HOME_DIR)
-%             catch
-%                 msgbox('Visit http://www.coulombstress.org to download the newest version')
-%             end
-%             clear all;
-%             return
-%         case 'No'
-%         otherwise
-%     end
-% end
-
-%====== check the users MATLAB version ============================
-matlabv = version;  % we have a trouble about the license with version 7.0.x
-
-% keep user's home directory
+%====== MATLABのバージョンをチェック ==================================
+% MATLABのバージョンを取得
+matlabv = version;
+% ユーザのホームディレクトリを保持
 HOME_DIR = pwd;
 
-%===== initialization =============================================
+
+%===== 初期化 ====================================================
+% 初期化関数を呼び出し
 coulomb_init;
-% additional initialization
-IACT          = repmat(uint8(0),1,1);
-OVERLAYFLAG   = repmat(uint8(0),1,1);
-STRAIN_SWITCH = repmat(uint8(0),1,1);	% default sxx
-PREF_DIR      = [];
-OUTFLAG       = 1;                      % default
 
-%===== load color maps of anatolia & SEIS_RATE when lauching ======
+% 追加の初期化
+IACT          = repmat(uint8(0),1,1);   % デフォルトでは計算しない
+OVERLAYFLAG   = repmat(uint8(0),1,1);   % デフォルトではオーバーレイなし
+STRAIN_SWITCH = repmat(uint8(0),1,1);	% デフォルトでsxxを設定
+PREF_DIR      = [];                     % デフォルトの出力ディレクトリ
+OUTFLAG       = 1;                      % デフォルト設定
+
+
+%===== Coulomb起動時にカラーマップと地震率のデータをロード ======
 load('MyColormaps','ANATOLIA');
 load('SEIS_RATE','SEIS_RATE');
 
@@ -170,111 +142,119 @@ load('SEIS_RATE','SEIS_RATE');
 % load database/global_eqs.mat
 % load database/border.mat
 
-%===== get screen parameters ======================================
-SCRS = get(0,'ScreenSize'); %screen size [left,bottom,width,height]
-margin_ratio = 0.03;
-SCRW_X = int16(SCRS(1,3) * margin_ratio);   % margin width
-SCRW_Y = int16(SCRS(1,4) * margin_ratio);   % margin height
+
+%===== スクリーンパラメータの取得 ======================================
+SCRS = get(0,'ScreenSize');               %スクリーンサイズ [左,下,幅,高さ]
+margin_ratio = 0.03;                      % 画面の余白比率
+SCRW_X = int16(SCRS(1,3) * margin_ratio); % 余白の幅
+SCRW_Y = int16(SCRS(1,4) * margin_ratio); % 余白の高さ
+
+% Windowsの場合、高さを調整
 if ispc
      SCRW_Y = SCRW_Y + 50;
 end
+ % スクリーンサイズが小さい場合、警告を表示
 if SCRS(1,3) <= 1000
-    warndlg('Sorry that this screen size may not be enough wide to present all results',...
-        '!!Warning!!');
+    warndlg('Sorry that this screen size may not be enough wide to present all results','!!Warning!!');
 end
 
-%===== see if user has mapping toolbox or not ========
-% current coulomb version does not need mapping toolbox
+
+%===== ユーザーがMapping Toolboxを持っているか確認 ====================
+% Toolboxがない場合の処理
 if exist([matlabroot '/toolbox/map'],'dir')==0
     MAPTLFLAG = 0;
+% Toolboxがある場合の処理
 else
     MAPTLFLAG = 1;
 end
 
-%===== Welcome screen ========
-h = about_box_window;
-pause(2);
-close(h);
 
-%===== open preference file ==========================
+%===== ウェルカムスクリーンの表示 =====================================
+h = about_box_window; % ウェルカムウィンドウを表示
+pause(2);             % 2秒間待機
+close(h);             % ウィンドウを閉じる
+
+
+%===== 設定ファイルを開く ============================================
 cd preferences
-%    [filename,pathname] = uigetfile([ 'preferences.dat'],' Open input file');
-    	fid = fopen('preferences.dat','r');  
-        if isempty(fid)==1
-            % make default values & then save them.
-            PREF = [1.0 0.0 0.0 1.2;... % source fault
-                    0.0 0.0 0.0 1.0;... % disp. vector
-                    0.7 0.7 0.0 0.2;... % grid line
-                    0.0 0.0 0.0 1.2;... % coastline
-                    1.0 0.5 0.0 3.0;... % earthquake plot
-                    0.2 0.2 0.2 1.0;... % active fault
-                    1.0 0.0 0.0 0.0;... % color preference
-                    1.0 0.0 0.0 0.0;... % coordinate preference
-                    0.9 0.9 0.1 1.0];   % volcano
-        else
-                fault_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                a = [fault_pref{:}];
-                vector_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                b = [vector_pref{:}];
-                grid_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                c = [grid_pref{:}];
-                coast_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                d = [coast_pref{:}];
-                eq_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                e = [eq_pref{:}];
-                afault_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                f = [afault_pref{:}];
-                color_pref  = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                g = [color_pref{:}];
-                coord_pref  = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                h = [coord_pref{:}];
-            if size(PREF,1)==8
-                i = [0.9 0.9 0.1 1.0];
-            else
-                volcano_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
-                i = [volcano_pref{:}];
-            end
-                PREF = [a; b; c; d; e; f; g; h; i];
-        end
-        try
-            load('preferences2.mat');       % additional binary preference setting
-            if isempty(OUTFLAG) == 1
-                OUTFLAG = 1;
-            end
-            if isempty(PREF_DIR) == 1
-                PREF_DIR = HOME_DIR;
-            end
-            if isempty(INPUT_FILE) == 1
-                INPUT_FILE = 'empty';
-            end
-        catch
-            save preferences2.mat PREF_DIR INPUT_FILE OUTFLAG;
-            if isempty(OUTFLAG) == 1
-                OUTFLAG = 1;
-            end
-        end        
+fid = fopen('preferences.dat','r');  
+if isempty(fid)==1
+    % デフォルトの値を作成して保存する
+    PREF = [1.0 0.0 0.0 1.2;... % ソース断層
+            0.0 0.0 0.0 1.0;... % 変位ベクトル
+            0.7 0.7 0.0 0.2;... % グリッドライン
+            0.0 0.0 0.0 1.2;... % 海岸線
+            1.0 0.5 0.0 3.0;... % 地震プロット
+            0.2 0.2 0.2 1.0;... % 活断層
+            1.0 0.0 0.0 0.0;... % カラープリファレンス
+            1.0 0.0 0.0 0.0;... % 座標プリファレンス
+            0.9 0.9 0.1 1.0];   % 火山
+else
+    % 設定ファイルから値を読み込み
+    fault_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    a = [fault_pref{:}];
+    vector_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    b = [vector_pref{:}];
+    grid_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    c = [grid_pref{:}];
+    coast_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    d = [coast_pref{:}];
+    eq_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    e = [eq_pref{:}];
+    afault_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    f = [afault_pref{:}];
+    color_pref  = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    g = [color_pref{:}];
+    coord_pref  = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+    h = [coord_pref{:}];
+    if size(PREF,1)==8
+        i = [0.9 0.9 0.1 1.0];
+    else
+        volcano_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
+        i = [volcano_pref{:}];
+    end
+    PREF = [a; b; c; d; e; f; g; h; i];
+end
+
+try
+    % 追加のバイナリ設定をロード
+    load('preferences2.mat');       
+    if isempty(OUTFLAG) == 1
+        OUTFLAG = 1;
+    end
+    if isempty(PREF_DIR) == 1
+        PREF_DIR = HOME_DIR;
+    end
+    if isempty(INPUT_FILE) == 1
+        INPUT_FILE = 'empty';
+    end
+catch
+    % 設定が存在しない場合、新たに作成
+    save preferences2.mat PREF_DIR INPUT_FILE OUTFLAG;
+    if isempty(OUTFLAG) == 1
+        OUTFLAG = 1;
+    end
+end 
+
 cd ..
-ICOORD = repmat(uint8(PREF(8,1)),1,1);     % ICOORD = 1: x y coordinate, 2: lon. & lat.
-% clear local unnecessary variables
+
+% ICOORDを設定: 1: xy座標, 2: 経度緯度座標
+ICOORD = repmat(uint8(PREF(8,1)),1,1);
+
+% 不要なローカル変数をクリア
 clear a afault_pref b c coast_pref color_pref d e eq_pref f fault_pref volcano_pref
 clear fid g grid_pref h h_grid margin_ratio vector_pref w
 
-%===== opening main window =====================
-% try
-%     findobj(H_MAIN,'Tag','main_menu_window');
-%     msgbox('You already open Coulomb.');
-%     return
-% catch
-    H_MAIN = main_menu_window;
-    set(H_MAIN,'Toolbar','figure');
-    set(H_MAIN,'Name',['Coulomb ',CURRENT_VERSION]);
-% end
 
-%===== opening message in console ==============
+%===== メインウィンドウの表示 ========================================
+H_MAIN = main_menu_window;
+set(H_MAIN,'Toolbar','figure');                  % メインウィンドウにツールバーを設定
+set(H_MAIN,'Name',['Coulomb ',CURRENT_VERSION]); % メインウィンドウの名前を設定
+
+
+%===== コンソールにウェルカムメッセージを表示 ==============
 disp('====================================================');
 disp(['            Welcome to Coulomb ' CURRENT_VERSION]);
 disp('====================================================');
 disp('Start from Input menu to read or build an input file.');
 disp('  ');
-
-end
