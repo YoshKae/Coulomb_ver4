@@ -1,54 +1,62 @@
-function [shear,normal,coulomb] = calc_coulomb(strike_m,dip_m,rake_m,friction_m...
-                       ,ss)
-% For calculating shear, normal and Coulomb stresses in a given 
-% fault strike, dip, and rake
-%
-% INPUT: strike_m,dip_m,rake_m,friction_m,SXX,SYY,SZZ,SXY,SXZ,SYZ
-% 
-% OUTPUT: shear,normal,coulomb
-%
+function [shear,normal,coulomb] = calc_coulomb(strike_m,dip_m,rake_m,friction_m,ss)
+% 指定された断層のストライク、ディップ、レーキ角に基づいて、せん断応力、法線応力、およびクーロン応力を計算する関数
+% この関数は、断層の幾何学的な特性に基づいて応力状態を計算するために使用されます。
 
-% "_m" means matrix. So, for "if" condition, we can only use scalar.
-% So here we convert it into scalar since there are the all same numbers in
-% a matrix.
+% INPUT: 
+%   strike_m  - ストライク角の行列（断層の進行方向と北の間の角度）
+%   dip_m     - ディップ角の行列（断層面の傾斜角）
+%   rake_m    - レーキ角の行列（断層面上の移動方向と水平方向の角度）
+%   friction_m- 摩擦係数の行列
+%   ss        - 応力テンソルの行列（SXX, SYY, SZZ, SXY, SXZ, SYZ）
 
+% OUTPUT:
+%   shear     - せん断応力のベクトル
+%   normal    - 法線応力のベクトル
+%   coulomb   - クーロン応力のベクトル
+
+% "_m" が付いている変数は行列を示します。このため、条件式ではスカラー値のみ使用できます。
+% 以下では、行列内の全ての要素が同じ値であるため、行列をスカラー値に変換します。
+
+% 行列のサイズ（行数）を取得
 n = size(strike_m,1);
 
+% 初期化 - 行列をゼロベクトルで初期化
 strike = zeros(n,1);
 dip    = zeros(n,1);
 rake   = zeros(n,1);
+% 摩擦係数の行列をスカラーに変換
 friction = friction_m(1,1);
 
-% adjustment for our coordinate system from Aki & Richards convension
-c1 = strike_m >= 180.0; c2 = strike_m < 180.0;
+% 我々の座標系に合わせるための調整（Aki & Richardsのコンベンションからの変換）
+c1 = strike_m >= 180.0; c2 = strike_m < 180.0;      % ストライク角に対する条件
+strike = (strike_m - 180.0) .* c1 + strike_m .* c2; % ストライク角の変換
+dip    = (-1.0) * dip_m .* c1 + dip_m .* c2;        % ディップ角の変換
+rake_m   = rake_m - 90.0;                           % レーキ角の変換
+c1 = rake_m <= -180.0; c2 = rake_m > -180.0;        % レーキ角に対する条件
+rake = (360.0 + rake_m) .* c1 + rake_m .* c2;       % レーキ角の変換
 
-strike = (strike_m - 180.0) .* c1 + strike_m .* c2;
-dip    = (-1.0) * dip_m .* c1 + dip_m .* c2;
-rake_m   = rake_m - 90.0;
-
-c1 = rake_m <= -180.0; c2 = rake_m > -180.0;
-rake = (360.0 + rake_m) .* c1 + rake_m .* c2;
-
-% CAUTION.....................................  
+% CAUTION.....................................
+% ストライク、ディップ、レーキ角をラジアンに変換
 strike = deg2rad(strike);
 dip = deg2rad(dip);
 rake = deg2rad(rake);
 
-% % for rake rotation (this was fixed by Zhang ZQ)
+% レーキ角の回転行列の生成（Zhang ZQによって修正）
 for i=1:n
-    rsc = -rake(i,1); % flipped
-    rr = makehgtform('xrotate',rsc);
-    mtran(1:3,1:3,i) = rr(1:3,1:3);
+    rsc = -rake(i,1);                % レーキ角の符号を反転
+    rr = makehgtform('xrotate',rsc); % レーキ角の回転行列を生成
+    mtran(1:3,1:3,i) = rr(1:3,1:3);  % 回転行列を格納
 end
 
-% Now corrected scalar value is to matrix (n x 1) as "...m"
-% strikem = zeros(n,1) + strike;
-% dipm = zeros(n,1) + dip;
+% スカラー値を再び行列（n x 1）として取り扱う
+% レーキ角の行列を作成
 rakem = zeros(n,1) + rake;
 
-sn  = zeros(6,length(strike));
-sn9 = zeros(3,3,length(strike));
+% せん断応力、法線応力、およびテンソルの初期化
+sn  = zeros(6,length(strike));   % 応力ベクトルの初期化
+sn9 = zeros(3,3,length(strike)); % 9成分の応力テンソルの初期化
 
+% ベクトルおよびテンソルの初期化と座標変換
 ver = pi/2.0;
 
 c1 = strike>=0.0;  c2 = strike<0.0; c3 = strike<=ver; c4 = strike>ver;
@@ -61,7 +69,7 @@ xdel = ver - abs(dip);
 ydel = abs(dip);
 zdel = 0.0;
 
-% scalar to matrix (n x 1)
+% 再びスカラー値を行列（n x 1）に変換
 xbetam = zeros(n,1) + xbeta;
 ybetam = zeros(n,1) + ybeta;
 zbetam = zeros(n,1) + zbeta;
@@ -69,6 +77,7 @@ xdelm  = zeros(n,1) + xdel;
 ydelm  = zeros(n,1) + ydel;
 zdelm  = zeros(n,1) + zdel;
 
+% ベクトルの成分を計算
 xl = cos(xdelm) .* cos(xbetam);
 xm = cos(xdelm) .* sin(xbetam);
 xn = sin(xdelm);
@@ -79,6 +88,7 @@ zl = cos(zdelm) .* cos(zbetam);
 zm = cos(zdelm) .* sin(zbetam);
 zn = sin(zdelm);
 
+% 応力テンソルの計算
 t(1,1,:) = xl .* xl;
 t(1,2,:) = xm .* xm;
 t(1,3,:) = xn .* xn;
@@ -116,9 +126,10 @@ t(6,4,:) = xm .* yn + ym .* xn;
 t(6,5,:) = xn .* yl + yn .* xl;
 t(6,6,:) = xl .* ym + yl .* xm;
 
+% せん断応力、法線応力、およびテンソルの成分を計算し、テンソルの回転を適用
 for k = 1:n
-    sn(:,k) = t(:,:,k) * ss(:,k);
-    sn9(1,1,k) = sn(1,k);
+    sn(:,k) = t(:,:,k) * ss(:,k); % 応力ベクトルの計算
+    sn9(1,1,k) = sn(1,k);         % 応力テンソルの成分に値を格納
     sn9(1,2,k) = sn(6,k);
     sn9(1,3,k) = sn(5,k);
     sn9(2,1,k) = sn(6,k);
@@ -127,9 +138,10 @@ for k = 1:n
     sn9(3,1,k) = sn(5,k);
     sn9(3,2,k) = sn(4,k);
     sn9(3,3,k) = sn(3,k);
-    sn9(:,:,k) = sn9(:,:,k) * mtran(:,:,k);
+    sn9(:,:,k) = sn9(:,:,k) * mtran(:,:,k); % テンソルの回転を適用
 end
 
-shear   = reshape(sn9(1,2,:),n,1);
-normal  = reshape(sn9(1,1,:),n,1);
-coulomb = shear + friction .* normal;
+% せん断応力、法線応力、クーロン応力を計算
+shear   = reshape(sn9(1,2,:),n,1);    % せん断応力を計算し、ベクトルに変換
+normal  = reshape(sn9(1,1,:),n,1);    % 法線応力を計算し、ベクトルに変換
+coulomb = shear + friction .* normal; % クーロン応力を計算
