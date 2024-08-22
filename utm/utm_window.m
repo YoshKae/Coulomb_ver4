@@ -1,8 +1,8 @@
 function varargout = utm_window(varargin)
 % UTM_WINDOW M-file for utm_window.fig
-%
+% この関数は、UTM座標に関連する入力を管理するためのGUIウィンドウを作成します。
 
-% Begin initialization code - DO NOT EDIT
+% 初期化コードの開始 -このコードは編集しないでください--------------------------------
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -19,29 +19,36 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
-% End initialization code - DO NOT EDIT
+% 初期化コードの終了 - このコードは編集しないでください-------------------------------
 
 
-% --- Executes just before utm_window is made visible.
+% --- utm_windowが表示される前に実行されます。
 function utm_window_OpeningFcn(hObject, eventdata, handles, varargin)
+% UTMウィンドウが表示される前に実行される初期化関数。
+% この関数は、ウィンドウがスクリーンの中央に配置されるようにします。
+
 global ZERO_LON ZERO_LAT MIN_LON MAX_LON MIN_LAT MAX_LAT
 global XS YS XF YF
-global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
+global SCRS SCRW_X SCRW_Y % スクリーンサイズと幅を管理するグローバル変数
+
+% ウィンドウの位置とサイズを設定
 h = get(hObject,'Position');
 wind_width = h(3);
 wind_height = h(4);
 dummy = findobj('Tag','main_menu_window');
 if isempty(dummy)~=1
- h = get(dummy,'Position');
+    h = get(dummy,'Position');
 end
 xpos = h(1,1) + h(1,3) + 5;
 ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
 set(hObject,'Position',[xpos ypos wind_width wind_height]);
-% Choose default command line output for utm_window
+
+% UTMウィンドウのデフォルトのコマンドライン出力を設定
 handles.output = hObject;
-% Update handles structure
+% ハンドル構造を更新
 guidata(hObject, handles);
-% Enable or disable setup
+
+% セットアップの有効/無効化を設定
 set(findobj('Tag','pushbutton_add'),'Enable','off');
 set(findobj('Tag','edit_eq_lon'),'Enable','off');
 set(findobj('Tag','edit_eq_lat'),'Enable','off');
@@ -66,22 +73,29 @@ set(findobj('Tag','pushbutton_f_add'),'Enable','off');
 set(findobj('Tag','pushbutton_f_calc'),'Enable','off');
 set(findobj('Tag','edit_all_input_params'),'Enable','off');
 
-% --- Outputs from this function are returned to the command line.
-function varargout = utm_window_OutputFcn(hObject, eventdata, handles) 
+% --- この関数の出力はコマンドラインに返されます。
+function varargout = utm_window_OutputFcn(hObject, eventdata, handles)
+% UTMウィンドウからの出力をコマンドラインに返す。 
 varargout{1} = handles.output;
 
+
 %-------------------------------------------------------------------------
-%     CENTER (LONGITUDE) (textfield)
+%     CENTER LONGITUDE：中心経度 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_center_lon_Callback(hObject, eventdata, handles)
+% 中心経度を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数ZERO_LONに設定します。
 global ZERO_LON
 ZERO_LON = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(ZERO_LON,'%8.3f'));
-%----------------------
-function edit_center_lon_CreateFcn(hObject, eventdata, handles) 
+
+function edit_center_lon_CreateFcn(hObject, eventdata, handles)
+% 中心経度フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global ZERO_LON
 if isempty(ZERO_LON)
-    ZERO_LON = 130.2;   % default number
+    % デフォルト値
+    ZERO_LON = 130.2;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -89,37 +103,24 @@ end
 h = findobj('Tag','edit_center_lon');
 set(h,'String',num2str(ZERO_LON,'%8.3f'));
 
-%-------------------------------------------------------------------------
-%     CENTER (LATITUDE) (textfield)
-%-------------------------------------------------------------------------
-function edit_center_lat_Callback(hObject, eventdata, handles) 
-global ZERO_LAT
-ZERO_LAT = str2num(get(hObject,'String'));
-set(hObject,'String',num2str(ZERO_LAT,'%8.3f'));
-%----------------------
-function edit_center_lat_CreateFcn(hObject, eventdata, handles)
-global ZERO_LAT
-if isempty(ZERO_LAT)
-    ZERO_LAT = 33.8;   % default number
-end
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-h = findobj('Tag','edit_center_lat');
-set(h,'String',num2str(ZERO_LAT,'%8.3f'));
 
 %-------------------------------------------------------------------------
-%     MINIMUM LONGITUDE (textfield)
+%     MINIMUM LONGITUDE：最小経度 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_min_lon_Callback(hObject, eventdata, handles)
+% 最小経度を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数MIN_LONに設定します。
 global MIN_LON
 MIN_LON = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(MIN_LON,'%8.3f'));
-%----------------------
+
 function edit_min_lon_CreateFcn(hObject, eventdata, handles)
+% 最小経度フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global MIN_LON
 if isempty(MIN_LON) | MIN_LON == 0
-    MIN_LON = 129.5;   % default number
+    % デフォルト値
+    MIN_LON = 129.5;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -127,18 +128,24 @@ end
 h = findobj('Tag','edit_min_lon');
 set(h,'String',num2str(MIN_LON,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     MAXIMU LONGITUDE (textfield)
+%     MAXIMUM LONGITUDE：最大経度 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_max_lon_Callback(hObject, eventdata, handles)
+% 最大経度を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数MAX_LONに設定します。
 global MAX_LON
 MAX_LON = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(MAX_LON,'%8.3f'));
-%----------------------
+
 function edit_max_lon_CreateFcn(hObject, eventdata, handles)
+% 最大経度フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global MAX_LON
 if isempty(MAX_LON)
-    MAX_LON = 131.0;   % default number
+    % デフォルト値
+    MAX_LON = 131.0;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -146,36 +153,73 @@ end
 h = findobj('Tag','edit_max_lon');
 set(h,'String',num2str(MAX_LON,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     LONGITUDE INCREMENT (textfield)
+%     LONGITUDE INCREMENT：経度の増分 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_inc_lon_Callback(hObject, eventdata, handles)
+% 経度の増分を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数INC_LONに設定します。
 global INC_LON
 INC_LON = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(INC_LON,'%8.3f'));
-%----------------------
+
 function edit_inc_lon_CreateFcn(hObject, eventdata, handles)
+% 経度の増分フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global INC_LON
 if isempty(INC_LON)
-    INC_LON = 0.05;   % default number
+    % デフォルト値
+    INC_LON = 0.05;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String',num2str(INC_LON,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     MINIMUM LATITUDE (textfield)
+%     CENTER LATITUDE：中心緯度 (テキストフィールド)
+%-------------------------------------------------------------------------
+function edit_center_lat_Callback(hObject, eventdata, handles) 
+    % 中心緯度を設定するためのコールバック関数。
+    % この関数は、テキストフィールドに入力された値を取得し、グローバル変数ZERO_LATに設定します。
+    global ZERO_LAT
+    ZERO_LAT = str2num(get(hObject,'String'));
+    set(hObject,'String',num2str(ZERO_LAT,'%8.3f'));
+    
+    function edit_center_lat_CreateFcn(hObject, eventdata, handles)
+    % 中心緯度フィールドの初期設定。
+    % この関数は、テキストフィールドに初期値を設定します。
+    global ZERO_LAT
+    if isempty(ZERO_LAT)
+        % デフォルト値
+        ZERO_LAT = 33.8;
+    end
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+    h = findobj('Tag','edit_center_lat');
+    set(h,'String',num2str(ZERO_LAT,'%8.3f'));
+    
+    
+%-------------------------------------------------------------------------
+%     MINIMUM LATITUDE：最小緯度 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_min_lat_Callback(hObject, eventdata, handles)
+% 最小緯度を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数MIN_LATに設定します。
 global MIN_LAT
 MIN_LAT = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(MIN_LAT,'%8.3f'));
-%----------------------
+
 function edit_min_lat_CreateFcn(hObject, eventdata, handles)
+% 最小緯度フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global MIN_LAT
 if isempty(MIN_LAT) | MIN_LAT == 0
-    MIN_LAT = 33.0;   % default number
+    % デフォルト値
+    MIN_LAT = 33.0;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -183,18 +227,24 @@ end
 h = findobj('Tag','edit_min_lat');
 set(h,'String',num2str(MIN_LAT,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     MAXIMUM LATITUDE (textfield)
+%     MAXIMUM LATITUDE：最大緯度 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_max_lat_Callback(hObject, eventdata, handles)
+% 最大緯度を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数MAX_LATに設定します。
 global MAX_LAT
 MAX_LAT = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(MAX_LAT,'%8.3f'));
-%----------------------
+
 function edit_max_lat_CreateFcn(hObject, eventdata, handles)
+% 最大緯度フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global MAX_LAT
 if isempty(MAX_LAT)
-    MAX_LAT = 34.5;   % default number
+    % デフォルト値
+    MAX_LAT = 34.5;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -202,18 +252,24 @@ end
 h = findobj('Tag','edit_max_lat');
 set(h,'String',num2str(MAX_LAT,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     LATITUDE INCREMENT (textfield)
+%     LATITUDE INCREMENT：緯度の増分 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_inc_lat_Callback(hObject, eventdata, handles)
+% 緯度の増分を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数INC_LATに設定します。
 global INC_LAT
 INC_LAT = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(INC_LAT,'%8.3f'));
 
 function edit_inc_lat_CreateFcn(hObject, eventdata, handles)
+% 緯度の増分フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global INC_LAT
 if isempty(INC_LAT)
-    INC_LAT = 0.05;   % default number
+    % デフォルト値
+    INC_LAT = 0.05;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -222,18 +278,19 @@ set(hObject,'String',num2str(INC_LAT,'%8.3f'));
 
 
 %-------------------------------------------------------------------------
-%     CALC. BUTTON (pushbutton)
+%     CALC. BUTTON (計算ボタン)
 %-------------------------------------------------------------------------
 function pushbutton_calc_Callback(hObject, eventdata, handles)
+% 計算ボタンが押されたときに実行される関数。UTM座標に基づいた計算を行う。
+
 global ZERO_LON ZERO_LAT MIN_LON MAX_LON MIN_LAT MAX_LAT
 global INC_LON INC_LAT
 global XS YS XF YF
 global PC_LON PC_LAT
 global GRID MAPTLFLAG
-global UTM_FLAG  % UTM_FLAG is used to identify if this is just a tool to know the coordinate (0) or
-                 % to make an input file from this (1)
+global UTM_FLAG  % UTM_FLAGが0の場合は座標の確認のみ、1の場合は入力ファイルを作成
 
-% warning dialog
+% 警告ダイアログ：座標の大小関係を確認し、問題がある場合は警告を表示
 if MIN_LAT >= MAX_LAT
     errordlg('max lat should be larger than min lat','Alignment Error!');
 end
@@ -246,6 +303,8 @@ end
 if ZERO_LAT > MAX_LAT || ZERO_LAT < MIN_LAT
     errordlg('ref lat should be in the study area','Alignment Error!');
 end
+
+% グリッドの設定
 ndlon = int16((MAX_LON - MIN_LON) / INC_LON);
 ndlat = int16((MAX_LAT - MIN_LAT) / INC_LAT);
 modlon = mod((MAX_LON - MIN_LON),INC_LON);
@@ -253,13 +312,10 @@ modlat = mod((MAX_LAT - MIN_LAT),INC_LAT);
 if ndlon <= 5 | ndlat <= 5
      warndlg('grid interval is so wide','Warning!');   
 end
-% if modlon ~= 0.0 | modlat ~= 0.0
-%      warndlg('grid interval is not aliquot. The position might be a little offset.','Warning!');   
-% end
 
 pcent_lon = (MAX_LON + MIN_LON)/2.0;
 pcent_lat = (MAX_LAT + MIN_LAT)/2.0;
-% total distance for x and Y
+% 総距離の計算（X軸およびY軸）
 if MAPTLFLAG == 1
     xdeg  = distance(pcent_lat,MIN_LON,pcent_lat,MAX_LON);
     ydeg  = distance(MIN_LAT,pcent_lon,MAX_LAT,pcent_lon);
@@ -278,23 +334,16 @@ else
     [ymax, flag6] = distance2(MAX_LAT,pcent_lon,ZERO_LAT,pcent_lon);
     dummy = flag1+flag2+flag3+flag4+flag5+flag6;
     if dummy >= 1
-        msgbox('The points are over two UTM zones. It will be switched to simple great circle calc.',...
-            'Notice','warn');
-    xdist = greatCircleDistance(deg2rad(pcent_lat),deg2rad(MIN_LON),...
-                        deg2rad(pcent_lat),deg2rad(MAX_LON));
-	ydist = greatCircleDistance(deg2rad(MIN_LAT),deg2rad(pcent_lon),...
-                        deg2rad(MAX_LAT),deg2rad(pcent_lon));
-    xmin  = greatCircleDistance(deg2rad(pcent_lat),deg2rad(MIN_LON),...
-                        deg2rad(pcent_lat),deg2rad(ZERO_LON));
-    ymin  = greatCircleDistance(deg2rad(MIN_LAT),deg2rad(pcent_lon),...
-                        deg2rad(ZERO_LAT),deg2rad(pcent_lon));
-    xmax  = greatCircleDistance(deg2rad(pcent_lat),deg2rad(MAX_LON),...
-                        deg2rad(pcent_lat),deg2rad(ZERO_LON));
-    ymax  = greatCircleDistance(deg2rad(MAX_LAT),deg2rad(pcent_lon),...
-                        deg2rad(ZERO_LAT),deg2rad(pcent_lon));
-%     greatCircleDistance(phi_s, lambda_s, phi_f, lambda_f, r);
+        msgbox('The points are over two UTM zones. It will be switched to simple great circle calc.','Notice','warn');
+        xdist = greatCircleDistance(deg2rad(pcent_lat),deg2rad(MIN_LON),deg2rad(pcent_lat),deg2rad(MAX_LON));
+        ydist = greatCircleDistance(deg2rad(MIN_LAT),deg2rad(pcent_lon),deg2rad(MAX_LAT),deg2rad(pcent_lon));
+        xmin  = greatCircleDistance(deg2rad(pcent_lat),deg2rad(MIN_LON),deg2rad(pcent_lat),deg2rad(ZERO_LON));
+        ymin  = greatCircleDistance(deg2rad(MIN_LAT),deg2rad(pcent_lon),deg2rad(ZERO_LAT),deg2rad(pcent_lon));
+        xmax  = greatCircleDistance(deg2rad(pcent_lat),deg2rad(MAX_LON),deg2rad(pcent_lat),deg2rad(ZERO_LON));
+        ymax  = greatCircleDistance(deg2rad(MAX_LAT),deg2rad(pcent_lon),deg2rad(ZERO_LAT),deg2rad(pcent_lon));
     end
 end
+
 if ZERO_LON > MIN_LON
     xmin = -xmin;
 end
@@ -307,16 +356,17 @@ end
 if ZERO_LAT > MAX_LAT
     ymax = -ymax;
 end
+
 set(findobj('Tag','edit_x_start'),'String',num2str(xmin,'%8.2f'));
 set(findobj('Tag','edit_y_start'),'String',num2str(ymin,'%8.2f'));
 set(findobj('Tag','edit_x_finish'),'String',num2str(xmax,'%8.2f'));
 set(findobj('Tag','edit_y_finish'),'String',num2str(ymax,'%8.2f'));
-% need? check them later...
+
+% グリッドの設定
 XS = xmin; GRID(1,1) = xmin;
 XF = xmax; GRID(3,1) = xmax;
 YS = ymin; GRID(2,1) = ymin;
 YF = ymax; GRID(4,1) = ymax;
-%
 GRID(5,1) = (xmax - xmin) / double(ndlon);
 GRID(6,1) = (ymax - ymin) / double(ndlat);
 set(findobj('Tag','edit_x_inc'),'String',num2str(GRID(5,1),'%8.2f'));
@@ -345,214 +395,252 @@ set(findobj('Tag','edit_f_top'),'Enable','on');
 set(findobj('Tag','edit_f_bottom'),'Enable','on');
 set(findobj('Tag','pushbutton_empirical'),'Enable','on');
 set(findobj('Tag','pushbutton_f_add'),'Enable','off');
-if UTM_FLAG == 0 % just a tool to know the coordinates
-set(findobj('Tag','pushbutton_f_calc'),'Enable','on');
+
+% 座標の確認ツールとして使用する場合
+if UTM_FLAG == 0
+    set(findobj('Tag','pushbutton_f_calc'),'Enable','on');
 else
-set(findobj('Tag','pushbutton_f_calc'),'Enable','off');
+    set(findobj('Tag','pushbutton_f_calc'),'Enable','off');
 end
 set(findobj('Tag','edit_all_input_params'),'Enable','off');
 
+
 %-------------------------------------------------------------------------
-%     GRID X START (textfield)
+%     GRID X START：グリッドのX軸の開始位置 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_x_start_Callback(hObject, eventdata, handles)
+% グリッドのX軸の開始位置を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数GRID(1,1)に設定します。
 global GRID
 GRID(1,1) = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(GRID(1,1),'%8.2f'));
-%----------------------
+
 function edit_x_start_CreateFcn(hObject, eventdata, handles)
+% グリッドのX軸の開始位置フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 GRID(1,1) = str2double(get(hObject,'String'));
-% set(hObject,'String',num2str(GRID(1,1),'%8.2f'));
+
 
 %-------------------------------------------------------------------------
-%     GRID Y START (textfield)
+%     GRID Y START：グリッドY軸の開始位置 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_y_start_Callback(hObject, eventdata, handles)
+% グリッドY軸の開始位置を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数GRID(2,1)に設定します。
 global GRID
 GRID(2,1) = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(GRID(2,1),'%8.2f'));
-%----------------------
+
 function edit_y_start_CreateFcn(hObject, eventdata, handles)
+% グリッドY軸の開始位置フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 GRID(2,1) = str2double(get(hObject,'String'));
-% set(hObject,'String',num2str(GRID(2,1),'%8.2f'));
+
 
 %-------------------------------------------------------------------------
-%     GRID X FINISH (textfield)
+%     GRID X FINISH：グリッドのX軸の終了位 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_x_finish_Callback(hObject, eventdata, handles)
+% グリッドのX軸の終了位置を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数GRID(3,1)に設定します。
 global GRID
 GRID(3,1) = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(GRID(3,1),'%8.2f'));
-%----------------------
+
 function edit_x_finish_CreateFcn(hObject, eventdata, handles)
+% グリッドのX軸の終了位置フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 GRID(3,1) = str2double(get(hObject,'String'));
-% set(hObject,'String',num2str(GRID(3,1),'%8.2f'));
+
 
 %-------------------------------------------------------------------------
-%     GRID Y FINISH (textfield)
+%     GRID Y FINISH：グリッドY軸の終了位置 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_y_finish_Callback(hObject, eventdata, handles)
+% グリッドY軸の終了位置を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数GRID(4,1)に設定します。
 global GRID
 GRID(4,1) = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(GRID(4,1),'%8.2f'));
-%----------------------
+
 function edit_y_finish_CreateFcn(hObject, eventdata, handles)
+% グリッドY軸の終了位置フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 GRID(4,1) = str2double(get(hObject,'String'));
-% set(hObject,'String',num2str(GRID(4,1),'%8.2f'));
+
 
 %-------------------------------------------------------------------------
-%     GRID X INCREMENT (textfield)
+%     GRID X INCREMENT：X軸の増分 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_x_inc_Callback(hObject, eventdata, handles)
+% グリッドのX軸の増分を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数GRID(5,1)に設定します。
 global GRID
 GRID(5,1) = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(GRID(5,1),'%8.2f'));
-%----------------------
+
 function edit_x_inc_CreateFcn(hObject, eventdata, handles)
+% グリッドのX軸の増分フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 GRID(5,1) = str2double(get(hObject,'String'));
-% set(hObject,'String',num2str(GRID(5,1),'%8.2f'));
+
 
 %-------------------------------------------------------------------------
-%     GRID Y INCREMENT (textfield)
+%     GRID Y INCREMENT：Y軸の増分 (textfield)
 %-------------------------------------------------------------------------
 function edit_y_inc_Callback(hObject, eventdata, handles)
+% グリッドのY軸の増分を設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数GRID(6,1)に設定します。
 global GRID
 GRID(6,1) = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(GRID(6,1),'%8.2f'));
 
-%----------------------
 function edit_y_inc_CreateFcn(hObject, eventdata, handles)
+% グリッドのY軸の増分フィールドの初期設定。
+% この関数は、テキストフィールドに初期値を設定します。
 global GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 GRID(6,1) = str2double(get(hObject,'String'));
-% set(hObject,'String',num2str(GRID(6,1),'%8.2f'));
+
 
 %-------------------------------------------------------------------------
-%     ADD (pushbutton) to add all cal info to main_menu_window
+%     追加ボタン：main_menu_windowへ計算情報の追加
 %-------------------------------------------------------------------------
 function pushbutton_add_Callback(hObject, eventdata, handles)
+% メインメニューウィンドウにすべての計算情報を追加するためのボタン。
+% 追加ボタンが押されたときに実行される関数。main_menu_windowへ計算情報を追加する。
+
 global H_MAIN GRID XGRID YGRID FUNC_SWITCH CALC_DEPTH
 global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
 global LON_GRID LAT_GRID
-% Calc grid position and hold them for all the other functions
-    xstart = GRID(1,1);
-    ystart = GRID(2,1);
-    xfinish = GRID(3,1);
-    yfinish = GRID(4,1);
-    xinc = GRID(5,1);
-    yinc = GRID(6,1);
-    nxinc = int16((xfinish-xstart)/xinc + 1);
-    nyinc = int16((yfinish-ystart)/yinc + 1);
-    xpp = [1:1:nxinc];
-    ypp = [1:1:nyinc];
-    XGRID = double(xstart) + (double(1:1:(nxinc-1))-1.0) * double(xinc);
-    YGRID = double(ystart) + (double(1:1:(nyinc-1))-1.0) * double(yinc);
+
+% グリッド位置を計算し、他のすべての関数で使用できるように保持
+xstart = GRID(1,1);
+ystart = GRID(2,1);
+xfinish = GRID(3,1);
+yfinish = GRID(4,1);
+xinc = GRID(5,1);
+yinc = GRID(6,1);
+nxinc = int16((xfinish-xstart)/xinc + 1);
+nyinc = int16((yfinish-ystart)/yinc + 1);
+xpp = [1:1:nxinc];
+ypp = [1:1:nyinc];
+XGRID = double(xstart) + (double(1:1:(nxinc-1))-1.0) * double(xinc);
+YGRID = double(ystart) + (double(1:1:(nyinc-1))-1.0) * double(yinc);
 FUNC_SWITCH = 1;
-CALC_DEPTH  = 0; % temporal value for "record_stamp function"
-                  % in grid_drawing function
-%===== if map info exist
+CALC_DEPTH  = 0; % グリッド描画機能のための一時的な値
+
+
+%===== マップ情報が存在する場合の処理
 if isempty(MIN_LON) ~= 1 && isempty(MAX_LON) ~= 1
     if isempty(MIN_LAT) ~= 1 && isempty(MAX_LAT) ~= 1
         if isempty(ZERO_LON) ~= 1 && isempty(ZERO_LAT) ~= 1
-xinc = double(MAX_LON - MIN_LON) / double(nxinc-1);
-yinc = double(MAX_LAT - MIN_LAT) / double(nyinc-1);
-LON_GRID = double(MIN_LON) + (double(1:1:nxinc)-1.0) * double(xinc);
-LAT_GRID = double(MIN_LAT) + (double(1:1:nyinc)-1.0) * double(yinc);
+            xinc = double(MAX_LON - MIN_LON) / double(nxinc-1);
+            yinc = double(MAX_LAT - MIN_LAT) / double(nyinc-1);
+            LON_GRID = double(MIN_LON) + (double(1:1:nxinc)-1.0) * double(xinc);
+            LAT_GRID = double(MIN_LAT) + (double(1:1:nyinc)-1.0) * double(yinc);
         end
     end
 end
 %=====
+% グリッド描画
 grid_drawing;
 FUNC_SWITCH = 0;
-% set(findobj('Tag','pushbutton_f_add'),'Enable','on');
+
 set(findobj('Tag','pushbutton_f_calc'),'Enable','on');
-% set(findobj('Tag','edit_all_input_params'),'Enable','on');
-% 
-% h = findobj('Tag','pushbutton_f_calc');
-% set(h,'Enable','on');
 set(findobj('Tag','menu_gridlines'),'Enable','On');
 set(findobj('Tag','menu_coastlines'),'Enable','On');
 set(findobj('Tag','menu_activefaults'),'Enable','On');
 set(findobj('Tag','menu_earthquakes'),'Enable','On');    
 
+
 %-------------------------------------------------------------------------
-%     EQ LOCATION position edge (radiobutton)
+%     地震位置の端部を設定 (ラジオボタン)
 %-------------------------------------------------------------------------
 function radiobutton_edgepos_Callback(hObject, eventdata, handles)
-% x = get(hObject,'Value');
+% 地震位置の端部を設定するラジオボタン。
 set (handles.radiobutton_centerpos,'Value',0);
 
-%-------------------------------------------------------------------------
-%     EQ LOCATION position center (radiobutton)
-%-------------------------------------------------------------------------
-function radiobutton_centerpos_Callback(hObject, eventdata, handles)
-% x = get(hObject,'Value');
-set (handles.radiobutton_edgepos,'Value',0);
 
 %-------------------------------------------------------------------------
-%     EQ LOCATION LONGITUDE (textfield)
+%     地震位置の中央を設定 (ラジオボタン)
+%-------------------------------------------------------------------------
+function radiobutton_centerpos_Callback(hObject, eventdata, handles)
+% 地震位置の中央を設定するラジオボタン。
+set (handles.radiobutton_edgepos,'Value',0);
+
+
+%-------------------------------------------------------------------------
+%     地震位置の経度を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_lon_Callback(hObject, eventdata, handles)
+% 地震位置の経度を設定するためのコールバック関数。
 global EQ_LON
 EQ_LON = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(EQ_LON,'%8.3f'));
 
-%----------------------
 function edit_eq_lon_CreateFcn(hObject, eventdata, handles)
+% 地震位置の経度フィールドの初期設定。
 global EQ_LON
 if isempty(EQ_LON)
-    EQ_LON = 130.178;   % default number
+    % デフォルト値
+    EQ_LON = 130.178;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String',num2str(EQ_LON,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     EQ LOCATION LATITUDE (textfield)
+%     地震位置の緯度を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_lat_Callback(hObject, eventdata, handles)
+% 地震位置の緯度を設定するためのコールバック関数。
 global EQ_LAT
 EQ_LAT = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(EQ_LAT,'%8.3f'));
 
-%----------------------
 function edit_eq_lat_CreateFcn(hObject, eventdata, handles)
+% 地震位置の緯度フィールドの初期設定。
 global EQ_LAT
 if isempty(EQ_LAT)
-    EQ_LAT = 33.741;   % default number
+    % デフォルト値
+    EQ_LAT = 33.741;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String',num2str(EQ_LAT,'%8.3f'));
 
+
 %-------------------------------------------------------------------------
-%     EQ LOCATION DEPTH (textfield)
+%     地震の深さを設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_depth_Callback(hObject, eventdata, handles)
+% 地震の深さを設定するためのコールバック関数。
 global EQ_DEPTH
 EQ_DEPTH = str2num(get(hObject,'String'));
 if EQ_DEPTH < 0.0
@@ -561,11 +649,12 @@ if EQ_DEPTH < 0.0
 end
 set(hObject,'String',num2str(EQ_DEPTH,'%6.2f'));
 
-%----------------------
 function edit_eq_depth_CreateFcn(hObject, eventdata, handles)
+% 地震の深さフィールドの初期設定。
 global EQ_DEPTH
 if isempty(EQ_DEPTH)
-    EQ_DEPTH = 7.5;   % default number
+    % デフォルト値
+    EQ_DEPTH = 7.5;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -573,63 +662,70 @@ end
 set(hObject,'String',num2str(EQ_DEPTH,'%6.2f'));
 
 %-------------------------------------------------------------------------
-%     FAULT LENGTH (textfield)
+%     断層の長さを設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_length_Callback(hObject, eventdata, handles)
+% 断層の長さを設定するためのコールバック関数。
 global EQ_LENGTH
 EQ_LENGTH = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(EQ_LENGTH,'%7.2f'));
 
-%----------------------
 function edit_eq_length_CreateFcn(hObject, eventdata, handles)
+% 断層の長さフィールドの初期設定。
 global EQ_LENGTH
 if isempty(EQ_LENGTH)
-    EQ_LENGTH = 20.0;    % default number
+    % デフォルト値
+    EQ_LENGTH = 20.0;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String',num2str(EQ_LENGTH,'%7.2f'));
 
+
 %-------------------------------------------------------------------------
-%     FAULT WIDTH (textfield)
+%     断層の幅を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_width_Callback(hObject, eventdata, handles)
+% 断層の幅を設定するためのコールバック関数。
 global EQ_WIDTH
 EQ_WIDTH = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(EQ_WIDTH,'%7.2f'));
 
-%----------------------
 function edit_eq_width_CreateFcn(hObject, eventdata, handles) 
+% 断層の幅フィールドの初期設定。
 global EQ_WIDTH
 if isempty(EQ_WIDTH)
-    EQ_WIDTH = 10.0;    % default number
+    % デフォルト値
+    EQ_WIDTH = 10.0;
 end
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String',num2str(EQ_WIDTH,'%7.2f'));
 
-%-------------------------------------------------------------------------
-%     Pushbutton "From empirical relations"
-%-------------------------------------------------------------------------
-function pushbutton_empirical_Callback(hObject, eventdata, handles)
-global H_WC
-H_WC = wells_coppersmith_window;
-% hObject    handle to pushbutton_empirical (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 %-------------------------------------------------------------------------
-%     MOMENT MAGNITUDE (textfield)
+%     wells & coppersmithの経験式に基づく計算 (ボタン)
+%-------------------------------------------------------------------------
+function pushbutton_empirical_Callback(hObject, eventdata, handles)
+% wells & coppersmithの経験式に基づく計算を行うボタンのコールバック関数。
+global H_WC
+H_WC = wells_coppersmith_window;
+
+
+%-------------------------------------------------------------------------
+%     モーメントマグニチュードを設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_mo_Callback(hObject, eventdata, handles)
+% モーメントマグニチュードを設定するためのコールバック関数。
+% この関数は、テキストフィールドに入力された値を取得し、グローバル変数EQ_MWに設定します。
 global EQ_MW
 EQ_MW = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(EQ_MW,'%3.1f'));
 
-%----------------------
 function edit_eq_mo_CreateFcn(hObject, eventdata, handles)
+% モーメントマグニチュードフィールドの初期設定。
 global EQ_MW
 if isempty(EQ_MW)
     EQ_MW = 6.6;
@@ -639,10 +735,12 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 set(hObject,'String',num2str(EQ_MW,'%3.1f'));
 
+
 %-------------------------------------------------------------------------
-%     STRIKE (textfield)
+%     断層の走行（方位角）を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_strike_Callback(hObject, eventdata, handles)
+% 断層の走行（方位角）を設定するためのコールバック関数。
 global EQ_STRIKE
 x = str2num(get(hObject,'String'));
 if x >= 0 && x <= 360
@@ -653,12 +751,11 @@ if x >= 0 && x <= 360
 else
     h = warndlg('Out of strike range. It should be between 0 and 360.');
     waitfor(h);
-%    return;
 end
 set(hObject,'String',num2str(EQ_STRIKE,'%6.1f'));
 
-%----------------------
 function edit_eq_strike_CreateFcn(hObject, eventdata, handles)
+% 断層の走行（方位角）フィールドの初期設定。
 global EQ_STRIKE
 if isempty(EQ_STRIKE)
     EQ_STRIKE = 303.0;
@@ -668,10 +765,12 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 set(hObject,'String',num2str(EQ_STRIKE,'%6.1f'));
 
+
 %-------------------------------------------------------------------------
-%     DIP (textfield)
+%     断層のディップ（傾斜角）を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_dip_Callback(hObject, eventdata, handles)
+% 断層のディップ（傾斜角）を設定するためのコールバック関数。
 global EQ_DIP
 x = str2num(get(hObject,'String'));
 if x >= 0 && x <= 90
@@ -679,12 +778,11 @@ if x >= 0 && x <= 90
 else
     h = warndlg('Out of dip range. It should be between 0 and 90.');
     waitfor(h);
-%    return;
 end
 set(hObject,'String',num2str(EQ_DIP,'%6.1f'));
 
-%----------------------
 function edit_eq_dip_CreateFcn(hObject, eventdata, handles)
+% 断層のディップ（傾斜角）フィールドの初期設定。
 global EQ_DIP
 if isempty(EQ_DIP)
     EQ_DIP = 81.0;
@@ -694,10 +792,12 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 set(hObject,'String',num2str(EQ_DIP,'%6.1f'));
 
+
 %-------------------------------------------------------------------------
-%     RAKE (textfield)
+%     断層のレイク（すべり角）を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_eq_rake_Callback(hObject, eventdata, handles)
+% 断層のレイク（すべり角）を設定するためのコールバック関数。
 global EQ_RAKE
 x = str2num(get(hObject,'String'));
 if x >= -180.0 && x <= 180
@@ -705,12 +805,11 @@ if x >= -180.0 && x <= 180
 else
     h = warndlg('Out of rake range. It should be between -180 and 180');
     waitfor(h);
-%    return;
 end
 set(hObject,'String',num2str(EQ_RAKE,'%6.1f'));
 
-%----------------------
 function edit_eq_rake_CreateFcn(hObject, eventdata, handles)
+% 断層のレイク（すべり角）フィールドの初期設定。
 global EQ_RAKE
 if isempty(EQ_RAKE)
     EQ_RAKE = 4.0;
@@ -720,118 +819,136 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 set(hObject,'String',num2str(EQ_RAKE,'%6.1f'));
 
+
 %-------------------------------------------------------------------------
-%     FAULT X START (textfield)
+%     断層始点のX座標を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_fx_start_Callback(hObject, eventdata, handles)
+% 断層始点のX座標を設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,1) = str2double(get(hObject,'String'));
 
-%----------------------
 function edit_fx_start_CreateFcn(hObject, eventdata, handles)
+% 断層始点のX座標フィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     FAULT Y START (textfield)
+%     断層始点のY座標 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_fy_start_Callback(hObject, eventdata, handles)
+% 断層始点のY座標を設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,2) = str2double(get(hObject,'String'));
 
-%----------------------
 function edit_fy_start_CreateFcn(hObject, eventdata, handles)
+% 断層始点のY座標フィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 %-------------------------------------------------------------------------
-%     FAULT X FINISH (textfield)
+%     断層終点のX座標を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_fx_finish_Callback(hObject, eventdata, handles) 
+% 断層終点のX座標を設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,3) = str2double(get(hObject,'String'));
 
-%----------------------
 function edit_fx_finish_CreateFcn(hObject, eventdata, handles)
+% 断層終点のX座標フィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     FAULT Y FINISH (textfield)
+%     断層終点のY座標を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_fy_finish_Callback(hObject, eventdata, handles)
+% 断層終点のY座標を設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,4) = str2double(get(hObject,'String'));
 
-%----------------------
 function edit_fy_finish_CreateFcn(hObject, eventdata, handles)
-% 
+% 断層終点のY座標フィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     FAULT TOP (textfield)
+%     断層の上端の深さを設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_f_top_Callback(hObject, eventdata, handles)
+% 断層の上端の深さを設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,8) = str2double(get(hObject,'String'));
 
-%----------------------
 function edit_f_top_CreateFcn(hObject, eventdata, handles) 
+% 断層の上端の深さフィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     FAULT BOTTOM (textfield)
+%     断層の下端の深さを設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_f_bottom_Callback(hObject, eventdata, handles)
+% 断層の下端の深さを設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,9) = str2double(get(hObject,'String'));
 
-% --- Executes during object creation, after setting all properties.
+% --- オブジェクト作成時に、すべてのプロパティを設定した後に実行されます。
 function edit_f_bottom_CreateFcn(hObject, eventdata, handles)
-% 
+% 断層の下端の深さフィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     Right lateral slip (textfield)
+%     右横ずれ量を設定 (テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_right_lat_Callback(hObject, eventdata, handles)
+% 右横ずれ量を設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,5) = str2double(get(hObject,'String'));
 
-% --- Executes during object creation, after setting all properties.
+% --- オブジェクト作成時に、すべてのプロパティを設定した後に実行されます。
 function edit_right_lat_CreateFcn(hObject, eventdata, handles)
-% h
+% 右横ずれ量フィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     Disp slip (textfield)
+%     Disp slip：逆断層変位成分を設定(テキストフィールド)
 %-------------------------------------------------------------------------
 function edit_rev_lat_Callback(hObject, eventdata, handles)
+% 逆断層変位成分を設定するためのコールバック関数。
 global ELEMENT INUM
 ELEMENT(INUM,6) = str2double(get(hObject,'String'));
 
-% --- Executes during object creation, after setting all properties.
+% --- オブジェクト作成時に、すべてのプロパティを設定した後に実行されます。
 function edit_rev_lat_CreateFcn(hObject, eventdata, handles)
+% 逆断層変位成分フィールドの初期設定。
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
+
 %-------------------------------------------------------------------------
-%     CALCULATION FOR FAULT (pushbutton)
+%     CALCULATION FOR FAULT：断層に関する計算を行うボタン (テキストフィールド)
 %-------------------------------------------------------------------------
 function pushbutton_f_calc_Callback(hObject, eventdata, handles)
-% 
+% 断層に関する計算を行うボタンのコールバック関数。
+% ユーザーがGUIで入力した地震断層のパラメータを使用して、断層の位置や変位量を計算します。
+
 global ZERO_LON ZERO_LAT MIN_LON MAX_LON MIN_LAT MAX_LAT
 global XS YS XF YF
 global EQ_LON EQ_LAT EQ_DEPTH
@@ -839,52 +956,53 @@ global PC_LON PC_LAT
 global EQ_LENGTH EQ_WIDTH EQ_STRIKE EQ_DIP EQ_RAKE EQ_MW
 global NUM ID ELEMENT INUM KODE FCOMMENT
 global MAPTLFLAG
-% persistent ntrial % to keep track the INUM to add another fault
 
+% 永続的に ntrial %でINUMを記録し、別の断層を追加する。
 % ntrial = ntrial + 1;
-% insurance...
+
+% 保険：断層の長さ、幅、モーメントマグニチュードをGUIから取得
 EQ_LENGTH = str2double(get(findobj('Tag','edit_eq_length'),'String'));
 EQ_WIDTH  = str2double(get(findobj('Tag','edit_eq_width'),'String'));
 EQ_MW     = str2double(get(findobj('Tag','edit_eq_mo'),'String'));
 
-% counter
+% 断層の数（INUM）を数える
 % INUM = INUM + 1;
-% increase id number
+
+% 断層のID番号を更新
 set(findobj('Tag','edit_id_number'),'String',num2str(INUM,'%2i'));
-% total number of faults
+% 断層の総数
 NUM = INUM;
-% Kode (default is 100)
+% Kode：計算のタイプを指定するコード，通常の計算では100
 KODE(INUM,1) = 100;
 ID(INUM,1) = 1;
 FCOMMENT(INUM,:).ref = ['Fault ' num2str(INUM,'%3i')];
 
+% 断層の位置参照方法を取得（中央または端部）
+% fref = 0：中心の位置参照、fref = 1：端部の位置参照
 fref = 0;
 fref = get(handles.radiobutton_edgepos,'Value');
-% fref = 0; position reference center
-% fref = 1; position reference edge
 
-% test
 % ID = 1;
 % NUM = 1;
 % Each fault element
-%       ELEMENT(:,1) xstart (km)
-%       ELEMENT(:,2) ystart (km)
-%       ELEMENT(:,3) xfinish (km)
-%       ELEMENT(:,4) yfinish (km)
-%       ELEMENT(:,5) right-lat. slip (m)
-%       ELEMENT(:,6) reverse slip (m)
-%       ELEMENT(:,7) dip (degree)
-%       ELEMENT(:,8) fault top depth (km)
-%       ELEMENT(:,9) fault bottom depth (km)
-% Fault position
+%       ELEMENT(:,1) 断層始点のX座標値 (km)
+%       ELEMENT(:,2) 断層始点のY座標値 (km)
+%       ELEMENT(:,3) 断層終点のX座標値 (km)
+%       ELEMENT(:,4) 断層終点のY座標値 (km)
+%       ELEMENT(:,5) 右横ずれ成分（rt.lat, m）左横ずれはマイナス
+%       ELEMENT(:,6) 逆断層変位成分（reverse, m）正断層はマイナス
+%       ELEMENT(:,7) dip 断層の傾斜（0°-90°）
+%       ELEMENT(:,8) 断層の上端の深さ（km）
+%       ELEMENT(:,9) 断層の下端の深さ（km）
 %  !!! NEED readjustment for dipping fault !!!!!!!!!!!!!!!!!!
+
+% 地震の震源位置に基づいて断層の始点と終点のX, Y座標を計算
 if MAPTLFLAG == 1
     xdist = deg2km(distance(PC_LAT,EQ_LON,PC_LAT,ZERO_LON));
 else
     [xdist,flag] = distance2(PC_LAT,EQ_LON,PC_LAT,ZERO_LON);
     if flag == 1
-        xdist  = greatCircleDistance(deg2rad(PC_LAT),deg2rad(EQ_LON),...
-                                    deg2rad(PC_LAT),deg2rad(ZERO_LON)); 
+        xdist  = greatCircleDistance(deg2rad(PC_LAT),deg2rad(EQ_LON),deg2rad(PC_LAT),deg2rad(ZERO_LON)); 
     end
 end
 if EQ_LON < ZERO_LON
@@ -895,29 +1013,30 @@ if MAPTLFLAG == 1
 else
     [ydist,flag] = distance2(EQ_LAT,PC_LON,ZERO_LAT,PC_LON);
     if flag == 1
-        ydist  = greatCircleDistance(deg2rad(EQ_LAT),deg2rad(PC_LON),...
-                                    deg2rad(ZERO_LAT),deg2rad(PC_LON)); 
+        ydist  = greatCircleDistance(deg2rad(EQ_LAT),deg2rad(PC_LON),deg2rad(ZERO_LAT),deg2rad(PC_LON)); 
     end
 end
 if EQ_LAT < ZERO_LAT
     ydist = -ydist;
 end
 
-if fref == 1    % edge position
+% 断層の終点を計算（端部または中央参照）
+if fref == 1 % 端部位置参照
     xfn = xdist + sin(deg2rad(EQ_STRIKE)) * EQ_LENGTH;
     yfn = ydist + cos(deg2rad(EQ_STRIKE)) * EQ_LENGTH;
-else            % center position
+else         % 中央位置参照
     xtemp = xdist;
     ytemp = ydist;
     xdist = xtemp - sin(deg2rad(EQ_STRIKE)) * EQ_LENGTH / 2.0;
     ydist = ytemp - cos(deg2rad(EQ_STRIKE)) * EQ_LENGTH / 2.0;
     xfn   = xtemp + sin(deg2rad(EQ_STRIKE)) * EQ_LENGTH / 2.0;
     yfn   = ytemp + cos(deg2rad(EQ_STRIKE)) * EQ_LENGTH / 2.0;
-%   adjustment
+
+   % 断層の傾斜角度（dip-slip direction）に基づいて、始点と終点の調整を行う
     dd = (EQ_WIDTH / 2.) * cos(deg2rad(EQ_DIP));
     theta = atan(abs(yfn-ydist)/abs(xfn-xdist));
-    zx = dd * sin(theta);   % unit distance along x-axis for dip-slip direction
-    zy = dd * cos(theta);   % unit distance along y-axis for dip-slip direction
+    zx = dd * sin(theta);   % x軸方向の調整量（単位距離）
+    zy = dd * cos(theta);   % y軸方向の調整量（単位距離）
     if xfn >= xdist
         if yfn >= ydist
             zx = -zx;
@@ -941,9 +1060,7 @@ else            % center position
     yfn   = yfn + zy;
 end
 
-% xfn & yfn are one of the fault edges following Aki & Richards convension
-% xfn = xdist + sin(deg2rad(EQ_STRIKE)) * EQ_LENGTH;
-% yfn = ydist + cos(deg2rad(EQ_STRIKE)) * EQ_LENGTH;
+% 断層の始点と終点をGUIに表示し、変数に保存
 set(findobj('Tag','edit_fx_start'),'String',num2str(xdist,'%8.2f'));
 set(findobj('Tag','edit_fy_start'),'String',num2str(ydist,'%8.2f'));
 set(findobj('Tag','edit_fx_finish'),'String',num2str(xfn,'%8.2f'));
@@ -953,8 +1070,10 @@ ELEMENT(INUM,2) = ydist;
 ELEMENT(INUM,3) = xfn;
 ELEMENT(INUM,4) = yfn;
 
-% Slip from Mw
+% モーメントマグニチュードから断層の変位を計算し、表示。
+% 剪断モジュール
 shr = 3.4e+11;
+% 地震モーメント
 mo = power(10,(1.5 * EQ_MW + 9.1))*1.0e+7;
 slip = mo/(shr * EQ_LENGTH * EQ_WIDTH * 1.0e+10);
 rlslip = ((-1.0) * cos(deg2rad(EQ_RAKE)) * slip)/100;
@@ -964,18 +1083,16 @@ set(findobj('Tag','edit_rev_lat'),'String',num2str(rvslip,'%8.2f'));
 ELEMENT(INUM,5) = rlslip;
 ELEMENT(INUM,6) = rvslip;
 
-% Fault depth control
+% 断層の深さを計算
 hd = (EQ_WIDTH/2.0) * sin(deg2rad(EQ_DIP));
-if fref == 1    % edge position
-    tp = EQ_DEPTH;
+if fref == 1 % 端部位置参照
     bt = EQ_DEPTH + 2.0 * hd;
-else            % center position
+else         % 中央位置参照
     tp = EQ_DEPTH - hd;
     bt = EQ_DEPTH + hd;
     if tp < 0.0
         h = warndlg('Fault top depth above the surface (negative). Change the source depth or fault width.');
         waitfor(h);
-%         return
     end
 end
 set(findobj('Tag','edit_f_top'),'String',num2str(tp,'%8.2f'));
@@ -983,53 +1100,62 @@ set(findobj('Tag','edit_f_bottom'),'String',num2str(bt,'%8.2f'));
 ELEMENT(INUM,7) = EQ_DIP;
 ELEMENT(INUM,8) = tp;
 ELEMENT(INUM,9) = bt;
+
+% 計算結果を他のボタンやGUIコンポーネントで利用可能にする
 set(findobj('Tag','pushbutton_f_add'),'Enable','on');
-% INUM = 1;
+
 
 %-------------------------------------------------------------------------
-%     ADD FAULT (pushbutton)
+%     ADD FAULT：断層の追加 (プッシュボタン)
 %-------------------------------------------------------------------------
 function pushbutton_f_add_Callback(hObject, eventdata, handles)
+% 「Add Fault」ボタンが押されたときに実行されるコールバック関数です。
+% グローバル変数を利用して断層に関するデフォルト値を設定し、断層の計算や表示を行います。
+
 global CALC_DEPTH POIS YOUNG KODE FRIC SIZE HEAD R_STRESS H_ELEMENT SECTION
 global ID NUM ELEMENT INUM
 global EQ_LAT EQ_LON
 global ICOORD LON_GRID
 
-% set default values
+% 断層の深さ、ポアソン比、ヤング率のデフォルト値を設定
 CALC_DEPTH = (ELEMENT(INUM,8)+ELEMENT(INUM,9)) / 2.0;
 POIS = 0.25;
 YOUNG = 800000;
 
+% その他のデフォルト値を設定
 % KODE = 100;
 FRIC = 0.4;
-SIZE = [2;1;10000];
-% HEAD = cell(2,1);
+SIZE = [2;1;10000]; % サイズに関する設定
+
 x1 = 'header line 1';
 x2 = 'header line 2';
-% HEAD(1,1) = mat2cell(x1);
-% HEAD(2,1) = mat2cell(x2);
-% HEAD(1,1)='header line 1';
-% HEAD(2,1)='header line 2';
-HEAD{1} = x1;
-HEAD{2} = x2;
+
+HEAD{1} = x1;  % ヘッダー行1
+HEAD{2} = x2;  % ヘッダー行2
+
+% 応力テンソルに関する設定
 R_STRESS = [19.00 -0.01 100.0 0.0;
             89.99 89.99  30.0 0.0;
            109.00 -0.01   0.0 0.0];
+
+% セクションに関する設定
 SECTION = [-16; -16; 18; 26; 1; 30; 1];
-% default (end)
-% H_ELEMENT = element_input_window;
+
+% fault_overlay関数を呼び出して断層を表示
 fault_overlay;
-% lonp = str2num(get(findobj('Tag','edit_eq_lon'),'String'));
-% latp = str2num(get(findobj('Tag','edit_eq_lat'),'String'));
+
+% EQ_LAT、EQ_LONを使用して座標変換を行い、UTM座標系でプロット
 a = lonlat2xy([EQ_LON EQ_LAT]);
 hold on;
+% 緯度経度でプロット
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
     h = scatter(EQ_LON,EQ_LAT,'filled','bo');
+% UTM座標系でプロット
 else
     h = scatter(a(1),a(2),'filled','bo');
 end
-% set(h,'Color','b');
-% menu enable -> function all_functions_enable_on
+
+% メニューやボタンを有効化
 set(findobj('Tag','menu_grid'),'Enable','On');
 set(findobj('Tag','menu_displacement'),'Enable','On');
 set(findobj('Tag','menu_strain'),'Enable','On');
@@ -1040,34 +1166,55 @@ set(findobj('Tag','menu_file_save'),'Enable','On');
 set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
 set(findobj('Tag','menu_map_info'),'Enable','On');
 
-% INUM = INUM + 1;
+% INUM = INUM + 1：次の断層IDを設定
 set(findobj('Tag','edit_id_number'),'String',num2str(INUM,'%2i'));
 
+
 %-------------------------------------------------------------------------
-%     CANCEL (pushbutton)
+%     CANCEL：キャンセル (プッシュボタン)
 %-------------------------------------------------------------------------
 function pushbutton_utm_cancel_Callback(hObject, eventdata, handles)
+% 「Cancel」ボタンが押されたときに実行されるコールバック関数です。
+% この関数は、UTM座標系のウィンドウを閉じ、メインウィンドウをアクティブにします。
+
+    % ウィンドウを閉じる
     delete(figure(gcf));
     
+
 %-------------------------------------------------------------------------
-%     OK (pushbutton)
+%     OK (プッシュボタン)
 %-------------------------------------------------------------------------
 function pushbutton_utm_ok_Callback(hObject, eventdata, handles)
+% 「OK」ボタンが押されたときに実行されるコールバック関数です。
+% 要素の計算を行い、ウィンドウを閉じます。
+
+    % グリッドやデータなどの要素の計算
     calc_element;
+    % ウィンドウを閉じる
     delete(figure(gcf));
     
+
 %-------------------------------------------------------------------------
 %     ID number (static text)
 %-------------------------------------------------------------------------
 function edit_id_number_Callback(hObject, eventdata, handles)
+% ID番号のテキストフィールドが変更されたときに実行されるコールバック関数です。
+% グローバル変数を利用して、断層要素のIDを管理します。
+
 global NUM INUM ID KODE FCOMMENT ELEMENT
+
+% 入力されたID番号を取得
 x = int8(str2double(get(hObject,'String')));
+
+% ID番号が連続していない場合に警告を表示
 if x > NUM + 1
     h = warndlg('Fault ID should be sequential.');
     waitfor(h);
+    % 現在のID番号にリセット
     set(hObject,'String',num2str(INUM,'%3i'));
     return
-elseif x == NUM + 1         % case to add another fault element
+% 新しい断層要素を追加する場合の処理
+elseif x == NUM + 1
     INUM = x;
     KODE(INUM,1) = 100;
     ID(INUM,1) = 1;
@@ -1082,7 +1229,8 @@ elseif x == NUM + 1         % case to add another fault element
     ELEMENT(INUM,8) = str2double(get(findobj('Tag','edit_f_top'),'String'));
     ELEMENT(INUM,9) = str2double(get(findobj('Tag','edit_f_bottom'),'String'));
     NUM = INUM;
-else                        % to show one of the existed fault elements
+% 既存の断層要素を編集する場合の処理
+else
     INUM = x;
     set(findobj('Tag','edit_fx_start'),'String',num2str(ELEMENT(INUM,1),'%8.2f'));
     set(findobj('Tag','edit_fy_start'),'String',num2str(ELEMENT(INUM,2),'%8.2f'));
@@ -1097,17 +1245,23 @@ end
 
 
 function edit_id_number_CreateFcn(hObject, eventdata, handles)
+% ID番号フィールドの初期設定
 global INUM
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-INUM = 1; % for counting (initialization)
+
+INUM = 1; % for counting (initialization) % カウント初期化のため
 set(hObject,'String',num2str(1,'%2i'));
 
+
 %-------------------------------------------------------------------------
-%     Edit all input parameters (static text)
+%     Edit all input parameters：全ての入力パラメータを編集 (static text)
 %-------------------------------------------------------------------------
 function edit_all_input_params_Callback(hObject, eventdata, handles)
+% 「Edit all input parameters」テキストフィールドが変更されたときに実行されるコールバック関数です。
+% この関数は、全ての入力パラメータを編集するためのウィンドウを表示します。
+
 global H_INPUT H_UTM
 H_INPUT = input_window;
 h = findobj('Tag','utm_window');
@@ -1115,6 +1269,3 @@ if (isempty(h)~=1 & isempty(H_UTM)~=1)
     close(figure(H_UTM))
     H_UTM = [];
 end
-
-
-
