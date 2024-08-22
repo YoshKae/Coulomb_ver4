@@ -133,7 +133,3 @@ end
 shear   = reshape(sn9(1,2,:),n,1);
 normal  = reshape(sn9(1,1,:),n,1);
 coulomb = shear + friction .* normal;
-
-
-
-
