@@ -137,7 +137,7 @@ set(findobj('Tag','edit_d2'),'Enable','On');
 set(findobj('Tag','text_s2_dip'),'Enable','On');
 set(findobj('Tag','text_dip_range'),'Enable','On');
 set(findobj('Tag','text_dip_range'),'String',['Dip range: ',...
-    num2str(minmax(1),'%6.1f'),' to ',num2str(minmax(2),'%6.1f'),'Åã']);
+    num2str(minmax(1),'%6.1f'),' to ',num2str(minmax(2),'%6.1f'),'ÔøΩÔøΩ']);
 % set(findobj('Tag','edit_d2'),'String',num2str(minmax(1,1),'%8.3f'));
 
 %-------------------------------------------------------------------------
@@ -405,5 +405,3 @@ function edit_43d_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
