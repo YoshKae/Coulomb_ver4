@@ -1,59 +1,49 @@
 function [hg] = bb2(fm, centerX, centerY, diam, ta, iFlag, color)
-%function bb(fm, centerX, centerY, diam, ta, color)
-%
-%	Draws beachball diagram of earthquake double-couple focal mechanism(s). S1, D1, and
-%		R1, the strike, dip and rake of one of the focal planes, can be vectors of
-%		multiple focal mechanisms.
-%	fm - focal mechanism that is either number of mechnisms (NM) by 3 (strike, dip, and rake)
-%		or NM x 6 (mxx, myy, mzz, mxy, mxz, myz - the six independent components of
-%		the moment tensor). The strike is of the first plane, clockwise relative to north.
-%		The dip is of the first plane, defined clockwise and perpedicular to strike, 
-%		relative to horizontal such that 0 is horizontal and 90 is vertical. The rake is 
-%		of the first focal plane solution. 90 moves the hanging wall up-dip (thrust),
-%		0 moves it in the strike direction (left-lateral), -90 moves it down-dip
-%		(normal), and 180 moves it opposite to strike (right-lateral).
-%	centerX - place beachball(s) at position centerX
-%	centerY - place beachball(s) at position centerY
-%	diam - draw with this diameter.  If diam is zero, beachball
-%		is drawn on stereonet.
+% bb2 は、地震のダブルカップル焦点メカニズムに基づいてビーチボール図を描画する関数です。
 
-%   iFlag - flag to draw one of two nodal plane. If 0, normal beachball. If
-%   1, draw a red arc on the beach ball.
+% 入力:
+%   fm      - 地震の焦点メカニズムを表す行列。行列は (NM x 3) または (NM x 6) の形で、各行はそれぞれのメカニズムの
+%             ストライク、ディップ、レイクまたはモーメントテンソルの6成分（mxx, myy, mzz, mxy, mxz, myz）を示します。
+%   centerX - ビーチボールの中心のX座標（または経度）
+%   centerY - ビーチボールの中心のY座標（または緯度）
+%   diam    - ビーチボールの直径。diamがゼロの場合、ビーチボールはステレオネット上に描画されます。
+%   ta      - 軸のタイプを指定します。taが0なら通常の軸、1なら地図軸です。
+%   iFlag   - ノーダルプレーンの描画フラグ。0なら通常のビーチボール、1ならビーチボールに赤い弧が描画されます。
+%   color   - 張力四分円に使用する色を指定します。文字列 ('r', 'b' など) または RGBカラーのベクトル [R G B] です。
 
-%	ta - type of axis. If 0, this is a normal axis, if 1 it is a map axis. In case
-%		of the latter, centerX and centerY are Lons and Lats, respectively.
-%	color - color to use for quadrants of tension; can be a string, e.g. 'r'
-%		'b' or three component color vector, [R G B].
-%
+% 出力:
+%   hg      - 描画されたオブジェクトのハンドル。
 
-%   OUTPUT: hg - handle of all the objects
+% ペンのサイズを設定
+penw = 0.1;
+penc = 1.1; % 一つのノーダルプレーンをコールーム計算用に描画する設定
 
-% pen size
-    penw = 0.1;
-    penc = 1.1; % one nodal plane for coulomb calc.
-    
-% adjust aspect ratio of the beach balls
-% adj = 1.65;
+% ビーチボールの縦横比を調整
 adj = 1.35;
-
+% 描画されたオブジェクトのハンドルグループを初期化
 hg = hggroup;
-      
+
+% fmのサイズを取得
 [ne,n] = size(fm);
+% fmが6成分のモーメントテンソルの場合、対応するストライク、ディップ、レイクを計算
 if n == 6
 	for j = 1:ne
 		[s1(j),d1(j),r1(j)] = mij2sdr(fm(j,1),fm(j,2),fm(j,3),fm(j,4),fm(j,5),fm(j,6));
 	end
+% fmがストライク、ディップ、レイクの場合、そのまま使用
 else
 	s1 = fm(:,1);
 	d1 = fm(:,2);
 	r1 = fm(:,3);
 end
 
+% 角度の変換係数
 r2d = 180/pi;
 d2r = pi/180;
 ampy = cos(mean(centerY)*d2r)*adj;
 ampy = 1;
 
+% 機構の初期化
 mech = zeros(ne,1);
 j = find(r1 > 180);
 r1(j) = r1(j) - 180;
@@ -62,12 +52,15 @@ j = find(r1 < 0);
 r1(j) = r1(j) + 180;
 mech(j) = 1;
 
-% Get azimuth and dip of second plane
+% 第2プレーンのストライクとディップを取得
 [s2,d2,r2] = AuxPlane(s1,d1,r1);
 
+% 直径が正の場合、保持しながら描画
 if diam(1) > 0
 	hold on
 end
+
+% 各イベントについてビーチボールを描画
 for ev = 1:ne
 	S1 = s1(ev);
 	D1 = d1(ev);
@@ -85,6 +78,7 @@ else
    P = 1;
 end
 
+% ディップ角が90度を超えないように調整
 if D1 >= 90
    D1 = 89.9999;
 end
@@ -92,22 +86,27 @@ if D2 >= 90
    D2 = 89.9999;
 end
 
+% 角度phiの設定
 phi = 0:.05:pi;
-% phi = 0:.01:pi; % original
+
+% 第1プレーンの半径の計算
 d = 90 - D1;
 m = 90;
 l1 = sqrt(d^2./(sin(phi).^2 + cos(phi).^2 * d^2/m^2));
 
+% 第2プレーンの半径の計算
 d = 90 - D2;
 m = 90;
 l2 = sqrt(d^2./(sin(phi).^2 + cos(phi).^2 * d^2/m^2));
 
+% ステレオネットに描画
 if D == 0
    stereo(phi+S1*d2r,l1,'k')
    hold on
    stereo(phi+S2*d2r,l2,'k')
 end
 
+% プロットのための座標変換
 inc = 1;
 [X1,Y1] = pol2cart(phi+S1*d2r,l1);
 if P == 1
@@ -143,19 +142,19 @@ Y = cat(2,Y1,Ys1,Y2,Ys2);
 % Xc1 = cat(2,X1,Xs1);
 % Yc1 = cat(2,Y1,Ys1);
 %---
+
+% ビーチボールの描画
 if D > 0
    X = ampy*X * D/90 + CY;
    Y = Y * D/90 + CX;
-   %---
    Xc1 = ampy*X1 * D/90 + CY;
    Yc1 = Y1 * D/90 + CX;
-   %---
    phid = 0:.01:2*pi;
    [x,y] = pol2cart(phid,90);
    xx = x*D/90 + CX;
    yy = ampy*y*D/90 + CY;
+
    if ta == 0
-%       hg = hggroup;
       h1 = fill(xx,yy,'w');
       try
       h2 = fill(Y,X,color(ev,:));
@@ -189,26 +188,26 @@ end
 %     set(hg,'Visible','off');
 end
 
+%---------------------------------------------
+% 第2プレーンのストライク、ディップ、レイクを計算する補助関数
+%---------------------------------------------
 function [strike, dip, rake] = AuxPlane(s1,d1,r1)
-%function [strike, dip, rake] = AuxPlane(s1,d1,r1);
-% Get Strike and dip of second plane, adapted from Andy Michael bothplanes.c
 r2d = 180/pi;
 
 z = (s1+90)/r2d;
 z2 = d1/r2d;
 z3 = r1/r2d;
-%/* slick vector in plane 1 */
+% 第1プレーンのスリックベクトル
 sl1 = -cos(z3).*cos(z)-sin(z3).*sin(z).*cos(z2);
 sl2 = cos(z3).*sin(z)-sin(z3).*cos(z).*cos(z2);
 sl3 = sin(z3).*sin(z2);
 [strike, dip] = strikedip(sl2,sl1,sl3);
 
-n1 = sin(z).*sin(z2);  %/* normal vector to plane 1 */
+n1 = sin(z).*sin(z2);  % 第1プレーンの法線ベクトル
 n2 = cos(z).*sin(z2);
 n3 = cos(z2);
-h1 = -sl2; %/* strike vector of plane 2 */
+h1 = -sl2; % 第2プレーンの走向ベクトル
 h2 = sl1;
-%/* note h3=0 always so we leave it out */
 
 z = h1.*n1 + h2.*n2;
 z = z./sqrt(h1.*h1 + h2.*h2);
@@ -220,12 +219,12 @@ rake(j) = z(j)*r2d;
 j = find(sl3 <= 0);
 rake(j) = -z(j)*r2d;
 
+%---------------------------------------------
+% 法線ベクトルからストライクとディップを計算する関数
+%---------------------------------------------
 function [strike, dip] = strikedip(n, e, u)
-%function [strike, dip] = strikedip(n, e, u)
-%       Finds strike and dip of plane given normal vector having components n, e, and u
-%
-
-% Adapted from Andy Michaels stridip.c
+%　関数 [strike, dip] = strikedip(n, e, u)
+%  成分 n, e, u を持つ法線ベクトルが与えられたとき、平面の走向・傾斜を求める。
 
 r2d = 180/pi;
 
@@ -246,8 +245,10 @@ end
 x = sqrt(n.^2 + e.^2);
 dip = atan2(x,u)*r2d;
 
+%---------------------------------------------
+% ステレオネットに描画する関数
+%---------------------------------------------
 function hpol = stereo(theta,rho,line_style)
-%function hpol = stereo(theta,rho,line_style)
 
 if nargin < 1
     error('Requires 2 or 3 input arguments.')
@@ -283,17 +284,16 @@ if ~isequal(size(theta),size(rho))
     error('THETA and RHO must be the same size.');
 end
 
-% get hold state
+% プロットの状態を取得
 cax = newplot;
 next = lower(get(cax,'NextPlot'));
 hold_state = ishold;
 
-% get x-axis text color so grid is in same color
+% x軸のテキストカラーを取得し、グリッドが同じ色になるように設定
 tc = get(cax,'xcolor');
 ls = get(cax,'gridlinestyle');
 
-% Hold on to current Text defaults, reset them to the
-% Axes' font attributes so tick marks use them.
+% デフォルトのテキスト設定を保持し、軸のフォント属性にリセット
 fAngle  = get(cax, 'DefaultTextFontAngle');
 fName   = get(cax, 'DefaultTextFontName');
 fSize   = get(cax, 'DefaultTextFontSize');
@@ -305,61 +305,51 @@ set(cax, 'DefaultTextFontAngle',  get(cax, 'FontAngle'), ...
     'DefaultTextFontWeight', get(cax, 'FontWeight'), ...
     'DefaultTextUnits','data')
 
-% only do grids if hold is off
+% グリッドの描画
 if ~hold_state
-
-% make a radial grid
     hold on;
     maxrho = max(abs(rho(:)));
     hhh=plot([-maxrho -maxrho maxrho maxrho],[-maxrho maxrho maxrho -maxrho]);
-    set(gca,'daspectratio',[1 1 1],'pbaspectratiomode',[1 1 1])
-    % set(gca,'dataaspectratio',[1 1 1],'plotboxaspectratiomode','auto')    
+    set(gca,'daspectratio',[1 1 1],'pbaspectratiomode',[1 1 1])  
     set(gca,'xlim',[-90 90])
     set(gca,'ylim',[-90 90])
     v = [get(cax,'xlim') get(cax,'ylim')];
     ticks = sum(get(cax,'ytick')>=0);
     delete(hhh);
-% check radial limits and ticks
     rmin = 0; rmax = v(4); rticks = max(ticks-1,2);
 	rticks = 1;
 
-% define a circle
+    % 円の定義
     th = 0:pi/50:2*pi;
     xunit = cos(th);
     yunit = sin(th);
-% now really force points on x/y axes to lie on them exactly
+    % x軸とy軸の点が正確に一致するようにする。　
     inds = 1:(length(th)-1)/4:length(th);
     xunit(inds(2:2:4)) = zeros(2,1);
     yunit(inds(1:2:5)) = zeros(3,1);
-% plot background if necessary
+    % 背景の描画
     if ~isstr(get(cax,'color')),
        patch('xdata',xunit*rmax,'ydata',yunit*rmax, ...
              'edgecolor',tc,'facecolor',get(gca,'color'),...
              'handlevisibility','off');
     end
 
-% draw radial circles
+    % 放射円の描画
     c82 = cos(82*pi/180);
     s82 = sin(82*pi/180);
     rinc = (rmax-rmin)/rticks;
     for i=(rmin+rinc):rinc:rmax
         hhh = plot(xunit*i,yunit*i,ls,'color',tc,'linewidth',1,...
                    'handlevisibility','off');
-%        text((i+rinc/20)*c82,(i+rinc/20)*s82, ...
-%            ['  ' num2str(i)],'verticalalignment','bottom',...
-%            'handlevisibility','off')
     end
-    set(hhh,'linestyle','-') % Make outer circle solid
+    % 外側の円を実線にする
+    set(hhh,'linestyle','-')
 
-% plot spokes
+    % 放射状のスポークを描画
     th = (1:6)*2*pi/12;
     cst = cos(th); snt = sin(th);
-%    cs = [-cst; cst];
-%    sn = [-snt; snt];
-%    plot(rmax*cs,rmax*sn,ls,'color',tc,'linewidth',1,...
-%         'handlevisibility','off')
 
-% annotate spokes in degrees
+    % 放射状のスポークを描画
     rt = 1.1*rmax;
     for i = 1:length(th)
         text(rt*cst(i),rt*snt(i),int2str(i*30),...
@@ -374,24 +364,24 @@ if ~hold_state
              'handlevisibility','off')
     end
 
-% set view to 2-D
+    % 2Dのビューに設定
     view(2);
-% set axis limits
+    % 軸のリミットを設定
 	axis(rmax*[-1 1 -1.15 1.15]);
 end
 
-% Reset defaults.
+% デフォルト設定をリセット
 set(cax, 'DefaultTextFontAngle', fAngle , ...
     'DefaultTextFontName',   fName , ...
     'DefaultTextFontSize',   fSize, ...
     'DefaultTextFontWeight', fWeight, ...
     'DefaultTextUnits',fUnits );
 
-% transform data to Cartesian coordinates.
+% データをデカルト座標に変換
 xx = rho.*cos(theta);
 yy = rho.*sin(theta);
 
-% plot data on top of grid
+% グリッド上にデータをプロット
 if strcmp(line_style,'auto')
     q = plot(xx,yy);
 else
@@ -402,25 +392,23 @@ if nargout > 0
 end
 if ~hold_state
     set(gca,'daspectratio',[1 1 1]), axis off; set(cax,'NextPlot',next);
-% set(gca,'dataaspectratio',[1 1 1]), axis off; set(cax,'NextPlot',next);
 end
 set(get(gca,'xlabel'),'visible','on')
 set(get(gca,'ylabel'),'visible','on')
 
-
+%---------------------------------------------
+% モーメントテンソルからストライク、ディップ、レイクを計算する関数
+%---------------------------------------------
 function [str,dip,rake] = mij2sdr(mxx,myy,mzz,mxy,mxz,myz)
-%function [str,dip,rake] = mij2sdr(mxx,myy,mzz,mxy,mxz,myz)
-%
-%   INPUT
-%	mij - siz independent components of the moment tensor
-%
-%   OUTPUT
-%	str - strike of first focal plane (degrees)
-%	dip - dip of first focal plane (degrees)
-%	rake - rake of first focal plane (degrees)
-%
-%Adapted from code, mij2d.f, created by Chen Ji and given to me by Gaven Hayes.
-%
+% 関数 [str,dip,rake] = mij2sdr(mxx,myy,mzz,mxy,mxz,myz)
+
+% INPUT
+%    mij - モーメントテンソルのサイズ独立成分
+
+% OUTPUT
+%    str - 最初の焦点面の走向（度）
+%    dip - 第1焦点面の傾き（度）
+%    rake - 第1焦点面のすくい角（度）
 
 a = [mxx mxy mxz; mxy myy myz; mxz myz mzz];
 [V,d] = eig(a);
@@ -449,6 +437,9 @@ str = 360 - ft;
 dip = fd;
 rake = 180 - fl;
 
+%---------------------------------------------
+% 法線ベクトルを使ってストライク、ディップ、レイクを計算する補助関数
+%---------------------------------------------
 function [FT,FD,FL] = TDL(AN,BN)
 XN=AN(1);
 YN=AN(2);
@@ -542,4 +533,4 @@ else
 	if (SL < 0. & CL > 0) 
 		FL=-FL;
 	end
-end 
+end
