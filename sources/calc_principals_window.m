@@ -209,14 +209,16 @@ end
 
 
 %-------------------------------------------------------------------------
-%	Close button
+%	閉じるボタン
 %-------------------------------------------------------------------------
 function pushbutton_close_Callback(hObject, eventdata, handles)
+% 閉じるボタンが押されたときに実行され、GUIを閉じます。
+% 現在のGUIウィンドウを閉じる
 delete(gcf);
 
 
 %-------------------------------------------------------------------------
-%	Combination 1
+%	Combination 1（ストライクとディップのセット1）
 %-------------------------------------------------------------------------
 % === S1 strike ===
 function edit_11s_Callback(hObject, eventdata, handles)
@@ -267,7 +269,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %-------------------------------------------------------------------------
-%	Combination 2
+%	Combination 2（ストライクとディップのセット2）
 %-------------------------------------------------------------------------
 % === S1 strike ===
 function edit_21s_Callback(hObject, eventdata, handles)
@@ -318,7 +320,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %-------------------------------------------------------------------------
-%	Combination 3
+%	Combination 3（ストライクとディップのセット3）
 %-------------------------------------------------------------------------
 % === S1 strike ===
 function edit_31s_Callback(hObject, eventdata, handles)
@@ -369,7 +371,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %-------------------------------------------------------------------------
-%	Combination 4
+%	Combination 4（ストライクとディップのセット4）
 %-------------------------------------------------------------------------
 % === S1 strike ===
 function edit_41s_Callback(hObject, eventdata, handles)

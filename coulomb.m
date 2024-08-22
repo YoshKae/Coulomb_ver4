@@ -278,7 +278,3 @@ disp('Start from Input menu to read or build an input file.');
 disp('  ');
 
 end
-
-
-
-
