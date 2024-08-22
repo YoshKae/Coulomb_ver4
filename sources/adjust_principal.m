@@ -1,5 +1,5 @@
 function [bb,dd] = adjust_principal(b,d)
-% adjustment for principal axes
+% 主軸の調整
 
 b = 90.0 - b;
 if b < 0.0
