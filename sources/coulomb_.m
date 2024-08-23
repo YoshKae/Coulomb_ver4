@@ -7,10 +7,8 @@ global ha1 ha2
 global x y z cl sigs sign xmin xmax xinc nxinc ymin ymax yinc nyinc % グリッドや計算に使用する変数
 global cmin cmax cmean cc                                           % カラースケールの範囲を設定するための変数
 
-
 N = 1;   % カラー飽和ストレス値のデフォルト設定
 ha2 = 0; % figureウィンドウの初期値（0に設定）
-
 
 ha1 = figure('Name','Coulomb rendering',...  % Coulomb応力のレンダリング用の新しいウィンドウを作成
     'NumberTitle','off',...  % ウィンドウのタイトルバーに番号を表示しない
