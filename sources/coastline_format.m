@@ -1,74 +1,68 @@
 function varargout = coastline_format(varargin)
-% COASTLINE_FORMAT M-file for coastline_format.fig
-%      COASTLINE_FORMAT, by itself, creates a new COASTLINE_FORMAT or raises the existing
-%      singleton*.
-%
-%      H = COASTLINE_FORMAT returns the handle to a new COASTLINE_FORMAT or the handle to
-%      the existing singleton*.
-%
-%      COASTLINE_FORMAT('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in COASTLINE_FORMAT.M with the given input arguments.
-%
-%      COASTLINE_FORMAT('Property','Value',...) creates a new COASTLINE_FORMAT or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before coastline_format_OpeningFunction gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to coastline_format_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
+% COASTLINE_FORMATは、海岸線のフォーマットを設定するためのGUIを作成または既存のインスタンスを呼び出します。
 
-% Edit the above text to modify the response to help coastline_format
+% H = COASTLINE_FORMATは、新しいCOASTLINE_FORMATまたは既存のシングルトン*へのハンドルを返します。
+% COASTLINE_FORMAT('CALLBACK',hObject,eventData,handles,...)は、与えられた入力引数でCOASTLINE_FORMAT.M内のCALLBACKという名前のローカル関数を呼び出します。
 
-% Last Modified by GUIDE v2.5 24-Aug-2006 19:48:34
+% COASTLINE_FORMAT('Property','Value',...)は、新しいCOASTLINE_FORMATを作成するか、既存のシングルトンを生成します。
+% 左から順に、プロパティ値のペアがGUIに適用され、coastline_format_OpeningFunctionが呼び出される前に適用されます。
+% 認識できないプロパティ名や無効な値はプロパティの適用を停止します。
+% すべての入力は、vararginを介してcoastline_format_OpeningFcnに渡されます。
 
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @coastline_format_OpeningFcn, ...
-                   'gui_OutputFcn',  @coastline_format_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+
+% 初期化コードの開始 - 編集しないでください。--------------------------------
+
+gui_Singleton = 1;                                                     % GUIをシングルトンモードで実行することを指定
+gui_State = struct('gui_Name',       mfilename, ...                    % 現在のファイル名を指定
+                   'gui_Singleton',  gui_Singleton, ...                % シングルトンモードかどうかを指定
+                   'gui_OpeningFcn', @coastline_format_OpeningFcn, ... % 開始時に実行される関数を指定
+                   'gui_OutputFcn',  @coastline_format_OutputFcn, ...  % 出力時に実行される関数を指定
+                   'gui_LayoutFcn',  [] , ...                          % レイアウト関数が不要であることを指定
+                   'gui_Callback',   []);                              % コールバック関数を指定
+
 if nargin && ischar(varargin{1})
+    % コールバック関数が指定されている場合、その関数を設定
     gui_State.gui_Callback = str2func(varargin{1});
 end
 
+% 出力引数が指定されている場合、GUIを実行してその結果を返す
 if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
+    % 出力引数が指定されていない場合、GUIを実行するだけ
     gui_mainfcn(gui_State, varargin{:});
 end
-% End initialization code - DO NOT EDIT
+% 初期化コードの終了 - 編集しないでください。-------------------------------
 
 
-% --- Executes just before coastline_format is made visible.
+% --- coastline_formatが表示される直前に実行されます。
 function coastline_format_OpeningFcn(hObject, eventdata, handles, varargin)
-global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
+% この関数は、GUIウィンドウが表示される前に実行され、初期設定を行います。
+
+global SCRS SCRW_X SCRW_Y % スクリーンサイズと幅
+
+% 現在のウィンドウ位置とサイズを取得
 h = get(hObject,'Position');
-wind_width = h(3);
-wind_height = h(4);
+wind_width = h(3);            % ウィンドウの幅
+wind_height = h(4);           % ウィンドウの高さ
+
+% ウィンドウのX座標とY座標位置を設定
 xpos = SCRW_X;
 ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
+
+% ウィンドウの位置とサイズを適用
 set(hObject,'Position',[xpos ypos wind_width wind_height]);
-% Choose default command line output for coastline_format
+
+% coastline_formatのデフォルトのコマンドライン出力を設定
 handles.output = hObject;
 
-% Update handles structure
+% ハンドル構造体を更新
 guidata(hObject, handles);
 
-% UIWAIT makes coastline_format wait for user response (see UIRESUME)
-% uiwait(handles.coastline_format);
 
-
-% --- Outputs from this function are returned to the command line.
+% --- この関数の出力はコマンドラインに返されます。
 function varargout = coastline_format_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% この関数は、GUIウィンドウが閉じられたときや、出力を求められたときに実行されます。
 
-% Get default command line output from handles structure
+% ハンドル構造体からデフォルトのコマンドライン出力を取得
 varargout{1} = handles.output;
