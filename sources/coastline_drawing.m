@@ -1,6 +1,7 @@
 function coastline_drawing
-% simple drawing of coast lines using ascii input file
-%
+% 海岸線データを使用して簡単に海岸線を描画する関数
+% グローバル変数を使用して、描画範囲やデータの読み込み先を管理します。
+
 global MIN_LAT MAX_LAT MIN_LON MAX_LON ZERO_LON
 global GRID
 global PREF
@@ -11,12 +12,13 @@ global HOME_DIR
 global OVERLAY_MARGIN
 persistent COAST_DIR
 
-% for enhancing readability
+% 描画のための座標系の設定
 xs = GRID(1,1);
 xf = GRID(3,1);
 ys = GRID(2,1);
 yf = GRID(4,1);
-% automatically chosen directory 'coastline_data'
+
+% 自動的に選択されたディレクトリ 'coastline_data' に移動
 try
     cd(COAST_DIR);
 catch
@@ -27,235 +29,232 @@ catch
     end
 end
     
-% Chose a data file in default dialog
+% デフォルトのダイアログでデータファイルを選択
 if isempty(COAST_DATA)==1
 
-%     hformat = coastline_format;
     [filename,pathname] = uigetfile('*.*',' Open coastline data file');
     if isequal(filename,0)
         disp('  User selected Cancel')
-%         close(hformat);
         return
     else
         disp('  ----- coastline data -----');
         disp(['  User selected', fullfile(pathname, filename)])
     end
-fid = fopen(filename,'r');
-COAST_DIR = pathname;
+    fid = fopen(filename,'r');
+    COAST_DIR = pathname;
 
-% ***** TEST reading to check western hemishere? *****************
-n = 10000;  % dummy number (probably use 'end' later)
-count = 0;
-for m = 1:n
-    count = count + 1;
-    if m == 1
-        test = textscan(fid,'%f %f','headerlines', 2);
-        aa{m} = test{1};
-        bb{m} = test{2};
-    else
-        test = textscan(fid,'%f %f','headerlines', 1);
-        aa{m} = test{1};
-        bb{m} = test{2};
+
+    % *****  % 西半球のデータかどうかをテストするために読み込む *****************
+    n = 10000;  % ダミーの数値（後で 'end' を使用する予定）
+    count = 0;
+    for m = 1:n
+        count = count + 1;
+        if m == 1
+            test = textscan(fid,'%f %f','headerlines', 2);
+            aa{m} = test{1};
+            bb{m} = test{2};
+        else
+            test = textscan(fid,'%f %f','headerlines', 1);
+            aa{m} = test{1};
+            bb{m} = test{2};
+        end
+        check_test = [test{1}];
+        if length(check_test) <= 1
+            break
+        end 
     end
-    check_test = [test{1}];
-%     % for NOAA painful format
-	if length(check_test) <= 1
-        break
-    end 
-end
-for i = 1:size(aa,1);
-    aaa = [aa{i}];
-end
-if max(aaa) > 180.0
-    but = 'plus';
-else
-    but = 'minus';
-end
-% ****************************************************************
-
-%     but = questdlg('Western hemisphere is treated as ',...
-%         'coastline data format','plus','minus','plus');
-if length(but) == 4     % 'plus' W hemisphere is treated as positive in the input file
-% adjusting GMT format (no negative longitude)
-    if MIN_LON < 0.0
-        minlon = 360.0 + MIN_LON;
+    for i = 1:size(aa,1);
+        aaa = [aa{i}];
+    end
+    if max(aaa) > 180.0
+        but = 'plus';
     else
+        but = 'minus';
+    end
+
+    % ****************************************************************
+
+    % 西半球がプラスかマイナスかによって、経度を調整
+    if length(but) == 4       % 'plus' W 半球をプラスとして扱う
+        if MIN_LON < 0.0
+            minlon = 360.0 + MIN_LON;
+        else
+            minlon = MIN_LON;
+        end
+        if MAX_LON < 0.0
+            maxlon = 360.0 + MAX_LON;
+        else
+            maxlon = MAX_LON;
+        end
+        if ZERO_LON < 0.0
+            zerolon = 360.0 + ZERO_LON;
+        else
+            erolon = ZERO_LON;
+        end
+    elseif length(but) == 5    % 'minus' (負の値として扱う)
         minlon = MIN_LON;
-    end
-    if MAX_LON < 0.0
-        maxlon = 360.0 + MAX_LON;
-    else
         maxlon = MAX_LON;
+        zerolon = ZERO_LON;
+    else                       % 無効な値の場合
+        warndlg('Check your coastline file.','!! Warning !!');
+        return
     end
-    if ZERO_LON < 0.0
-        zerolon = 360.0 + ZERO_LON;
-    else
-		erolon = ZERO_LON;
-    end
-elseif length(but) == 5    % 'minus' (negative)
-    minlon = MIN_LON;
-	maxlon = MAX_LON;
-	zerolon = ZERO_LON;
-else                        % empty
-    warndlg('Check your coastline file.','!! Warning !!');
-    return
-end
-xinc = (xf - xs)/(maxlon-minlon);
-yinc = (yf - ys)/(MAX_LAT-MIN_LAT);
+    xinc = (xf - xs)/(maxlon-minlon);
+    yinc = (yf - ys)/(MAX_LAT-MIN_LAT);
 end
 
 
 %---------------------
 
+% 計算ウィンドウの表示
 hm = wait_calc_window;
 
 %---------------------
-if isempty(COAST_DATA)==1
-n = 10000;  % dummy number (probably use 'end' later)
-count = 0;
-% nseg = 0;
-fid = fopen(fullfile(pathname, filename),'r');
-for m = 1:n
-    count = count + 1;
-    if m == 1
-        a = textscan(fid,'%f %f','headerlines', 2);
-        x{m} = a{1};
-        y{m} = a{2};
-    else
-        a = textscan(fid,'%f %f','headerlines', 1);
-        x{m} = a{1};
-        y{m} = a{2};
-    end
-    checka = [a{1}];
-%     nseg   = nseg + sum(isnan(checka));
-%     size(checka)
-%     % for NOAA painful format
-	if length(checka) <= 1
-        break
-    end
-    
-end
 
-fclose(fid);
-% COAST_DATA = zeros(nn,3); %(number of segment x y xnext ynext)
+% 海岸線データがまだ読み込まれていない場合の処理
+if isempty(COAST_DATA)==1
+    n = 10000;  % ダミーの数値
+    count = 0;
+    fid = fopen(fullfile(pathname, filename),'r');
+
+    for m = 1:n
+        count = count + 1;
+        if m == 1
+            a = textscan(fid,'%f %f','headerlines', 2);
+            x{m} = a{1};
+            y{m} = a{2};
+        else
+            a = textscan(fid,'%f %f','headerlines', 1);
+            x{m} = a{1};
+            y{m} = a{2};
+        end
+        checka = [a{1}];
+
+        if length(checka) <= 1
+            break
+        end
+        
+    end
+
+    fclose(fid);
+
 end
 %-----------
 
-% h = findobj('Tag','main_menu_window');
 if isempty(H_MAIN) ~= 1
     figure(H_MAIN);
     hold on;
 end
 
 %---------------------
+
+% 海岸線データの処理
 if isempty(COAST_DATA)==1
-% dummy width to select the coastline info a bit larger than study area
-dummy = OVERLAY_MARGIN;
-disp(['   * Extra margin width of the data screening is ' num2str(int16(dummy)) ' km']);
-disp(['   * If you want to trim more, change the value OVERLAY_MARGIN in this']);
-disp(['   * command window and then read it again. It is useful for 3D view.']);
-disp(' ');
-disp('   * To save the areal coastline data as binary, use the following command');
-disp('   * in the Command Window.');
-disp('   * save filename COAST_DATA (e.g., save mycoastline.mat COAST_DATA)');
-disp('   * To read the .mat formatted coastline data, use ''File -> Open...'' menu later.');
-disp(' ');
-icount = 0;
-temp = 0;
-nn = 0;
+    dummy = OVERLAY_MARGIN;
+    disp(['   * Extra margin width of the data screening is ' num2str(int16(dummy)) ' km']);
+    disp(['   * If you want to trim more, change the value OVERLAY_MARGIN in this']);
+    disp(['   * command window and then read it again. It is useful for 3D view.']);
+    disp(' ');
+    disp('   * To save the areal coastline data as binary, use the following command');
+    disp('   * in the Command Window.');
+    disp('   * save filename COAST_DATA (e.g., save mycoastline.mat COAST_DATA)');
+    disp('   * To read the .mat formatted coastline data, use ''File -> Open...'' menu later.');
+    disp(' ');
 
-% count
-nlength = size(x,1);
+    icount = 0;
+    temp = 0;
+    nn = 0;
+    nlength = size(x,1);
 
-if count <= 2           % nasty NOAA ('nan nan') format
-for m = 1:nlength
-    xx = [x{m}];
-    yy = [y{m}];
-        xx = xs + (xx - minlon) * xinc;
-        yy = ys + (yy - MIN_LAT) * yinc;
-    hold on;
-for k = 1:length(xx)
-        if isnan(xx(k))
-            nn = nn + 1;
-            COAST_DATA(nn,1) = NaN;
-            COAST_DATA(nn,2) = NaN;
-            COAST_DATA(nn,3) = NaN;
-            COAST_DATA(nn,4) = NaN;
-            continue
-        else
-        if xx(k) >= (xs-dummy) 
-        if xx(k) <= (xf+dummy)
-        if yy(k) >= (ys-dummy)
-        if yy(k) <= (yf+dummy)
-            nn = nn + 1;
-            if m ~= temp
-                icount = icount + 1;
-                temp = m;
+    if count <= 2 % NOAA形式 ('nan nan') の場合の処理
+        for m = 1:nlength
+            xx = [x{m}];
+            yy = [y{m}];
+            xx = xs + (xx - minlon) * xinc;
+            yy = ys + (yy - MIN_LAT) * yinc;
+            hold on;
+            for k = 1:length(xx)
+                if isnan(xx(k))
+                    nn = nn + 1;
+                    COAST_DATA(nn,1) = NaN;
+                    COAST_DATA(nn,2) = NaN;
+                    COAST_DATA(nn,3) = NaN;
+                    COAST_DATA(nn,4) = NaN;
+                    continue
+                else
+                    if xx(k) >= (xs-dummy) 
+                        if xx(k) <= (xf+dummy)
+                            if yy(k) >= (ys-dummy)
+                                if yy(k) <= (yf+dummy)
+                                    nn = nn + 1;
+                                    if m ~= temp
+                                        icount = icount + 1;
+                                        temp = m;
+                                    end
+                                    a = xy2lonlat([xx(k) yy(k)]);
+                                    COAST_DATA(nn,1) = a(1);
+                                    COAST_DATA(nn,2) = a(2);
+                                    COAST_DATA(nn,3) = xx(k);
+                                    COAST_DATA(nn,4) = yy(k);
+                                    hold on;
+                                end
+                            end
+                        end
+                    end
+                end
             end
-            a = xy2lonlat([xx(k) yy(k)]);
-            COAST_DATA(nn,1) = a(1);
-            COAST_DATA(nn,2) = a(2);
-            COAST_DATA(nn,3) = xx(k);
-            COAST_DATA(nn,4) = yy(k);
-        hold on;
         end
-        end
-        end
-        end
-        end
-end
-end
-
-else            % followings are ('< deliminator format')
-% m is segment number
-for m = 1:count
-    xx = [x{m}];
-    yy = [y{m}];
-        xx = xs + (xx - minlon) * xinc;
-        yy = ys + (yy - MIN_LAT) * yinc;
-        nkeep = nn;
-    hold on;
-for k = 1:length(xx)
-        if xx(k) >= (xs-dummy) 
-        if xx(k) <= (xf+dummy)
-        if yy(k) >= (ys-dummy)
-        if yy(k) <= (yf+dummy)
-            nn = nn + 1;
-            if m ~= temp
-                icount = icount + 1;
-                temp = m;
+    else            % デリミタ形式 ('<') の場合の処理
+        for m = 1:count
+            xx = [x{m}];
+            yy = [y{m}];
+            xx = xs + (xx - minlon) * xinc;
+            yy = ys + (yy - MIN_LAT) * yinc;
+            nkeep = nn;
+            hold on;
+            for k = 1:length(xx)
+                if xx(k) >= (xs-dummy) 
+                    if xx(k) <= (xf+dummy)
+                        if yy(k) >= (ys-dummy)
+                            if yy(k) <= (yf+dummy)
+                                nn = nn + 1;
+                                if m ~= temp
+                                    icount = icount + 1;
+                                    temp = m;
+                                end
+                                a = xy2lonlat([xx(k) yy(k)]);
+                                COAST_DATA(nn,1) = a(1);
+                                COAST_DATA(nn,2) = a(2);
+                                COAST_DATA(nn,3) = xx(k);
+                                COAST_DATA(nn,4) = yy(k);
+                                hold on;
+                            end
+                        end
+                    end
+                end
             end
-            a = xy2lonlat([xx(k) yy(k)]);
-            
-            COAST_DATA(nn,1) = a(1);
-            COAST_DATA(nn,2) = a(2);
-            COAST_DATA(nn,3) = xx(k);
-            COAST_DATA(nn,4) = yy(k);
-        hold on;
+            % 描画ペンを上げるためにNaNタグを付与（海岸線セグメントを分ける）
+            if nn > nkeep
+                nn = nn + 1;
+                COAST_DATA(nn,1) = NaN;
+                COAST_DATA(nn,2) = NaN;
+                COAST_DATA(nn,3) = NaN;
+                COAST_DATA(nn,4) = NaN;
+            end
         end
-        end
-        end
-        end
-end
-        % put NaN tag to raise drawing pen (breaking coastline segment)
-        if nn > nkeep
-        nn = nn + 1;
-            COAST_DATA(nn,1) = NaN;
-            COAST_DATA(nn,2) = NaN;
-            COAST_DATA(nn,3) = NaN;
-            COAST_DATA(nn,4) = NaN;
-        end
-end
-end
-% close(hformat);
+    end
 end
 
-COAST_DATA = single(COAST_DATA);    % to reduce memory size
+% メモリサイズを削減するための処理
+COAST_DATA = single(COAST_DATA);
 
-% ---------------------------- actual plotting --------------
+
+% ---------------------------- 実際の描画処理 --------------
+
 if isempty(COAST_DATA)~=1
-    [m,n] = size(COAST_DATA);   % to distinguish old or new format
-% ===== old format plotting =================
+    [m,n] = size(COAST_DATA);   % 古いフォーマットか新しいフォーマットかを判別
+
+    % ===== 古いフォーマット plotting =================
     if n == 9
         disp('!!! Warning !!!');
         disp('   * This coastline data COAST_DATA are from old versions,');
@@ -268,7 +267,7 @@ if isempty(COAST_DATA)~=1
             x1 = [rot90(COAST_DATA(:,6));rot90(COAST_DATA(:,8))];
             y1 = [rot90(COAST_DATA(:,7));rot90(COAST_DATA(:,9))];
         end
-% ===== new format plotting =================
+% ===== 新しいフォーマット plotting =================
     else
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
             x1 = COAST_DATA(:,1);
@@ -284,7 +283,6 @@ if isempty(COAST_DATA)~=1
         hold on;
 end
 % -------------------------------------------------------------
-% order_overlay_handle(1);
-close(hm);
-% toc
-cd(HOME_DIR);
+
+close(hm); % 計算ウィンドウを閉じる
+cd(HOME_DIR); % ホームディレクトリに戻る
