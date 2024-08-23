@@ -488,12 +488,10 @@ calc_element;
     FUNC_SWITCH = 1;
     grid_drawing;
     fault_overlay;
-    %if ICOORD == 2 && isempty(LON_GRID) ~= 1
     if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 | isempty(AFAULT_DATA)~=1
         hold on;
         overlay_drawing;
     end
-    %end
     FUNC_SWITCH = 0; %reset
     flag = check_lonlat_info;
     if flag == 1
@@ -589,7 +587,7 @@ set(hObject,'String',num2str(KODE(INUM),'%3i'));
 if KODE(INUM) == 100
     if IRAKE == 1   % rake & netslip type
         set(findobj('Tag','text_input_latslip'),'String','rake');
-        set(findobj('Tag','text_slip1_unit'),'String','(°)');
+        set(findobj('Tag','text_slip1_unit'),'String','(ï¿½)');
         set(findobj('Tag','text_input_dipslip'),'String','net slip');
         set(findobj('Tag','text_slip2_unit'),'String','(m)');
     else            % lateral slip and dip slip type
@@ -679,7 +677,7 @@ function text_slip1_unit_CreateFcn(hObject, eventdata, handles)
 global KODE INUM IRAKE
 if KODE(INUM) == 100
     if IRAKE == 1   % rake & netslip type
-        set(findobj('Tag','text_slip1_unit'),'String','(°)');
+        set(findobj('Tag','text_slip1_unit'),'String','(ï¿½)');
     else            % lateral slip and dip slip type
         set(findobj('Tag','text_slip1_unit'),'String','(m)');
     end

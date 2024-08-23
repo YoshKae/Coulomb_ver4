@@ -11,8 +11,6 @@ if check == 100     % moment can be calcualted only if KODE = 100
         smo = shearmod * flength * wfault * slip * 1.0e+18;
         amo = amo + smo;
     end
-    % mw = (2/3) * (log10(amo)-16.1);
     mw = (2/3) * log10(amo) - 10.7;
     disp(['   Total seismic moment = ' num2str(amo,'%6.2e') ' dyne cm (Mw = ', num2str(mw,'%4.2f') ')']);
-%    disp(amo);
 end

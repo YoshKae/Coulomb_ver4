@@ -25,9 +25,8 @@ y1 = sec_yf-ylb;
 y2 = sec_yf+ylb;
 
 figure(H_MAIN);
-% hold on;
 % to delete already existing line and labels
-%if SEC_FLAG == 1
+
 h = findobj('Tag','xsec_window');
 h0 = findobj(gca,'Tag','cross_section_line');
 ha = findobj(gca,'Tag','cross_section_A');

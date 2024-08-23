@@ -129,7 +129,6 @@ xd2 = (yd2-b0)/a0;              % crossing point x
 lp_top    = sqrt((xtop-x0)^2+(ytop-y0)^2);
 lp_bottom = sqrt((xbottom-x0)^2+(ybottom-y0)^2);
 
-% slope     = atan((bottom-top)/(lp_bottom-lp_top)); % apparent dip along the section
 if x0 > xbottom && x0 < xtop
     slope = atan((bottom-top)/(lp_bottom+lp_top)); % apparent dip along the section
 elseif x0 > xtop && x0 < xbottom
@@ -179,40 +178,40 @@ sec_finish_on_flt = 0;
 if fx1 >= fx0
     if fy1 >= fy0
         if y0 < y0_ftop && y0 > y0_fbottom && y0 < y0_side1 && y0 > y0_side2
-%             disp('Point y0 is within the fault');
+
             sec_start_on_flt   = 1;
         end
         if y1 < y1_ftop && y1 > y1_fbottom && y1 < y1_side1 && y1 > y1_side2
-%            disp('Point y1 is within the fault');
+
             sec_finish_on_flt  = 1;
         end
     else
         if y0 < y0_ftop && y0 > y0_fbottom && y0 < y0_side2 && y0 > y0_side1
-%            disp('Point y0 is within the fault');
+
             sec_start_on_flt   = 1;
         end
         if y1 < y1_ftop && y1 > y1_fbottom && y1 < y1_side2 && y1 > y1_side1
-%            disp('Point y1 is within the fault');
+
             sec_finish_on_flt  = 1;
         end
     end
 else
 	if fy1 >= fy0
         if y0 > y0_ftop && y0 < y0_fbottom && y0 < y0_side1 && y0 > y0_side2
-%            disp('Point y0 is within the fault');
+
             sec_start_on_flt   = 1;
         end
         if y1 > y1_ftop && y1 < y1_fbottom && y1 < y1_side1 && y1 > y1_side2
-%            disp('Point y1 is within the fault');
+
             sec_finish_on_flt  = 1;
         end
     else
         if y0 > y0_ftop && y0 < y0_fbottom && y0 < y0_side2 && y0 > y0_side1
-%            disp('Point y0 is within the fault');
+
             sec_start_on_flt   = 1;
         end
         if y1 > y1_ftop && y1 < y1_fbottom && y1 < y1_side2 && y1 > y1_side1
-%            disp('Point y1 is within the fault');
+
             sec_finish_on_flt  = 1;
         end
     end  
@@ -238,12 +237,12 @@ if sum(iflag) <= 1
         if     itop == 1
             lp_bottom = 0.0;
             lp_top    = sqrt((xtop-x0)^2.+(ytop-y0)^2.);
-%           dp_top    = dp_top;
+
             dp_bottom = dp_top - lp_top * tan(slope);
         elseif ibottom == 1
             lp_top    = 0.0;
             lp_bottom = sqrt((xbottom-x0)^2.+(ybottom-y0)^2.);
-%           dp_bottom = dp_bottom;
+
             dp_top    = dp_bottom + lp_bottom * tan(slope); 
         elseif i1 == 1                                      % CHECK
             lp_temp1  = sqrt((xtop-xd1)^2.+(ytop-yd1)^2.);
@@ -282,12 +281,12 @@ if sum(iflag) <= 1
         if     itop == 1
             lp_bottom = sqrt((x0-x1)^2.+(y0-y1)^2.);
             lp_top    = sqrt((x0-xtop)^2.+(y0-ytop)^2.);
-%           dp_top    = dp_top;
+
             dp_bottom = dp_top - sqrt((x1-xtop)^2.+(y1-ytop)^2.) * tan(slope);
         elseif ibottom == 1
             lp_bottom = sqrt((xbottom-x0)^2.+(ybottom-y0)^2.);
             lp_top    = sqrt((x0-x1)^2.+(y0-y1)^2.);
-%           dp_bottom = dp_bottom;
+
             dp_top    = dp_bottom + sqrt((x1-xbottom)^2.+(y1-ybottom)^2.) * tan(slope); 
         elseif i1 == 1
             lp_temp1  = sqrt((xtop-xd1)^2.+(ytop-yd1)^2.);
@@ -328,57 +327,52 @@ if sum(iflag) <= 1
         dp_bottom = [];
         lp_bottom = [];
     end
-% elseif sum(iflag) == 1
-%         disp('So far we cannot draw the fault line without cutting two edges.');
+
 elseif sum(iflag) >= 3
     disp('something wrong. see fault_init_sec.m');
 else                    % sum(iflag) = 2
     if itop == 1 && ibottom == 1 % sec line crosses the fault top & bottom
-%        disp(' situation 0');
+
     elseif itop == 1 && i1 == 1
-%         dp_bottom = dp_top - abs(d1-dtop) * tan(slope);
-%        disp(' situation 1');
+
         dp_bottom = dp_top - abs(d1-dtop) * tan(slope);
         lp_bottom = d1;        
     elseif itop == 1 && i2 == 1
-%         dp_bottom = dp_top - abs(d2-dtop) * tan(slope);
-%        disp(' situation 2');
+
         dp_bottom = dp_top - abs(d2-dtop) * tan(slope);
         lp_bottom = d2;  
     elseif ibottom == 1 && i1 == 1
-%         dp_top = dp_top - abs(d1-dtop) * tan(slope);
-%        disp(' situation 3');
+
         dp_top = dp_bottom + abs(d1-dbottom) * tan(slope);        
         lp_top = d1;
     elseif ibottom == 1 && i2 == 1
-%         dp_top = dp_top - abs(d2-dtop) * tan(slope);
-%        disp(' situation 4');
+
         dp_top = dp_bottom + abs(d2-dbottom) * tan(slope);
         lp_top = d2;
     elseif i1 == 1 && i2 == 1   % problem
-%        disp(' situation 5');
+
         temp_dp_top    = dp_top;
         temp_dp_bottom = dp_bottom;
         if x0 > xtop && x0 <= xd1
-%        disp(' situation 5-1');
+
             dp_top    = temp_dp_top - abs(d1+dtop) * tan(slope);
             dp_bottom = temp_dp_top - abs(dtop+d2) * tan(slope);
             lp_top    = d1;
             lp_bottom = d2;
         elseif x0 < xbottom && x0 >= xd2
-%        disp(' situation 5-2');
+
             dp_bottom = temp_dp_bottom + abs(d2+dbottom) * tan(slope);
             dp_top    = temp_dp_bottom + abs(dbottom+d1) * tan(slope);
             lp_top    = d1;
             lp_bottom = d2;
         elseif x0 > xbottom && x0 <= xd1
-%        disp(' situation 5-3');
+
             dp_bottom = temp_dp_bottom + abs(d1+dbottom) * tan(slope);
             dp_top    = temp_dp_bottom + abs(dbottom+d2) * tan(slope);
             lp_top    = d2;
             lp_bottom = d1;
         elseif x0 > xd2 && x0 <= xtop
-%        disp(' situation 5-4');
+
             dp_top    = temp_dp_top - abs(d2+dtop) * tan(slope);
             dp_bottom = temp_dp_top - abs(dtop+d1) * tan(slope);
             lp_top    = d2;
@@ -388,7 +382,7 @@ else                    % sum(iflag) = 2
         end
     end
 end
-%         test = single([lp_top dp_top lp_bottom dp_bottom]);
+
 
         
 %====================================================================

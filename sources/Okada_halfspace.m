@@ -69,8 +69,7 @@ if SEC_FLAG == 1        % cross section
     NXINC = NSEC;
     NYINC = abs(NDEPTH);
 else
-%     NXINC = int32((xfinish-xstart)/xinc)+1;
-%     NYINC = int32((yfinish-ystart)/yinc)+1;
+
     NXINC = length(XGRID);
     NYINC = length(YGRID);   % NXINC & NYINC are really needed???
 end
@@ -139,8 +138,7 @@ for k = 1:NXINC
         else
             NCOUNT = NCOUNT + 1;
         end
-%         fr = double(ncount)/double(ntotal);   % make it slow
-%         waitbar(fr);
+
     end
         if DEPTH_RANGE_TYPE == 0
          fr = double(ncount)/double(ntotal);
@@ -149,8 +147,7 @@ for k = 1:NXINC
         end
          waitbar(fr);
 end
-%-        fr = double(ncount)/double(ntotal);
-%-        waitbar(fr);
+
         if ii == NUM
             if DEPTH_RANGE_TYPE == 0
                 waitbar(fr,h,'Now making image... please wait');
@@ -184,8 +181,7 @@ end
         y = zeros(n,1,'double') + double(c2);
         al = zeros(n,1,'double') + double(c3);
         aw = zeros(n,1,'double') + double(c4);
-%         % for point source calculation (unit: input m**3, output
-%         % m**3/km**2 -> m => thus ./(1.0E+3)
+
         if KODE(ii) == 400
             aw = zeros(n,1,'double') - double(ELEMENT(ii,5));
             e5 = zeros(n,1,'double') + double(ELEMENT(ii,6));
@@ -228,7 +224,7 @@ IIRET = IIRET + sum(IRET);
     Z = a(:,4);
     
 %-- Displacement Conversion from Okada's field to Given field -------------
-%    ELEMENT = double(ELEMENT);
+
     sw = sqrt((ELEMENT(ii,4)-ELEMENT(ii,2))^2+(ELEMENT(ii,3)-ELEMENT(ii,1))^2);
     sina = (ELEMENT(ii,4)-ELEMENT(ii,2))/double(sw);
     cosa = (ELEMENT(ii,3)-ELEMENT(ii,1))/double(sw);
@@ -258,12 +254,7 @@ IIRET = IIRET + sum(IRET);
     syz = (YOUNG/(2.0*(1.0+POIS))) * (UYZ + UZY) * 0.001;
     else                        % remain strain
     % caution! strain dimension is from x,y,z coordinate (should be /1000)
-%     sxx = UXX * 0.001;
-%     syy = UYY * 0.001;
-%     szz = UZZ * 0.001;
-%     sxy = UXY * 0.001;
-%     sxz = UXZ * 0.001;
-%     syz = UYZ * 0.001;
+
     sxx = UXX * 0.001;
     syy = UYY * 0.001;
     szz = UZZ * 0.001;
@@ -311,7 +302,7 @@ IIRET = IIRET + sum(IRET);
 	end
 end                                     %%%**********(to skip calc for zero slip)
 end
-% DC3D = double(DC3D);
+
 
 
 if DEPTH_RANGE_TYPE == 0

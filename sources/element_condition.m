@@ -103,21 +103,7 @@ e_comp(:,3) = (180.0-b).*ind5.*ind7 + (-180.0-b).*ind5.*ind8 ...
 %       ELEMENT(:,9) fault bottom depth (km)
 
 e7 = [e9(:,1) e9(:,2) e9(:,3) e9(:,4),e9(:,7) e9(:,8) e9(:,9)];
-% for k = 1:m
-% e7(k,:) = [e9(k,1) e9(k,2) e9(k,3) e9(k,4),e9(k,7) e9(k,8) e9(k,9)];
-% end
 
-% fc = zeros(m,8);
-% e_center = zeros(m,3);     % 3 columns (x,y,z)
-% middle = zeros(m,1);
-% middle = (e7(:,6)+e7(:,7))./2.0;
-% fc = fault_corners_vec(e7(:,1),e7(:,2),e7(:,3),e7(:,4),e7(:,5),e7(:,6),...
-%         middle);
-% %    fc = [xs ys xf yf xf_bottom yf_bottom xs_bottom ys_bottom];
-% e_center(:,1) = (fc(:,7) + fc(:,5))./2.0;
-% e_center(:,2) = (fc(:,8) + fc(:,6))./2.0;
-% e_center(:,3) = middle;
-% 
 
 for k = 1:m
     middle = (e7(k,6)+e7(k,7))/2.0;
@@ -275,7 +261,6 @@ dummy2 = zeros(m,1,'double');
 dummy3 = zeros(m,1,'double');
 c1 = zeros(m,1,'double') + e_comp(:,1);
 c2 = zeros(m,1,'double') + e_comp(:,2);
-% c3 = zeros(m,1) + e_comp(m,3);
 c4 = zeros(m,1,'double') + friction;
 
 % right-lat. calc.
@@ -294,15 +279,13 @@ ec_calc_rake = zeros(m,1,'double') + EC_RAKE;
 c3 = zeros(m,1,'double') + EC_RAKE;
 [spec_cl_shear,EC_NORMAL,COULOMB_PREF] = calc_coulomb(c1,c2,c3,c4,ss);
 
-% rake assigned for each fault. calc.
-% [each_rake dummy1] = comp2rake(e9(:,5),e9(:,6));
-% c3 = each_rake;
+
 if isempty(IND_RAKE)
     c3 = zeros(m,1,'double') + EC_RAKE;
     each_rake = zeros(m,1,'double') + EC_RAKE;
     disp('Warning: No individual rake is assgined in this file.');
 else
-%    c3 = IND_RAKE;
+
     each_rake = zeros(m,1,'double') + IND_RAKE;
 end
 [rake_cl_shear,EC_NORMAL,COULOMB_RAKE] = calc_coulomb(c1,c2,each_rake,c4,ss);
@@ -312,8 +295,7 @@ end
 % IMAXSHEAR = 2 or others: skip the max shear direction to speed up
 
 if IMAXSHEAR == 1
-% shear max direction (grid search)
-% deg_inc = 0.1;
+
 deg_inc = 1.0;
 nsearch = round(360.0 / deg_inc);
     for k = 1:nsearch
@@ -346,9 +328,7 @@ b = [double(nid(:,1)) DC3DE(:,1) DC3DE(:,2) -DC3DE(:,5) f_length(:) e_comp(:,1) 
     end
 header1 = 'Fault,X-center,Y-center,Z-center,length,strike,dip,lat-slip,dip-slip,sig-right,sig_reverse,normal,coul-right,coul-reverse,opt-rake,opt-coul,spec-rake,spec-coul,element-rake,el-rake-coul\n';
 header2 = '#,(km),(km),(km),(km),(km),(deg),(m),(m),(bar),(bar),(bar),(bar),(bar),(deg),(bar),(deg),(bar),(deg),(bar)\n';
-%footer1 = ' \n'; %removed by ZKM on 29.04.16 so that the output files can
-%be used with my patch script
-%footer2 = 'opt-rake and opt-coul are found using grid search method of 0.1 deg increment.\n';
+
 fid = fopen('Element_conditions.csv','wt');
 sp = '   ';
 cm = ',';
@@ -366,17 +346,10 @@ for m=1:size(b,1)
         fprintf(fid,FCOMMENT(m).ref); fprintf(fid,' \n');
     end
 end
-%fprintf(fid,footer1); %removed by ZKM on 29.04.16 so that the output files can
-%be used with my patch script
-%fprintf(fid,footer2);
+
 fclose(fid);
 
-%          dlmwrite('Element_conditions.csv',header1,'delimiter','');  
-%          dlmwrite('Element_conditions.csv',header2,'delimiter','','-append');  
-%          dlmwrite('Element_conditions.csv',b,'delimiter',',','precision','%15.6f','-append');  
-%          dlmwrite('Element_conditions.csv',footer1,'delimiter','','-append');  
-%          dlmwrite('Element_conditions.csv',footer2,'delimiter','','-append');
-%          disp(['Element_conditions.csv is saved in ' pwd]);
+%
 	cd (HOME_DIR);
 coulomb_in_3D;
 end

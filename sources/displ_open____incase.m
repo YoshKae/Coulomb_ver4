@@ -37,7 +37,7 @@ else
     fid = fopen('Displacement.cou','r');
     coul = textscan(fid,'%f %f %f %f %f %f','delimiter','\t','headerlines',3);
     fclose (fid);
-%    disp(['Displacement.cou is saved in ' pwd]);
+
     cd (HOME_DIR);
 % cell to matrices
     ux = [coul{4}];
@@ -72,9 +72,7 @@ if FIXFLAG == 0       % no fixed point
         xds = zeros(length(YGRID),length(XGRID));
         yds = zeros(length(YGRID),length(XGRID));
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%             a  = xy2lonlat([reshape(XGRID,length(XGRID),1) reshape(YGRID,length(YGRID),1)]);
-%             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(a(:,2)),1);
-%             yds = repmat(reshape(a(:,2),length(a(:,2)),1),1,length(a(:,1)));  
+
             a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
             b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(b(:,2)),1);
@@ -164,16 +162,8 @@ else                    % recalculate displacement for the fixed point
     hold on;
 end
 
-
-%         [unit,unitText] = check_unit_vector(XGRID(1),XGRID(end),1.0*resz,0.2,0.5);
-%         a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),unit*resz,0.,0); %scale vector
-%         h1 = text((XGRID(1)+unit*resz*0.5),(YGRID(1)+yinc*2.2),unitText);
-%         
         
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     a  = xy2lonlat([reshape(XGRID,length(XGRID),1) reshape(YGRID,length(YGRID),1)]);
-%     xinc = a(2,1)-a(1,1);
-%     yinc = a(2,2)-a(1,2);    
 	a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
 	b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
     xinc = a(2,1)-a(1,1);
@@ -181,17 +171,12 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1
     [unit,unitText] = check_unit_vector(XGRID(1),XGRID(end),1.0*resz,0.15,0.4);
     a0 = quiver((a(1,1)+xinc),(b(1,2)+yinc*1.5),unit*LON_PER_X*resz,0.,0); %scale vector
     h = text((a(1,1)+unit*LON_PER_X*resz*0.5),(b(1,2)+yinc*2.2),unitText);
-%     a0 = quiver((a(1,1)+xinc),(b(1,2)+yinc*1.5),1.0*LON_PER_X*resz,0.,0); %scale vector (1m)
-%     h = text((a(1,1)+2.0*xinc),(b(1,2)+yinc*3.0),'1m');
 else
     xinc = XGRID(2)-XGRID(1);
     yinc = YGRID(2)-YGRID(1);
     [unit,unitText] = check_unit_vector(XGRID(1),XGRID(end),1.0*resz,0.15,0.4);
 	a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),unit*resz,0.,0); %scale vector
     h = text(XGRID(1)+unit*resz*0.5,YGRID(1)+yinc*2.2,unitText);
-% 	a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),1.0*resz,0.,0); %scale vector (1m)
-%     h = text((XGRID(1)+2.0*xinc),(YGRID(1)+yinc*2.2),'1m');
-
 end
 
 set(a1,'Color',PREF(2,1:3),'LineWidth',PREF(2,4));
@@ -210,43 +195,31 @@ grid_drawing;
 set(H_MAIN,'NumberTitle','off','Menubar','figure');
 hold on;
 a1 = 1; %dummy
-% [C,h] = contour(XGRID,YGRID,uuz,10);
-% if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     CC = zeros(length(LAT_GRID),length(LON_GRID),'double');
-%     CC = reshape(uuz,length(LAT_GRID),length(LON_GRID));
-%     CC = CC(length(LAT_GRID):-1:1,:);
-%     buffer = 1.0;
-%     cmax = max(reshape(max(abs(CC)),length(LON_GRID),1));
-%     cmin = min(reshape(min(abs(CC)),length(LON_GRID),1));
-%     cmean = mean(reshape(mean(abs(CC)),length(LON_GRID),1));
-% else
-    CC = zeros(length(YGRID),length(XGRID),'double');
-    CC = reshape(uuz,length(YGRID),length(XGRID));
-    CC = CC(length(YGRID):-1:1,:);
-    buffer = 1.0;
-    cmax = max(reshape(max(abs(CC)),length(XGRID),1));
-    cmin = min(reshape(min(abs(CC)),length(XGRID),1));
-    cmean = mean(reshape(mean(abs(CC)),length(XGRID),1));
-% end
-% cmax = cmax + buffer;
-% cmin = 0.0;
+CC = zeros(length(YGRID),length(XGRID),'double');
+CC = reshape(uuz,length(YGRID),length(XGRID));
+CC = CC(length(YGRID):-1:1,:);
+buffer = 1.0;
+cmax = max(reshape(max(abs(CC)),length(XGRID),1));
+cmin = min(reshape(min(abs(CC)),length(XGRID),1));
+cmean = mean(reshape(mean(abs(CC)),length(XGRID),1));
+
 COLORSN = cmean;
 coulomb_view(cmean);
 hold on;
 fault_overlay;
 hold off;
-    a = cmax - cmin;
-%    if isempty(CONT_INTERVAL)
-    if a > 10.0
-        CONT_INTERVAL = 1;
-    elseif a > 5.0
-        CONT_INTERVAL = 0.5;
-    elseif a > 1.0
-        CONT_INTERVAL = 0.1;
-    else
-        CONT_INTERVAL = 0.01;
-    end
-%    end
+a = cmax - cmin;
+
+if a > 10.0
+    CONT_INTERVAL = 1;
+elseif a > 5.0
+    CONT_INTERVAL = 0.5;
+elseif a > 1.0
+    CONT_INTERVAL = 0.1;
+else
+    CONT_INTERVAL = 0.01;
+end
+
 H_VERTICAL_DISPL = vertical_displ_window;
 set(findobj('Tag','vd_slider'),'Max',cmax);
 set(findobj('Tag','vd_slider'),'Min',cmin);
@@ -316,9 +289,7 @@ end
         xyz_aspect = [XY_RATIO 1 1];
     end
     try
-%         azm = str2num(get(findobj('Tag','edit_view_az'),'String'));
-%         elv = str2num(get(findobj('Tag','edit_view_el'),'String'));
-%               view(azm,elv);
+
 % for some reason it does not work so I cannot help using global variable.
         view(VIEW_AZ,VIEW_EL);
     catch
@@ -347,16 +318,15 @@ else
     [m n] = size(S_ELEMENT);
 end
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
-mm = size(S_ELEMENT,1);
-temp_element = S_ELEMENT(:,1:4);
+    mm = size(S_ELEMENT,1);
+    temp_element = S_ELEMENT(:,1:4);
     a = xy2lonlat([S_ELEMENT(:,1) S_ELEMENT(:,2)]);
     b = xy2lonlat([S_ELEMENT(:,3) S_ELEMENT(:,4)]);
     S_ELEMENT(:,1) = a(:,1);
     S_ELEMENT(:,2) = a(:,2);
     S_ELEMENT(:,3) = b(:,1);
     S_ELEMENT(:,4) = b(:,2); 
-% else
-%     temp_element = S_ELEMENT(:,1:4);
+
 end    
 
 %--- for coloring amount of fault slip for grid 3D
@@ -413,50 +383,7 @@ for k = 1:m
     xcf = xc + ddip_length/2.0;
     ycs = yc - dist/2.0;
     ycf = yc + dist/2.0;
-%     if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         denom = temp_element(k,3)-temp_element(k,1);
-%         numer = temp_element(k,4)-temp_element(k,2);
-%         if denom == 0
-%         a = atan((numer)/0.000001);        
-%         else
-%         a = atan((numer)/(denom));
-%         end
-%         if temp_element(k,1) > temp_element(k,3)
-%             rstr = 1.5 * pi - a;
-%         else
-%             rstr = pi / 2.0 - a;
-%         end
-%         xc  = (e(3,1)+e(4,1))/2.0;
-%         yc  = (e(3,2)+e(4,2))/2.0; 
-%         xcs = xc - ddip_length/2.0;
-%         xcf = xc + ddip_length/2.0;
-%         ycs = yc - dist/2.0;
-%         ycf = yc + dist/2.0;
-%         d1 = (e1(2,1) - xc) * (XY_RATIO - 1.0);
-%         d2 = (e1(3,1) - xc) * (XY_RATIO - 1.0);
-%         cx1 = d1 * cos(rstr) * 0;
-%         cy1 = d1 * sin(rstr) * 0;
-%         cx2 = d2 * cos(rstr) * 0;
-%         cy2 = d2 * sin(rstr) * 0;
-%         xc1 = xc - (ddip_length/2.0) - abs(cx2);
-%         xc2 = xc + (ddip_length/2.0) + abs(cx1);
-%         xc3 = xc + (ddip_length/2.0) + abs(cx2);
-%         xc4 = xc - (ddip_length/2.0) - abs(cx1);
-%         yc1 = yc + dist/2.0 - cy2;
-%         yc2 = yc + dist/2.0 + cy1;
-%         yc3 = yc - dist/2.0 + cy2;
-%         yc4 = yc - dist/2.0 - cy1;
-%     
-%         a = xy2lonlat([xc yc]); xc = a(1); yc = a(2);
-%         a = xy2lonlat([xc1 yc1]); xc1 = a(1); yc1 = a(2);
-%         a = xy2lonlat([xc2 yc2]); xc2 = a(1); yc2 = a(2);
-%         a = xy2lonlat([xc3 yc3]); xc3 = a(1); yc3 = a(2);
-%         a = xy2lonlat([xc4 yc4]); xc4 = a(1); yc4 = a(2);
-% 
-% %         [xc1 xc2 xc3 xc4]
-% %         [yc1 yc2 yc3 yc4]
-% 
-%     end
+
 % determin fill color
     if FUNC_SWITCH ~= 10
         c_index = zeros(64,3);
@@ -479,23 +406,22 @@ for k = 1:m
                     sb = abs(slip_max);
         end
         if slip_max == 0.0 && slip_min == 0.0
-%            disp('No source slip is found. See the input file.');
             sb = 1.0;           % in case
         end
             if isempty(C_SLIP_SAT)
                 C_SLIP_SAT = sb;
             end
             c_unit = (C_SLIP_SAT + C_SLIP_SAT) / 64;
-%             c_unit = (sb + sb) / 64;
+
             if F3D_SLIP_TYPE == 1
                 c_unit = C_SLIP_SAT / 64;
-%                 c_unit = sb / 64;
+
             	rgb = sqrt(S_ELEMENT(k,5)^2.0 + S_ELEMENT(k,6)^2.0) / c_unit;
             elseif F3D_SLIP_TYPE == 2
-%             	rgb = (S_ELEMENT(k,5) + sb) / c_unit;
+
             	rgb = (S_ELEMENT(k,5) + C_SLIP_SAT) / c_unit;
             else
-%             	rgb = (S_ELEMENT(k,6) + sb) / c_unit;
+
             	rgb = (S_ELEMENT(k,6) + C_SLIP_SAT) / c_unit;
             end
         ni = int8(round(rgb));
@@ -530,7 +456,7 @@ for k = 1:m
         elseif EC_STRESS_TYPE == 4
             temp = isnan(COULOMB_RAKE(k));
             rgb = COULOMB_RAKE(k) / C_SAT;
-%            rgb = (COULOMB_RAKE(k)-1.0) / C_SAT;
+
             if temp == 1
                 rgb = 0.0;
             end
@@ -552,7 +478,7 @@ for k = 1:m
     end
     
     if ICOORD == 2 && isempty(LON_GRID) ~= 1
-% 	b  = fill([xc1 xc2 xc3 xc4 xc1],[yc1 yc2 yc3 yc4 yc1],fcolor);
+
     else
     b  = fill([xcs xcf xcf xcs xcs],[ycf ycf ycs ycs ycf],fcolor);
 	end
@@ -566,11 +492,7 @@ for k = 1:m
     if ICOORD == 2 && isempty(LON_GRID) ~= 1
         denom = temp_element(k,3)-temp_element(k,1);
         numer = temp_element(k,4)-temp_element(k,2);
-%         if denom == 0
-%         a = atan((numer*LAT_PER_Y)/0.000001);        
-%         else
-%         a = atan((numer*LAT_PER_Y)/(denom*LON_PER_X));
-%         end
+
         if denom == 0
         a = atan((numer)/0.000001);        
         else
@@ -581,12 +503,6 @@ for k = 1:m
         else
             rstr = pi / 2.0 - a;
         end
- %               xyz_aspect = [LON_PER_X LAT_PER_Y 1.0];
-%         aa = sqrt(denom^2.+numer^2.);
-%         rdip = atan((S_ELEMENT(k,9)-S_ELEMENT(k,8))...
-%             /aa);
-
-%         rstr = 0;
 
         rdip = deg2rad(S_ELEMENT(k,7));
     else
@@ -605,22 +521,19 @@ for k = 1:m
     end
     
 	if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         Rsc  = makehgtform('scale',[1,1,1/LON_PER_X]);
-%         Rsc2 = makehgtform('scale',[1,1,1]);
-%         xshift = xc;
-%         yshift = yc;	
+
     else
-    t = hgtransform;
-    set(b,'Parent',t);    
-	Rsc = makehgtform('scale',[1,1,1]);
-	Rsc2 = makehgtform('scale',[1,1,1]);
-	xshift = (xcf + xcs) / 2.0;
-	yshift = (ycf + ycs) / 2.0;
-    Rz = makehgtform('zrotate',double(pi-rstr));
-    Rx = makehgtform('yrotate',double(-rdip));   
-    Rt  = makehgtform('translate',[xshift yshift -middepth]);
-	Rt2  = makehgtform('translate',[-xshift -yshift 0]);
-    set(t,'Matrix',Rt*Rsc*Rz*Rsc2*Rx*Rt2);
+        t = hgtransform;
+        set(b,'Parent',t);    
+        Rsc = makehgtform('scale',[1,1,1]);
+        Rsc2 = makehgtform('scale',[1,1,1]);
+        xshift = (xcf + xcs) / 2.0;
+        yshift = (ycf + ycs) / 2.0;
+        Rz = makehgtform('zrotate',double(pi-rstr));
+        Rx = makehgtform('yrotate',double(-rdip));   
+        Rt  = makehgtform('translate',[xshift yshift -middepth]);
+        Rt2  = makehgtform('translate',[-xshift -yshift 0]);
+        set(t,'Matrix',Rt*Rsc*Rz*Rsc2*Rx*Rt2);
     end
     
 %----- to plot arrows on the fault (rake arrow) ----------------------
@@ -657,7 +570,7 @@ for k = 1:m
     c = obj_trans(0,S_ELEMENT(k,7),str,0,0,0,1,1,1);
     end
     c1 = c.';
-% if rake is specified even without any slip (the case of IRAKE = 1)
+
     if isempty(EC_STRESS_TYPE) || EC_STRESS_TYPE == 4 || EC_STRESS_TYPE == 5
         if IRAKE == 1
             [latslip dipslip] = rake2comp(IND_RAKE(k,1),unit_arrow);
@@ -674,14 +587,14 @@ for k = 1:m
     end
         tf1 = c1 * [-dipslip; -latslip; 0];
         tf2 = c1 * [dipslip; latslip; 0];
-%    if isempty(EC_STRESS_TYPE) || EC_STRESS_TYPE ~= 5      % no rake line (slip line) for normal stress change
+
     hold on;
 	quiver3(x0+offset,y0+offset,-z0,tf1(1)*adj,tf1(2)*adj,tf1(3)*adj,2,...
          'Color','b','LineWidth',1.0); % plot an arrow on one side
     hold on;
 	quiver3(x0-offset,y0-offset,-z0,tf2(1)*adj,tf2(2)*adj,tf2(3)*adj,2,...
          'Color','b','LineWidth',1.0); % plot an arrow on the other side 
-%    end
+
      
 %------ plot a circle in 'plot3d' for point source calculation -------------   
     if S_ELEMENT(k,10)==400 || S_ELEMENT(k,10)==500
@@ -722,15 +635,15 @@ if FUNC_SWITCH == 5 || FUNC_SWITCH == 5.5
 elseif FUNC_SWITCH == 1
             if F3D_SLIP_TYPE == 1
             	title('Amount of net slip on each fault (m)','FontSize',18);
-%                 caxis([0.0 sb]);
+
                 caxis([0.0 C_SLIP_SAT]);
             elseif F3D_SLIP_TYPE == 2
             	title('Amount of strike slip on each fault (m). Right lat. positive','FontSize',18); 
-%                 caxis([-sb sb]);
+
                 caxis([-C_SLIP_SAT C_SLIP_SAT]);
             else
             	title('Amount of dip slip on each fault patch (m). Reverse. positive','FontSize',18); 
-%                 caxis([-sb sb]);
+
                 caxis([-C_SLIP_SAT C_SLIP_SAT]);
             end
                 colorbar('location','SouthOutside');
@@ -763,32 +676,7 @@ end
                 ylim([min(YGRID),max(YGRID)]);
             end
                  daspect(xyz_aspect);
-% %     set(t,'Matrix',Rt*Rsc*Rz*Rsc2*Rx*Rt2);
-% %                 daspect([0.01 0.01 1]);
-% %                 pbaspect([1 2 1]);
-%     if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     a = xy2lonlat([xc yc]); xc = a(1); yc = a(2);
-%     a = xy2lonlat([xcs ycs]); xcs = a(1); ycs = a(2);
-%     a = xy2lonlat([xcf ycf]); xcf = a(1); ycf = a(2);  
-%             b  = fill([xcs xcf xcf xcs xcs],[ycf ycf ycs ycs ycf],fcolor);
-%     t = hgtransform;
-%     set(b,'Parent',t);    
-%     
-%         Rsc  = makehgtform('scale',[1,1,1/LON_PER_X]);
-%         Rsc2 = makehgtform('scale',[1,1,1]);
-% 
-%         xshift = xc;
-%         yshift = yc;
-%     Rz = makehgtform('zrotate',double(pi-(rstr-pi/16)));
-%     Rx = makehgtform('yrotate',double(-rdip));   
-%     Rt  = makehgtform('translate',[xshift yshift -middepth]);
-% 	Rt2  = makehgtform('translate',[-xshift -yshift 0]);
-%     set(t,'Matrix',Rt*Rsc*Rz*Rsc2*Rx*Rt2);
-% %     tt = hgtransform;
-% %     set(b,'Parent',tt);
-% %     Rsc3 = makehgtform('scale',[XY_RATIO,1,1]);
-% %     set(tt,'Matrix',Rsc3);
-%     end   
+
     if ICOORD == 2 && isempty(LON_GRID) ~= 1
         S_ELEMENT(:,1:4) = temp_element;
     end   

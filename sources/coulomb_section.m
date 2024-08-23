@@ -63,12 +63,6 @@ for m = 1:NDEPTH
     end
 end
  
-% [fc] = fault_corners(xs,ys,xf,yf,dip,top,bottom)
-% fc = zeros(4,2); % initialize to be all zeros to fasten the process
-% fc = [xs,ys; xf,yf; xf_bottom,yf_bottom; xs_bottom,ys_bottom];
-
-% AX = repmat(xx,abs(NDEPTH),1);   % repmat(M, v, h) copy function of Matrix
-% AY = repmat(yy,abs(NDEPTH),1);
 AZ = repmat(reshape(ycal,abs(NDEPTH),1),1,NSEC);
 size(AX);
 size(AY);
@@ -123,13 +117,6 @@ if FUNC_SWITCH ~= 6
             rss5(a0:a1) = rss5(a0:a1) + rs(5,1);
             rss6(a0:a1) = rss6(a0:a1) + rs(6,1);
         end
-%       [rs] = regional_stress(R_STRESS,CALC_DEPTH);
-%       sgx  = zeros(a,1) + rs(1,1) + reshape(ss(1,1:a),a,1);
-%       sgy  = zeros(a,1) + rs(2,1) + reshape(ss(2,1:a),a,1);
-%       sgz  = zeros(a,1) + rs(3,1) + reshape(ss(3,1:a),a,1);
-%       sgyz = zeros(a,1) + rs(4,1) + reshape(ss(4,1:a),a,1);
-%       sgxz = zeros(a,1) + rs(5,1) + reshape(ss(5,1:a),a,1);
-%       sgxy = zeros(a,1) + rs(6,1) + reshape(ss(6,1:a),a,1);
         sgx  = zeros(a,1) + rss1 + reshape(ss(1,1:a),a,1);
         sgy  = zeros(a,1) + rss2 + reshape(ss(2,1:a),a,1);
         sgz  = zeros(a,1) + rss3 + reshape(ss(3,1:a),a,1);
@@ -234,10 +221,6 @@ else
 end
 fclose (fid);
 
-% cell to matrices
-% x = coul{1};
-% y = coul{2};
-% z = coul{3};
 cl = coul{4};
 sigs = coul{5};
 sign = coul{6};
@@ -333,9 +316,6 @@ end
 %----------------------------------- draw fault line
 for n = 1:NUM
     hold on;
-% [fc] = fault_corners(xs,ys,xf,yf,dip,top,bottom)
-% fc = zeros(4,2); % initialize to be all zeros to fasten the process
-% fc = [xs,ys; xf,yf; xf_bottom,yf_bottom; xs_bottom,ys_bottom];
 
 % if fault bottom is shallower than cross-section bottom... %
     dinc = SEC_DOWNDIP_INC/5.0;
@@ -458,11 +438,9 @@ if strcmp(get(findobj('Tag','menu_earthquakes'), 'Checked'),'on')
         secpos(:,5) =  0.0;     % top km
         secpos(:,6) = 200.0;    % bottom km
         secpos(:,7) =  90.0;    % dip (90 degree, vertical)
-%       coord_conversion(xgg,ygg,xs,ys,xf,yf,top,bottom,dip)
         [c1,c2,c3,c4] = coord_conversion(EQ_DATA(:,16),EQ_DATA(:,17),secpos(:,1),secpos(:,2),...
             secpos(:,3),secpos(:,4),secpos(:,5),secpos(:,6),secpos(:,7));
-         wcut = abs(c2) <= ones(neq,1,'double') .* (EQPICK_WIDTH/2.0);
-%         c1flip = (c3*2.0 - c1) .* wcut;
+        wcut = abs(c2) <= ones(neq,1,'double') .* (EQPICK_WIDTH/2.0);
         n = sum(rot90(sum(wcut)));
         c1a    = [(c1 + c3) .* wcut EQ_DATA(:,7)];
         c1flip = flipud(sortrows(c1a));
@@ -482,15 +460,11 @@ hold on;
 x = xmax + (xmax-xmin)/10.0;
 y = ymin - (ymax-ymin)/2.0;
 lsp = (ymax-ymin)*10.0/100.0;
-% date_and_file_stamp(H_SECTION,INPUT_FILE,x,y,lsp,FUNC_SWITCH,CALC_DEPTH,STRESS_TYPE,...
-%     FRIC,0,0,STRIKE,DIP,RAKE,SEC_FLAG,SEC_XS,SEC_YS,SEC_XF,SEC_YF,SEC_DIP);
-% if isempty(CALC_DEPTH_RANGE)
-%     CALC_DEPTH_RANGE = [0:5:10];
-% end
+
 try
-dm1 = STRIKE(1); dm2 = DIP(1); dm3 = RAKE(1);
+    dm1 = STRIKE(1); dm2 = DIP(1); dm3 = RAKE(1);
 catch
-dm1 = 50.; dm2 = 90.; dm3 = 180.;
+    dm1 = 50.; dm2 = 90.; dm3 = 180.;
 end
 % to see the paramaters, type 'help record_stamp' in command window.
 record_stamp(H_SECTION,x,y,'SoftwareVersion',CURRENT_VERSION,...

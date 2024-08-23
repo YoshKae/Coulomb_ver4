@@ -1,11 +1,8 @@
 function [fc] = fault_corners(xs,ys,xf,yf,dip,top,bottom)
 % For seeking the four corners from the input data
 %
-% fc is a 4x2 matrix consisting of four map projection corners
-% of a fault
-%
+% fc is a 4x2 matrix consisting of four map projection corners of a fault
 
-% disp('This is fault_corners.m');
 
 % % flag = 1: just four corners of a source fault projected on the map view
 % % flag = 2: for an ideal line which cuts the surface (fc(4,:))
@@ -37,5 +34,3 @@ end
 
 % clockwise from the starting corner
 fc = [xs,ys; xf,yf; xf_bottom,yf_bottom; xs_bottom,ys_bottom];
-
-

@@ -154,17 +154,8 @@ for ii = 1:NUM
         y = zeros(n,1) + double(c2);
         al = zeros(n,1) + double(c3);
         aw = zeros(n,1) + double(c4);
-%         if KODE(ii) == 400
-%             aw = zeros(n,1,'double') - double(ELEMENT(ii,5))./(1.0E+7);
-%             e5 = zeros(n,1,'double') + double(ELEMENT(ii,6))./(1.0E+7);
-%             e6 = zeros(n,1,'double');
-%             zr = zeros(n,1,'double');    
-%         elseif KODE(ii) == 500
-%             aw = zeros(n,1,'double');
-%             e5 = zeros(n,1,'double');
-%             e6 = zeros(n,1,'double') + double(ELEMENT(ii,5))./(1.0E+7);
-%             zr = zeros(n,1,'double') + double(ELEMENT(ii,6))./(1.0E+7);   
-%         end
+
+
         if KODE(ii) == 400
             aw = zeros(n,1,'double') - double(ELEMENT(ii,5));
             e5 = zeros(n,1,'double') + double(ELEMENT(ii,6));
@@ -204,11 +195,9 @@ end
     
 %-- Displacement Conversion from Okada's field to Given field -------------
     sw = sqrt((ELEMENT(ii,4)-ELEMENT(ii,2))^2+(ELEMENT(ii,3)-ELEMENT(ii,1))^2);
-%     ang = atan((ELEMENT(ii,4)-ELEMENT(ii,2))/(ELEMENT(ii,3)-ELEMENT(ii,1)));
     sina = (ELEMENT(ii,4)-ELEMENT(ii,2))/sw;
     cosa = (ELEMENT(ii,3)-ELEMENT(ii,1))/sw;
-%     UXG = UX*cos(ang)-UY*sin(ang);
-%     UYG = UX*sin(ang)+UY*cos(ang);
+
     UXG = UX*cosa-UY*sina;
     UYG = UX*sina+UY*cosa;
     UZG = UZ;
@@ -256,9 +245,6 @@ end
     ssyz = reshape(syz,1,n);
     
     s0 = [ssxx; ssyy; sszz; ssyz; ssxz; ssxy];
-%     for mm = 1:ngrid
-%         s1(1:6,mm) = tensor_trans(sina,s0(1:6,mm),1);
-%     end
 
     s1 = tensor_trans(sina,cosa,s0,1);
 
@@ -268,7 +254,7 @@ end
     SYZ = reshape(s1(4,:),n,1);
     SXZ = reshape(s1(5,:),n,1);
     SXY = reshape(s1(6,:),n,1); 
- %   DC3D0 = [XX YY X Y Z UX UY UZ UXX UYX UZX UXY UYY UZY UXZ UYZ UZZ];
+
  if ii == 1
     if SEC_FLAG == 1
         DC3DS0 = horzcat(XYCOORD,X,Y,Z,UXG,UYG,UZG,SXX,SYY,SZZ,SYZ,SXZ,SXY);
@@ -291,6 +277,5 @@ end
      end
 end                                     %%%**********(to skip calc for zero slip)
 end
-% close(h);
 
 % toc

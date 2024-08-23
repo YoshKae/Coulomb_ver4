@@ -14,7 +14,6 @@ function sn = tensor_trans(sinb,so,flag)
 % % so = [0.25; 0.87; 0.12; 0.03; 0.45; 0.22];
 % % flag = 1;
 
-%
 t = zeros(6,6);
 sn = zeros(1,6);
 
@@ -78,6 +77,3 @@ t(6,5) = xn * yl + yn * xl;
 t(6,6) = xl * ym + yl * xm;
 
 sn = t * so;
-
-
-

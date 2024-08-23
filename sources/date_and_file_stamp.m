@@ -90,10 +90,3 @@ h1 = text(xp,yp,[app_name,date_stamp, '  ' ,fname]);
 h2 = text(xp,yp-1.0*lspace,h3_stamp);
 set(h1,'HorizontalAlignment','right','FontSize',psize,'FontName',pname);
 set(h2,'HorizontalAlignment','right','FontSize',psize,'FontName',pname);
-
-% h1 = text(xp,yp,[app_name,date_stamp]);
-% h2 = text(xp,yp-lspace,fname);
-% h3 = text(xp,yp-2.0*lspace,h3_stamp);
-% set(h1,'HorizontalAlignment','right','FontSize',psize,'FontName',pname);
-% set(h2,'HorizontalAlignment','right','FontSize',psize,'FontName',pname);
-% set(h3,'HorizontalAlignment','right','FontSize',psize,'FontName',pname);

@@ -157,10 +157,7 @@ for m = 1:npatch
     if rvs == 0.0
            rrvs(m) = 0.0;           
     end
-%     if (rls == 0.0) & (rvs == 0.0)
-%            rrls(m) = 0.0;
-%            rrvs(m) = 0.0;   
-%     end
+
     top2(m)    = top + dz * m;
     bottom2(m) = bottom - dz * m;
     ax = ax + rrls(m);
@@ -197,7 +194,7 @@ for m = 1:npatch
     el(m,8) = top2(m);
     el(m,9) = bottom2(m);
 end
-% mw = (2/3) * (log10(amo)-16.1);
+
     mw = (2/3) * log10(amo) - 10.7;
     disp(['Seismic moment = ' num2str(smo,'%6.2e') ' dyne cm (Mw = ', num2str(mw,'%4.2f') ')'])
 
@@ -219,7 +216,3 @@ end
 % dip = el0(7);
 % top = el0(8);
 % bottom = el0(9);
-
-
-
-

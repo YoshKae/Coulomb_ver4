@@ -48,7 +48,6 @@ loninc = LON_GRID(2) - LON_GRID(1);
 latinc = LAT_GRID(2) - LAT_GRID(1);
 LON_PER_X = loninc / xinc;
 LAT_PER_Y = latinc / yinc;
-% XY_RATIO = loninc / latinc;  % x / y
 XY_RATIO = LON_PER_X / LAT_PER_Y;  % x / y
 dx(:,1) = b(:,1) - GRID(1);
 dy(:,1) = b(:,2) - GRID(2);
@@ -59,6 +58,3 @@ flag = flag1 + flag2 + flag3 + flag4;
 if flag >= 1
     MIN_LAT = []; MIN_LON = []; LON_GRID = []; LAT_GRID = [];
 end
-    
-
-

@@ -40,10 +40,8 @@ for k=1:NUM
         ELEMENT(k,5),ELEMENT(k,6),ELEMENT(k,7),ELEMENT(k,8),ELEMENT(k,9),sp);
     try
     if iscell(FCOMMENT(k).ref) == 1
-%     fprintf(fid,mat2str(cell2mat(FCOMMENT(k).ref))); fprintf(fid,' \n');
     fprintf(fid,cell2mat(FCOMMENT(k).ref)); fprintf(fid,' \n');
     elseif iscell(FCOMMENT(k).ref) == 0
-%     fprintf(fid,mat2str(FCOMMENT(k).ref)); fprintf(fid,' \n');
     fprintf(fid,FCOMMENT(k).ref); fprintf(fid,' \n');
     end
     catch
@@ -97,4 +95,3 @@ fprintf(fid,'  6  ---------------------------- zero lat = %16.7f\n',ZERO_LAT);
     end
 end
 fclose(fid);
-% dlmwrite('test.inp',c,'precision','%14s','delimiter','');

@@ -95,5 +95,3 @@ uu = cos(deg2rad(ang)) * uxy;
 if uux < 0.0
     uu = -uu;
 end
-
-

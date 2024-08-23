@@ -67,16 +67,9 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes ec_control_window wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = ec_control_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -95,9 +88,6 @@ if x == 1
 	set(findobj('Tag','radiobutton_coul_ind_rake'),'Value',0.0);
     set(findobj('Tag','radiobutton_normal_stress'),'Value',0.0);
 end
-% hObject    handle to radiobutton_coul_right_lat (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of radiobutton_coul_right_lat
 
@@ -227,17 +217,10 @@ global FUNC_SWITCH
 global DC3D IACT
 global H_MAIN H_EC_CONTROL
 global IMAXSHEAR
-% subfig_clear;
-% clear_obj_and_subfig;
+
 hc = wait_calc_window;   % custom waiting dialog
 ch = get(H_MAIN,'Children');
-% n = length(ch) - 3;
-% if n >= 1
-%     for k = 1:n
-%     delete(ch(k));
-%     end
-%     set(H_MAIN,'Menubar','figure','Toolbar','none');
-% end
+
 FUNC_SWITCH = 10;
 
 tic
@@ -255,12 +238,6 @@ else
 end
 
 close(hc)
-
-% h = findobj('Tag','ec_control_window');
-% if (isempty(h)==1 && isempty(H_EC_CONTROL)==1)
-%     H_EC_CONTROL = ec_control_window;
-% end
-% h_grid = figure(gcf);
 
 %-------------------------------------------------------------------------
 %     CLOSE (pushbutton) 

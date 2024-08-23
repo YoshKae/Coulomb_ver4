@@ -78,10 +78,6 @@ end
 
 % --- Outputs from this function are returned to the command line.
 function varargout = point_calc_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -205,7 +201,6 @@ global H_MAIN C_POINT
    FIXX = xy(1,1);
    FIXY = xy(2,1);
    if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%        a = xy2lonlat([FIXX FIXY]);
         h = findobj('Tag','edit_point_x');
         set(h,'String',num2str(FIXX,'%8.3f'));
         h = findobj('Tag','edit_point_y');
@@ -220,7 +215,6 @@ global H_MAIN C_POINT
         set(h,'String',num2str(FIXY,'%8.3f'));  
    end
     figure(H_MAIN);
-%    delete(axes('Parent',H_MAIN));
     hold on;
     delete(C_POINT);
     if ICOORD == 2 && isempty(LON_GRID) ~= 1

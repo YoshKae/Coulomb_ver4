@@ -63,16 +63,9 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes depth_range_window wait for user response (see UIRESUME)
-% uiwait(handles.depth_range_window);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = depth_range_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;

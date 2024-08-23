@@ -26,8 +26,6 @@ global CC LON_GRID LAT_GRID
 global f_stress
 global IVECTOR
 
-% set(H_MAIN,'Menubar','figure','Toolbar','figure');
-% set(gcf,'Renderer','painters')
 
 % ==================== Special option to make the dots vectorized object
 % IVECTOR = 1; % (0: raster image, 1: vector object, 2: beachball)
@@ -76,7 +74,6 @@ else
             INODAL = 1;
             close(hc);
         case 'No'
- %           warndlg('Do not calc. for nodal plane 2.','!! Warning !!');
     end
     end
 end
@@ -181,7 +178,7 @@ end
         dc3de = dc3de + dc3de0;
 %          UZG
 end
-% ss = zeros(6,m);
+
 s9 = reshape(dc3de(:,9),1,m);
 s10 = reshape(dc3de(:,10),1,m);
 s11 = reshape(dc3de(:,11),1,m);
@@ -225,16 +222,7 @@ if OUTFLAG == 1 || isempty(OUTFLAG) == 1
 else
 	cd (PREF_DIR);
 end
-% % cd output_files
-% header1 = 'year,month,day,hour,minute,lon.,lat.,depth,magnitude,strike1,dip1,rake1,shear1,normal1,coulomb1,strike2,dip2,rake2,shear2,normal2,coulomb2';
-% header2 = '-,-,-,-,-,(deg),(deg),(km),-,(deg),(deg),(deg),(bar),(bar),(bar),(deg),(deg),(deg),(bar),(bar),(bar)';
-% % footer1 = ' ';
-%          dlmwrite('Focal_mech_stress_output.csv',header1,'delimiter','');  
-%          dlmwrite('Focal_mech_stress_output.csv',header2,'delimiter','','-append');  
-%          dlmwrite('Focal_mech_stress_output.csv',f_stress,'delimiter',',','precision','%15.6f','-append');
-%          disp(['Focal_mech_stress_output.csv is saved in ' pwd]);
-% INODAL
-% check1 = sum(EQ_DATA(:,10)) + sum(EQ_DATA(:,11)) + sum(EQ_DATA(:,12));
+
 check2 = sum(EQ_DATA(:,13)) + sum(EQ_DATA(:,14)) + sum(EQ_DATA(:,15));
 if INODAL == 1 || INODAL == 2
     if check2 == 0
@@ -250,7 +238,6 @@ if INODAL == 1 || INODAL == 2
 	dlmwrite('Focal_mech_stress_output.csv',header1,'delimiter','');  
 	dlmwrite('Focal_mech_stress_output.csv',header2,'delimiter','','-append');  
 	dlmwrite('Focal_mech_stress_output.csv',f_stress,'delimiter',',','precision','%15.6f','-append');
-%     NODAL_STRESS = f_stress(:,21);
         if INODAL == 1
             NODAL_STRESS = f_stress(:,15);
         elseif INODAL == 2
@@ -323,13 +310,11 @@ cd (HOME_DIR);
 %=====================
 
 
-
-% clear_obj_and_subfig;
 figure(H_MAIN);
 set(gca,'Visible','Off');
-% subfig_clear;
+
 grid_drawing;
-% fault_overlay;
+
 hold on;
         c_index = zeros(64,3);
         switch PREF(7,1)
@@ -348,7 +333,6 @@ hold on;
         c_unit = c_mean * 2.0 / 64;
         ni = zeros(m,1,'int8');
         
-%            ni(:,1) = round((NODAL_STRESS(:,1) - (-c_mean)) / c_unit);
             if INODAL == 4
             temp3 = sortrows([NODAL_STRESS f_stress(:,6) f_stress(:,7)],1);
             ni(:,1) = round((temp3(:,1) - (-c_mean)) / c_unit);
@@ -363,15 +347,8 @@ hold on;
                 c2 = ni(:,1) <  1;
                 c3 = c1 + c2 <= 0.0;
                 ni(:,1) = int16(64.*double(c1) + 1.*double(c2) + double(ni(:,1)).*double(c3));
-
-% added on March 25, 2021
-% EQ_RGB = [EQ_DATA(:,:) NODAL_STRESS c_index(ni(:,:),1:3)*255];
-% save EQ_RGB.dat EQ_RGB -ascii
-% disp('EQ_RGB.dat is saved for GMT based color-coded xsection beachballs');
-%
                 adj = 0.5; % adjusment of stress dots
-                
- %               IVECTOR = 1;
+
                 
             if ICOORD == 2 % lon & lat coordinates
                if IVECTOR == 1 % vector image for dot
@@ -434,16 +411,10 @@ hold on;
                 set(h, 'Tag','EqObj2');
                 end
             end
-%             set(h0,'LineWidth',9.0);
-%             set(h,'LineWidth',8.0);
-%             set(h0,'Tag','EqObj');
-%             set(h, 'Tag','EqObj2');
+
             set(findobj('Tag','menu_focal_mech'),'Enable','On');
-%         if isempty(C_SAT)
             caxis([(-1.0)*c_mean c_mean]);
-%         else
-%             caxis([(-1.0)*C_SAT C_SAT]);
-%         end
+
         colorbar('location','EastOutside');
 
         set(gca,'Visible','On');
@@ -462,10 +433,6 @@ if isempty(COAST_DATA)~=1 | isempty(VOLCANO)~=1 |...
         overlay_drawing2; % not overlay_drawing (this is internal function no to plot EQ)
 end
 % ************************ 
-
-% % warning dialog
-%     wd = warndlg('Color-coded dots are from randomly selected one of two nodal planes. See numerical output file for details.','!! Warning !!');
-%     waitfor(wd);
 
 if INODAL == 1 || INODAL == 2
     if check2 ~= 0

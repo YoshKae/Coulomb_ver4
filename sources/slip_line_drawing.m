@@ -2,14 +2,11 @@
 %
 % to draw slip lines for Coulomb stress calculation
 % [fig,h] = figflag('main_menu_window');
-% if isempty(h) ~= 1
+
 global H_MAIN ICOORD LON_GRID LAT_GRID
-    figure(H_MAIN);
-    hax = gca;
-    hold on;
-% else
-%       warndlg('No basemap exist','Warning!');  
-% end
+figure(H_MAIN);
+hax = gca;
+hold on;
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
     xinc = LON_GRID(2) - LON_GRID(1);
     yinc = LAT_GRID(2) - LAT_GRID(1);
@@ -103,4 +100,3 @@ else
     h3 = plot(hax,x3,y3,'Color','g','LineWidth',1);
     legend([h1(1) h2(1) h3(1)],'Sigma-1','Sigma-2','Sigma-3');
 end
-    

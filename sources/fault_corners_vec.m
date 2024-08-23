@@ -1,8 +1,6 @@
 function [fc] = fault_corners_vec(xs,ys,xf,yf,dip,top,bottom)
 % For seeking the four corners from the input data
-%
 
-% disp('This is fault_corners.m');
 
 % % flag = 1: just four corners of a source fault projected on the map view
 % % flag = 2: for an ideal line which cuts the surface (fc(4,:))
@@ -15,7 +13,6 @@ fc = zeros(n,8); % initialize to be all zeros to fasten the process
 
 angle = atan((yf-ys)./(xf-xs));
 
-% dipr = deg2rad(dip);
 shift = (bottom-top)./tan(deg2rad(dip));
 
 
@@ -33,5 +30,3 @@ yf_bottom = (yf - y_shift).*ind3 + (yf + y_shift).*ind4;
 
 % clockwise from the starting corner
 fc = [xs ys xf yf xf_bottom yf_bottom xs_bottom ys_bottom];
-
-

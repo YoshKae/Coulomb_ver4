@@ -123,10 +123,6 @@ guidata(hObject, handles);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = xsec_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -146,7 +142,6 @@ else
     set(hObject,'String',num2str(SEC_XS,'%6.2f'));
 end
 check_sec_input;
-% sec_line_drawing;
 draw_dipped_cross_section;
 
 %--------------------
@@ -354,7 +349,6 @@ global SEC_DEPTHINC SEC_DOWNDIP_INC SEC_DIP
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% set(hObject,'String',num2str(SEC_DOWNDIP_INC,'%4.1f'));
 set(hObject,'String',num2str(SEC_DOWNDIP_INC,'%4.1f'));
 
 %-------------------------------------------------------------------------
@@ -369,7 +363,6 @@ but = 1;
 while (but == 1 && n <= 2)
     h = figure(H_MAIN);
    [xi,yi,but] = ginput(1);
-%	plot(A_MAIN,xi,yi,'ro'); 
 	n = n+1;
    xy(:,n) = [xi;yi];
 end
@@ -405,9 +398,7 @@ global ICOORD LON_GRID
         disp(['  User selected', fullfile(pathname, filename)])
     end
     fid = fopen(fullfile(pathname, filename),'r');
-%     cs0 = textscan(fid,'%*45c %16i',1);
     cs  = textscan(fid,'%*45c %16.7f32',10);
-%     section = [cs0{:} cs{:}];
     section = [cs{:}];
     if isempty(section)
         disp('   No info for a cross section line');
@@ -468,15 +459,10 @@ global IACTS
 global OUTFLAG PREF_DIR HOME_DIR
 IACTS = 0;
 check_sec_input;
-% section_grid_drawing;
 SEC_XS = str2double(get(findobj('Tag','edit_sec_xs'),'String'));
 SEC_YS = str2double(get(findobj('Tag','edit_sec_ys'),'String'));
 SEC_XF = str2double(get(findobj('Tag','edit_sec_xf'),'String'));
 SEC_YF = str2double(get(findobj('Tag','edit_sec_yf'),'String'));
-% if SEC_XS >= SEC_XF
-%     errordlg('Start X should be smaller than finish x. Change the numbers.','!!Error!!');
-%     return;
-% end
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
        temp = zeros(1,4);
        temp = [SEC_XS SEC_XF SEC_YS SEC_YF];
@@ -512,21 +498,6 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1
     SEC_XS = temp(1); SEC_XF = temp(2); SEC_YS = temp(3); SEC_YF = temp(4);
 end
 
-%     if OUTFLAG == 1 | isempty(OUTFLAG) == 1
-% 	cd output_files;
-%     else
-% 	cd (PREF_DIR);
-%     end
-%     header1 = ['Input file selected: ',INPUT_FILE];
-%     header2 = 'x y z UX UY UZ';
-%     header3 = '(km) (km) (km) (m) (m) (m)';
-%     dlmwrite('Displacement.cou',header1,'delimiter',''); 
-%     dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-%     dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-%     dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-%     disp(['Displacement.cou is saved in ' pwd]);
-%     cd (HOME_DIR);
-
 if OUTFLAG == 1 | isempty(OUTFLAG) == 1
 	cd output_files;
 else
@@ -546,90 +517,3 @@ fprintf(fid,'  9  ------------------------  downdip inc = %16.7f\n',SEC_DOWNDIP_
 fclose(fid);
 disp(['Cross_section.dat is saved in ' pwd]);
 cd (HOME_DIR);
-
-
-% %-------------------------------------------------------------------------
-% %     Draw cross section projection on the map
-% %-------------------------------------------------------------------------
-% function draw_dipped_cross_section
-% global H_MAIN
-% global HF HO HT1 HT2
-% global SEC_XS SEC_YS SEC_XF SEC_YF SEC_INCRE SEC_DEPTH SEC_DEPTHINC
-% global SEC_DIP SEC_DOWNDIP_INC
-% global ICOORD LON_GRID
-% % section_grid_drawing;
-% SEC_XS = str2double(get(findobj('Tag','edit_sec_xs'),'String'));
-% SEC_YS = str2double(get(findobj('Tag','edit_sec_ys'),'String'));
-% SEC_XF = str2double(get(findobj('Tag','edit_sec_xf'),'String'));
-% SEC_YF = str2double(get(findobj('Tag','edit_sec_yf'),'String'));
-% if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%            temp = zeros(1,4);
-%            temp  = [SEC_XS SEC_XF SEC_YS SEC_YF];
-%        a = lonlat2xy([SEC_XS 0.0]); SEC_XS = a(1);
-%        a = lonlat2xy([SEC_XF 0.0]); SEC_XF = a(1);
-%        a = lonlat2xy([0.0 SEC_YS]); SEC_YS = a(2);
-%        a = lonlat2xy([0.0 SEC_YF]); SEC_YF = a(2);
-% end
-% SEC_INCRE = str2double(get(findobj('Tag','edit_sec_incre'),'String'));
-% SEC_DEPTH = str2double(get(findobj('Tag','edit_sec_depth'),'String'));
-% SEC_DEPTHINC = str2double(get(findobj('Tag','edit_sec_depthinc'),'String'));
-% SEC_DID = str2double(get(findobj('Tag','edit_section_dip'),'String'));
-% SEC_DOWNDIP_INC = str2double(get(findobj('Tag','edit_downdip_inc'),'String'));
-% 
-%    figure(H_MAIN);
-%    hold on;
-%    h = findobj('Tag','dipped_cross_section_lines');
-%    if isempty(HF)~=1 && isempty(h)~=1
-%    delete(HF);
-%    end
-%    h = findobj('Tag','cross_section_line');
-%    if isempty(HO)~=1 && isempty(h)~=1
-%    delete(HO);
-%    end
-%    h = findobj('Tag','cross_section_A');
-%    if isempty(HT1)~=1 && isempty(h)~=1
-%    delete(HT1);
-%    end
-%    h = findobj('Tag','cross_section_B');
-%    if isempty(HT2)~=1 && isempty(h)~=1
-%    delete(HT2);
-%    end
-%    hold on;
-%    c = fault_corners(SEC_XS,SEC_YS,SEC_XF,SEC_YF,SEC_DIP,0.0,SEC_DEPTH);
-%     hold on;
-%     if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         a = zeros(4,2);
-%         a = xy2lonlat([c(:,1) c(:,2)]);
-%         HF = plot([a(1,1) a(2,1) a(3,1) a(4,1) a(1,1)],...
-%           [a(1,2) a(2,2) a(3,2) a(4,2) a(1,2)]);
-%     else
-%         HF = plot([c(1,1) c(2,1) c(3,1) c(4,1) c(1,1)],...
-%           [c(1,2) c(2,2) c(3,2) c(4,2) c(1,2)]);
-%     end
-%     set (HF,'Tag','dipped_cross_section_lines','Color','b','LineWidth',0.5);
-% 
-% 	if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         HO = plot([temp(1) temp(2)],[temp(3) temp(4)]);
-%     else
-%         HO = plot([SEC_XS SEC_XF],[SEC_YS SEC_YF]);
-%     end
-%         set(HO,'Tag','cross_section_line','Color','b','LineWidth',1.5);         %TAG cross_section_line
-%         check_sec_input;
-% 	if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         HT1 = text(temp(1),temp(3),'A','FontSize',18,'Color','k');
-%         HT2 = text(temp(2),temp(4),'B','FontSize',18,'Color','k');
-%     else
-%         HT1 = text(SEC_XS,SEC_YS,'A','FontSize',18,'Color','k');
-%         HT2 = text(SEC_XF,SEC_YF,'B','FontSize',18,'Color','k');
-%     end
-% set(HT1,'HorizontalAlignment','center');
-% set(HT2,'HorizontalAlignment','center');
-% set(HT1,'Tag','cross_section_A');         %TAG cross_section_A
-% set(HT2,'Tag','cross_section_B');         %TAG cross_section_B
-% 
-% 
-% 
-% 
-% 
-% 
-% 

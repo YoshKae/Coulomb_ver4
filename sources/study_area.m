@@ -64,16 +64,9 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes study_area wait for user response (see UIRESUME)
-% uiwait(handles.study_area);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = study_area_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -190,11 +183,7 @@ ZERO_LON = str2num(get(findobj('Tag','zero_lon'),'String'));
 h = figure(gcf);
 delete(h);
 calc_element;
-% if OVERLAYFLAG == 1
-%     earthquake_plot;
-% elseif OVERLAYFLAG == 2
-%     coastline_drawing;
-% end
+
 
 %-------------------------------------------------------------------------
 %     Cancel button (pushbutton)
@@ -223,9 +212,3 @@ end
 if (ZERO_LON < MIN_LON) | (ZERO_LON > MAX_LON)
     warning('zero lon should be between min lon and max lon');
 end
-
-
-
-
-
-

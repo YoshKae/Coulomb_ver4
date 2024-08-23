@@ -146,10 +146,8 @@ else
     else
             calc_stamp = 'Stress on randomly selected nodal planes'; 
     end
-%    depth_stamp = ['  Depth: ',num2str(depth,'%6.2f'),' km'];
     depth_stamp = ['  Depth: --- km'];
     fric_stamp  = ['  Friction: ',num2str(Friction,'%4.2f')];
-%    fric_stamp  = ['  Friction: ',num2str(fric,'%4.2f')];
     h3_stamp = [calc_stamp,fric_stamp];    
 end
 

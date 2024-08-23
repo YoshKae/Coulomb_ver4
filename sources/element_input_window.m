@@ -31,7 +31,7 @@ dummy = findobj('Tag','main_menu_window');
 if isempty(dummy)~=1
  h = get(dummy,'Position');
 end
-% xpos = h(1,1) + h(1,3) + 5;
+
 xpos = h(1,1) + 5;
 ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
 set(hObject,'Position',[xpos ypos wind_width wind_height]);
@@ -41,15 +41,12 @@ handles.output = hObject;
 guidata(hObject, handles);
 KODE(INUM,1) = 100;
 set(findobj('Tag','radiobutton_taper'),'Value',0);
-% CLICK_TAPER = 1;
+
 
 
 % --- Outputs from this function are returned to the command line.
 function varargout = element_input_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
@@ -66,7 +63,7 @@ global INUM ELEMENT
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% INUM = 1;
+
 set(hObject,'String',num2str(ELEMENT(INUM,1),'%9.2f'));
 
 %-------------------------------------------------------------------------
@@ -199,8 +196,7 @@ if INUM > NUM
     warndlg('This must not over the total number','Warning!');
     return
 end
-% KODE(INUM,1) = 100;
-%h = findobj('Tag','edit_fxstart');
+
 set(handles.edit_fxstart,'String',num2str(ELEMENT(INUM,1),'%9.2f'))
 set(handles.edit_fystart,'String',num2str(ELEMENT(INUM,2),'%9.2f'))
 set(handles.edit_fxfinish,'String',num2str(ELEMENT(INUM,3),'%9.2f'))
@@ -222,7 +218,7 @@ set(hObject,'String',num2str(INUM));
 %     Total number of faults (textfield)
 %-------------------------------------------------------------------------
 function edit_totalnf_Callback(hObject, eventdata, handles)
-% 
+
 global NUM ELEMENT
 NUM = str2num(get(hObject,'String'));
 ELEMENT(NUM,:);
@@ -234,9 +230,7 @@ global NUM TAPER_CALLED
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% if TAPER_CALLED ~= 1
-%     NUM = 1;
-% end
+
 set(hObject,'String',num2str(NUM));
 
 %-------------------------------------------------------------------------
@@ -269,10 +263,7 @@ if TAPER_CALLED ~= 1
     fault_overlay;
     TAPER_CALLED = 0;    
 else
-% taper & splitting
-% the following codes do not work for some unknow reason...
-%     x1 = get(findobj('Tag','radiobutton_taper'),'Value')
-%     x2 = get(findobj('Tag','radiobutton_split'),'Value')
+
 % ===== tapering function =====
     if CLICK_TAPER == 1
 % %       el(:,1) xstart (km)
@@ -286,7 +277,7 @@ else
 % %       el(:,9) fault bottom depth (km)
         edge = 0.01;
         [el] = taper_calc(ELEMENT(INUM,:),TD_STR,TD_DIP,edge,TN,YOUNG,POIS);
-        % function el = taper_calc(el0,d_strike,d_dip,edge,npatch,young,poisson)
+
         m = size(el,1);
         nr = int16(NUM) - int16(INUM);
         if nr > 0
@@ -297,7 +288,7 @@ else
                 counter = counter + 1;
             end
             ID(INUM+m:(INUM+m+nr-1))      = ID(INUM+1:NUM);
-%            ID(INUM+m:(INUM+m+nr-1),:)      = ID(INUM+1:NUM,:);
+
             KODE(INUM+m:(INUM+m+nr-1),:)    = KODE(INUM+1:NUM,:);
         end
         ELEMENT(INUM:(INUM+m-1),:)  = el(:,:);
@@ -308,7 +299,7 @@ else
         end
         FCOMMENT(1,INUM:(INUM+m-1)) = FCOMMENT(INUM);
         ID(INUM:(INUM+m-1)) = ID(INUM);
-%        ID(INUM:(INUM+m-1),:) = ID(INUM);
+
         KODE(INUM:(INUM+m-1),:) = KODE(INUM);
         NUM = NUM + m - 1;
         set(findobj('Tag','edit_totalnf'),'String',num2str(NUM,'%3i'));
@@ -325,10 +316,7 @@ else
                 FCOMMENT(1,i).ref = FCOMMENT(1,INUM+counter).ref;
                 counter = counter + 1;
             end
-%             dID   = ones(1,INUM+m+nr-1);
-%             dKode = 100 * ones(INUM+m+nr-1,1);
-%             dID(1,INUM+m:(INUM+m+nr-1))      = ID(1,INUM+1:NUM);
-%             dKODE(INUM+m:(INUM+m+nr-1),:)    = KODE(INUM+1:NUM,:);
+
             ID(INUM+m:(INUM+m+nr-1))      = ID(INUM+1:NUM);
             KODE(INUM+m:(INUM+m+nr-1),:)    = KODE(INUM+1:NUM,:);
             if IRAKE == 1
@@ -338,22 +326,16 @@ else
         ELEMENT(INUM:(INUM+m-1),:)  = el(:,:);
         
         if ~isempty(IND_RAKE) %          !!! rake option
-% %             if INUM == NUM
-%        IND_RAKE = [IND_RAKE(1:INUM-1);zeros(m,1)];   
-% %             else
-% %         IND_RAKE = [IND_RAKE(1:INUM-1);zeros(m,1);IND_RAKE(INUM+1:end)];
-% %             end
+
         
         [rake dummy] = comp2rake(ELEMENT(INUM:(INUM+m-1),5),...
             ELEMENT(INUM:(INUM+m-1),6));
-%         size(rake)
-%         size(IND_RAKE)
+
         IND_RAKE(INUM:(INUM+m-1)) = rake(1:m);
         end
         
         FCOMMENT(INUM:(INUM+m-1)) = FCOMMENT(INUM);
-%         dID(1,INUM:(INUM+m-1)) = ID(INUM);
-%         dKODE(INUM:(INUM+m-1),:) = KODE(INUM);
+
         ID(INUM:(INUM+m-1)) = ID(INUM);
         KODE(INUM:(INUM+m-1),:) = KODE(INUM);
             if IRAKE == 1
@@ -361,8 +343,7 @@ else
             end
         NUM = NUM + m - 1;
         set(findobj('Tag','edit_totalnf'),'String',num2str(NUM,'%3i'));
-%         ID = dID;
-%         KODE = dKODE;
+
     else
         if ~isempty(IND_RAKE)
             if IRAKE == 1
@@ -392,13 +373,12 @@ CLICK_TAPER  = 0;
 CLICK_SPLIT  = 0;
 end
 
-% calc_element;
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1
+
     if isempty(COAST_DATA) ~= 1 | isempty(EQ_DATA) ~= 1 | isempty(AFAULT_DATA) ~= 1
         hold on;
         overlay_drawing;
     end
-%end
+
 %----------------------------- if context window still exists...
 
 if (isempty(findobj('Tag','figure_element_modification'))~=1 && isempty(H_ELEMENT_MOD)~=1)

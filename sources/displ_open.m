@@ -38,7 +38,7 @@ else
     fid = fopen('Displacement.cou','r');
     coul = textscan(fid,'%f %f %f %f %f %f','delimiter','\t','headerlines',3);
     fclose (fid);
-%    disp(['Displacement.cou is saved in ' pwd]);
+
     cd (HOME_DIR);
 % cell to matrices
     ux = [coul{4}];
@@ -73,9 +73,7 @@ if FIXFLAG == 0       % no fixed point
         xds = zeros(length(YGRID),length(XGRID));
         yds = zeros(length(YGRID),length(XGRID));
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%             a  = xy2lonlat([reshape(XGRID,length(XGRID),1) reshape(YGRID,length(YGRID),1)]);
-%             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(a(:,2)),1);
-%             yds = repmat(reshape(a(:,2),length(a(:,2)),1),1,length(a(:,1)));  
+
             a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
             b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(b(:,2)),1);
@@ -165,16 +163,9 @@ else                    % recalculate displacement for the fixed point
     hold on;
 end
 
-
-%         [unit,unitText] = check_unit_vector(XGRID(1),XGRID(end),1.0*resz,0.2,0.5);
-%         a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),unit*resz,0.,0); %scale vector
-%         h1 = text((XGRID(1)+unit*resz*0.5),(YGRID(1)+yinc*2.2),unitText);
-%         
         
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     a  = xy2lonlat([reshape(XGRID,length(XGRID),1) reshape(YGRID,length(YGRID),1)]);
-%     xinc = a(2,1)-a(1,1);
-%     yinc = a(2,2)-a(1,2);    
+    
 	a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
 	b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
     xinc = a(2,1)-a(1,1);
@@ -182,16 +173,14 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1
     [unit,unitText] = check_unit_vector(XGRID(1),XGRID(end),1.0*resz,0.15,0.4);
     a0 = quiver((a(1,1)+xinc),(b(1,2)+yinc*1.5),unit*LON_PER_X*resz,0.,0); %scale vector
     h = text((a(1,1)+unit*LON_PER_X*resz*0.5),(b(1,2)+yinc*2.2),unitText);
-%     a0 = quiver((a(1,1)+xinc),(b(1,2)+yinc*1.5),1.0*LON_PER_X*resz,0.,0); %scale vector (1m)
-%     h = text((a(1,1)+2.0*xinc),(b(1,2)+yinc*3.0),'1m');
+
 else
     xinc = XGRID(2)-XGRID(1);
     yinc = YGRID(2)-YGRID(1);
     [unit,unitText] = check_unit_vector(XGRID(1),XGRID(end),1.0*resz,0.15,0.4);
 	a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),unit*resz,0.,0); %scale vector
     h = text(XGRID(1)+unit*resz*0.5,YGRID(1)+yinc*2.2,unitText);
-% 	a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),1.0*resz,0.,0); %scale vector (1m)
-%     h = text((XGRID(1)+2.0*xinc),(YGRID(1)+yinc*2.2),'1m');
+
 
 end
 
@@ -207,7 +196,7 @@ A_MAIN = gca;
 %-----------    Vertical displ. mapview  ---------------------------
 elseif FUNC_SWITCH == 4
 grid_drawing;
-% set(H_MAIN,'NumberTitle','off','Menubar','figure','Name','Vertical displacement');
+
 set(H_MAIN,'NumberTitle','off','Menubar','figure');
 hold on;
 a1 = 1; %dummy
@@ -307,13 +296,11 @@ end
         xyz_aspect = [XY_RATIO 1 1];
     end
     try
-%         azm = str2num(get(findobj('Tag','edit_view_az'),'String'));
-%         elv = str2num(get(findobj('Tag','edit_view_el'),'String'));
-%               view(azm,elv);
+
 % for some reason it does not work so I cannot help using global variable.
         view(VIEW_AZ,VIEW_EL);
     catch
-%        disp('error');
+
         view(15,40);        % default veiw parameters (azimuth,elevation)
     end
 hold on;
@@ -346,8 +333,7 @@ temp_element = S_ELEMENT(:,1:4);
     S_ELEMENT(:,2) = a(:,2);
     S_ELEMENT(:,3) = b(:,1);
     S_ELEMENT(:,4) = b(:,2); 
-% else
-%     temp_element = S_ELEMENT(:,1:4);
+
 end    
 
 %--- for coloring amount of fault slip for grid 3D
@@ -428,23 +414,23 @@ for k = 1:m
                     sb = abs(slip_max);
         end
         if slip_max == 0.0 && slip_min == 0.0
-%            disp('No source slip is found. See the input file.');
+
             sb = 1.0;           % in case
         end
             if isempty(C_SLIP_SAT)
                 C_SLIP_SAT = sb;
             end
             c_unit = (C_SLIP_SAT + C_SLIP_SAT) / 64;
-%             c_unit = (sb + sb) / 64;
+
             if F3D_SLIP_TYPE == 1
                 c_unit = C_SLIP_SAT / 64;
-%                 c_unit = sb / 64;
+
             	rgb = sqrt(S_ELEMENT(k,5)^2.0 + S_ELEMENT(k,6)^2.0) / c_unit;
             elseif F3D_SLIP_TYPE == 2
-%             	rgb = (S_ELEMENT(k,5) + sb) / c_unit;
+
             	rgb = (S_ELEMENT(k,5) + C_SLIP_SAT) / c_unit;
             else
-%             	rgb = (S_ELEMENT(k,6) + sb) / c_unit;
+
             	rgb = (S_ELEMENT(k,6) + C_SLIP_SAT) / c_unit;
             end
         ni = int8(round(rgb));
@@ -481,7 +467,7 @@ for k = 1:m
         elseif EC_STRESS_TYPE == 4
             temp = isnan(COULOMB_RAKE(k));
             rgb = COULOMB_RAKE(k) / C_SAT;
-%            rgb = (COULOMB_RAKE(k)-1.0) / C_SAT;
+
             if temp == 1
                 rgb = 0.0;
             end
@@ -503,7 +489,7 @@ for k = 1:m
     end
     
     if ICOORD == 2 && isempty(LON_GRID) ~= 1
-% 	b  = fill([xc1 xc2 xc3 xc4 xc1],[yc1 yc2 yc3 yc4 yc1],fcolor);
+
     else
     b  = fill([xcs xcf xcf xcs xcs],[ycf ycf ycs ycs ycf],fcolor);
 	end
@@ -544,10 +530,7 @@ for k = 1:m
     end
     
 	if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         Rsc  = makehgtform('scale',[1,1,1/LON_PER_X]);
-%         Rsc2 = makehgtform('scale',[1,1,1]);
-%         xshift = xc;
-%         yshift = yc;	
+
     else
     t = hgtransform;
     set(b,'Parent',t);    

@@ -108,8 +108,7 @@ if isempty(GPS_DATA)~=1
         a0 = quiver((aaa(1,1)+xinc),(bbb(1,2)+yinc*1.5),unit*LON_PER_X*resz,0.,0); %scale vector
         h1 = text((aaa(1,1)+unit*LON_PER_X*resz*0.5),(bbb(1,2)+yinc*2.2),unitText);
         end
-%         a0 = quiver((aaa(1,1)+xinc),(bbb(1,2)+yinc*1.5),1.0*LON_PER_X*resz,0.,0); %scale vector (1m)
-%         h1 = text((aaa(1,1)+2.0*xinc),(bbb(1,2)+yinc*3.0),'1m');
+
     else                                                    % cartesian coordinates
         h = scatter(GPS_DATA(:,6),GPS_DATA(:,7));
         if strcmp(GPS_FLAG,'vertical')              % vertical disp.
@@ -132,8 +131,6 @@ if isempty(GPS_DATA)~=1
         h1 = text((XGRID(1)+unit*resz*0.5),(YGRID(1)+yinc*2.2),unitText);
         end
 
-%         a0 = quiver((XGRID(1)+xinc),(YGRID(1)+yinc*1.5),1.0*resz,0.,0); %scale vector (1m)
-%         h1 = text((XGRID(1)+2.0*xinc),(YGRID(1)+yinc*2.2),'1m');
     end
     
     % ------ save numerical file -----

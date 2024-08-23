@@ -103,7 +103,3 @@ if (isempty(h)~=1 && isempty(H_SPECIFIED_SLIDER)~=1)
     close(figure(H_SPECIFIED_SLIDER))
     H_SPECIFIED_SLIDER = [];
 end
-% if (isempty(findobj('Tag','figure_element_modification'))~=1 && isempty(H_ELEMENT_MOD)~=1)
-% close(figure(H_ELEMENT_MOD))
-% H_ELEMENT_MOD = [];
-% end

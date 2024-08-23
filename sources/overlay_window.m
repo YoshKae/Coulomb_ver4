@@ -49,10 +49,6 @@ end
 % --- Executes just before overlay_window is made visible.
 function overlay_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to overlay_window (see VARARGIN)
 
 % Choose default command line output for overlay_window
 handles.output = hObject;
@@ -60,16 +56,10 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes overlay_window wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = overlay_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -244,18 +234,13 @@ input_open(1);
 %===== COLOR SATURATION SLIDER ==========================================
 %==  (CALLBACK) ===========================
 function slider_coul_sat_Callback(hObject, eventdata, handles)
-% 
+%
 global ha1 ha2 % handle of figure
 global a1
 set (handles.edit_coul_sat,'String',num2str(get(hObject,'Value'),2));
 [flag,h]=figflag('main_menu_window');
 if flag == 1
-%if ha2~=0
     coulomb_view(get(hObject,'Value'));
-%end
-%if a1~=0
-%    displ_open(get(hObject,'Value'));
-%end    
 end  
 
 
@@ -371,10 +356,8 @@ global COORD
 selection = get(hObject,'SelectedObject')
 switch get(selection,'Tag')
     case 'radiobutton_cartesian'
-        %radiobutton_cartesian_Callback;
         COORD = 1; % cartesian coordinate
     case 'radiobutton_lonlat'
-        %radiobutton_lonlat_Callback;
         COORD = 2; % lon/lat coordinate
 end
 

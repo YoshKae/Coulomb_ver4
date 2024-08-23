@@ -66,16 +66,8 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes f3d_view_control_window wait for user response (see UIRESUME)
-% uiwait(handles.f3d_view_control_window);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = f3d_view_control_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -92,14 +84,7 @@ if x == 1
     set(findobj('Tag','radiobutton_strike_slip'),'Value',0.0);
     set(findobj('Tag','radiobutton_dip_slip'),'Value',0.0);
 end
-% subfig_clear;
-% FUNC_SWITCH = 1;
-% grid_drawing_3d;
-% displ_open(2);
-% flag = check_lonlat_info;
-% if flag == 1
-%     all_overlay_enable_on;
-% end
+
 
 %-------------------------------------------------------------------------
 %     Strike-slip slip (radiobutton)  
@@ -112,14 +97,7 @@ if x == 1
     set(findobj('Tag','radiobutton_net_slip'),'Value',0.0);
     set(findobj('Tag','radiobutton_dip_slip'),'Value',0.0);
 end
-% subfig_clear;
-% FUNC_SWITCH = 1;
-% grid_drawing_3d;
-% displ_open(2);
-% flag = check_lonlat_info;
-% if flag == 1
-%     all_overlay_enable_on;
-% end
+
 
 %-------------------------------------------------------------------------
 %     Dip slip slip (radiobutton)  
@@ -132,14 +110,7 @@ if x == 1
     set(findobj('Tag','radiobutton_net_slip'),'Value',0.0);
     set(findobj('Tag','radiobutton_strike_slip'),'Value',0.0);
 end
-% subfig_clear;
-% FUNC_SWITCH = 1;
-% grid_drawing_3d;
-% displ_open(2);
-% flag = check_lonlat_info;
-% if flag == 1
-%     all_overlay_enable_on;
-% end
+
 
 %-------------------------------------------------------------------------
 %     Saturation slip (text box)  
@@ -162,19 +133,7 @@ end
 %-------------------------------------------------------------------------
 function pushbutton_redraw_Callback(hObject, eventdata, handles)
 global F3D_SLIP_TYPE FUNC_SWITCH
-% a1 = get(findobj('Tag','radiobutton_net_slip'));
-% a2 = get(findobj('Tag','radiobutton_strike_slip'));
-% a3 = get(findobj('Tag','radiobutton_dip_slip'));
-% if a1 == 1
-%         F3D_SLIP_TYPE = 1;
-% elseif a2 == 1
-%         F3D_SLIP_TYPE = 2;
-% elseif a3 == 1
-%         F3D_SLIP_TYPE = 3;   
-% else
-%     disp('junk');
-% end
-% subfig_clear;
+
 FUNC_SWITCH = 1;
 grid_drawing_3d;
 displ_open(2);

@@ -1,10 +1,6 @@
 function Okada_halfspace_one
 % half space calc. for one point
-%
 
-% disp('This is Okada_halfspace_one.m');
-
-% clear all;
 global INUM HEAD NUM POIS CALC_DEPTH YOUNG FRIC R_STRESS ID KODE ELEMENT
 global GRID SIZE SECTION
 global DC3D
@@ -17,15 +13,6 @@ alpha  =  1.0/(2.0*(1.0-POIS));
 z = CALC_DEPTH * (-1.0);
 
 
-% depth = -10.0;
-% dip = 50.0;
-% al1 = 20.0;
-% al2 = 20.0;
-% aw1 = 10.0;
-% aw2 = 10.0;
-% disl1 = 0.0;
-% disl2 = 3.0;
-% disl3 = 0.0;
 
 %       SUBROUTINE  DC3D(ALPHA,X,Y,Z,DEPTH,DIP,                           04610000
 %      *              AL1,AL2,AW1,AW2,DISL1,DISL2,DISL3,                  04620002
@@ -66,12 +53,9 @@ s1 = zeros(6,n);
 DC3D = zeros(n,14);
 DC3D0 = zeros(n,14);
 xycoord = zeros(n,2);
-% xx = zeros(n,1);
-% yy = zeros(n,1);
+
 % opposite sign convension for Okada's subroutine
 %  left-lat is positive
-
-%%%  ELEMENT(:,5) = (-1.0)*ELEMENT(:,5);
         
 for ii = 1:NUM
         depth = (ELEMENT(ii,8)+ELEMENT(ii,9))/2.0;  % depth should be positive
@@ -105,8 +89,6 @@ for ii = 1:NUM
         % we have to convert UX ... UZZ to the global coordinate
         % here
         
-% cell to matrices
-% if ii==1
     X = a{1};
     Y = a{2};
     Z = a{3};
@@ -173,9 +155,6 @@ for ii = 1:NUM
     ssyz = reshape(syz,1,n);
     
     s0 = [ssxx; ssyy; sszz; ssyz; ssxz; ssxy];
-%     for mm = 1:ngrid
-%         s1(1:6,mm) = tensor_trans(sina,s0(1:6,mm),1);
-%     end
 
     s1 = tensor_trans(sina,s0,1);
 
@@ -186,7 +165,6 @@ for ii = 1:NUM
     SXZ = reshape(s1(5,:),n,1);
     SXY = reshape(s1(6,:),n,1);
           
- %   DC3D0 = [XX YY X Y Z UX UY UZ UXX UYX UZX UXY UYY UZY UXZ UYZ UZZ];
  if ii == 1
     DC3D0 = horzcat(xycoord,X,Y,Z,UXG,UYG,UZG,SXX,SYY,SZZ,SYZ,SXZ,SXY);
  else

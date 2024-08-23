@@ -118,7 +118,6 @@ end
 x = xfinish + ((xfinish-xstart)/(10.0/r));
 y = ystart - ((yfinish-ystart)/10.0) / r;
 lsp = ((xfinish-xstart)+(yfinish-ystart))/75.0;
-% date_and_file_stamp(H_MAIN,INPUT_FILE,x,y,lsp,FUNC_SWITCH,CALC_DEPTH);
 try
 record_stamp(H_MAIN,x,y,'SoftwareVersion',CURRENT_VERSION,...
         'FunctionType',FUNC_SWITCH,'Depth',CALC_DEPTH,'Friction',FRIC,...

@@ -16,9 +16,7 @@ function [outkm,flag] = distance2(lat1,lon1,lat2,lon2)
 [x2,y2,utmzone2] = deg2utm(lat2,lon2);
 
 if ~strcmp(utmzone1,utmzone2)
-%     disp(['Point 1 is in ' utmzone1]);
-%     disp(['Point 2 is in ' utmzone2]);
-%     warndlg('UTM zones of both points are different.','!!! Warning !!!');
+
     flag = 1;
 else
     flag = 0;

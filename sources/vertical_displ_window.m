@@ -24,10 +24,7 @@ end
 % --- vertical_displ_window が表示される直前に実行されます。
 function vertical_displ_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure % これはGUIのウィンドウ全体を表すハンドル
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to vertical_displ_window (see VARARGIN)
+
 global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
 h = findobj('Tag','vertical_displ_window'); % タグがvertical_displ_windowのオブジェクトを取得
 j = get(h,'Position'); % オブジェクトの位置を取得
@@ -47,16 +44,9 @@ handles.output = hObject;
 % ハンドル構造体を更新
 guidata(hObject, handles);
 
-% UIWAITは、ユーザーの応答を待機するvertical_displ_windowを示します（UIRESUMEを参照）
-% uiwait(handles.vertical_displ_window);
-
-
 % --- この関数からの出力はコマンドラインに返されます。
 function varargout = vertical_displ_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 
 % ハンドル構造体からデフォルトのコマンドライン出力を取得
 varargout{1} = handles.output;
@@ -70,8 +60,6 @@ function vd_slider_Callback(hObject, eventdata, handles) % スライダーが操
 set (handles.edit_vd_color_sat,'String',num2str(get(hObject,'Value'),2));
 h = findobj('Tag','main_menu_window');
 if isempty(h) ~= 1
-    % n = get(hObject,'Value');
-    % coulomb_view(n);
     vd_view_button_Callback;
 end
 
@@ -111,8 +99,6 @@ function edit_vd_color_sat_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% h = get(findobj('Tag','vd_slider'),'Value');
-% set(hObject,'String',num2str(COLORSN,'%4.1f'));
 
 %-------------------------------------------------------------------------
 %       Mosaic (radiobutton) モザイク
@@ -218,9 +204,3 @@ set(findobj('Tag','text_downdip_inc_km'),'Visible','off');
 set(findobj('Tag','text_section_dip'),'Visible','off');
 set(findobj('Tag','edit_section_dip'),'Visible','off');
 set(findobj('Tag','text_section_dip_deg'),'Visible','off');
-
-
-
-
-
-

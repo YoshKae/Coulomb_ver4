@@ -36,16 +36,7 @@ elseif IRAKE == 1       % rake & net-slip format
     fprintf(fid,'netslip   dip angle     top        bot\n');
     fprintf(fid,'xxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxx xxxxxxxxxx ');
     fprintf(fid,'xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx\n');
-%     lateral = zeros(NUM,1);
-%     dipslip = zeros(NUM,1);
-%     lateral = ELEMENT(:,5);
-%     dipslip = ELEMENT(:,6);
-%     ELEMENT(:,6) = sqrt(lateral^2.0 + dipslip^2.0);
-%     if lateral >= 0.0
-%             ELEMENT(:,5) = 180.0 - rad2deg(atan(dipslip/lateral));
-%     else
-%             ELEMENT(:,5) = -rad2deg(atan(dipslip/lateral)); 
-%     end
+
     imessage = 0;
     if isempty(IND_RAKE)
         for k = 1:NUM
@@ -80,17 +71,15 @@ for k=1:NUM
     fprintf(fid,'%3i %10.4f %10.4f %10.4f %10.4f %10.4f %s',KODE(k),...
         temp_element(k,5),temp_element(k,6),ELEMENT(k,7),ELEMENT(k,8),ELEMENT(k,9),sp);
     else
-    fprintf(fid,'%3i %10i %10i %10.4f %10.4f %10.4f %s',KODE(k),...
-        int64(temp_element(k,5)),int64(temp_element(k,6)),ELEMENT(k,7),ELEMENT(k,8),ELEMENT(k,9),sp);
+        fprintf(fid,'%3i %10i %10i %10.4f %10.4f %10.4f %s',KODE(k),...
+            int64(temp_element(k,5)),int64(temp_element(k,6)),ELEMENT(k,7),ELEMENT(k,8),ELEMENT(k,9),sp);
     end
     try
-    if iscell(FCOMMENT(k).ref) == 1
-%     fprintf(fid,mat2str(cell2mat(FCOMMENT(k).ref))); fprintf(fid,' \n');
-    fprintf(fid,cell2mat(FCOMMENT(k).ref)); fprintf(fid,' \n');
-    elseif iscell(FCOMMENT(k).ref) == 0
-%     fprintf(fid,mat2str(FCOMMENT(k).ref)); fprintf(fid,' \n');
-    fprintf(fid,FCOMMENT(k).ref); fprintf(fid,' \n');
-    end
+        if iscell(FCOMMENT(k).ref) == 1
+            fprintf(fid,cell2mat(FCOMMENT(k).ref)); fprintf(fid,' \n');
+        elseif iscell(FCOMMENT(k).ref) == 0
+            fprintf(fid,FCOMMENT(k).ref); fprintf(fid,' \n');
+        end
     catch
         fprintf(fid,' \n');
     end
@@ -142,4 +131,3 @@ fprintf(fid,'  6  ---------------------------- zero lat = %16.7f\n',ZERO_LAT);
     end
 end
 fclose(fid);
-% dlmwrite('test.inp',c,'precision','%14s','delimiter','');

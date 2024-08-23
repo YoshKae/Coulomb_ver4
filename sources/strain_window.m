@@ -47,10 +47,7 @@ end
 % --- Executes just before strain_window is made visible.
 function strain_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to strain_window (see VARARGIN)
+
 global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
 h = findobj('Tag','strain_window');
 j = get(h,'Position');
@@ -70,16 +67,8 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes strain_window wait for user response (see UIRESUME)
-% uiwait(handles.strain_window);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = strain_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -205,28 +194,20 @@ function strain_slider_Callback(hObject, eventdata, handles)
 global COLORSN
 h = get(hObject,'Value');
 set (handles.edit_strain_color_sat,'String',num2str(get(hObject,'Value'),2));
-% h = findobj('Tag','main_menu_window');
-% if isempty(h) ~= 1
-%    COLORSN = get(hObject,'Value');
-%    coulomb_view(COLORSN);
-%    set(handles.strain_color_sat,'String',num2str(h,'%4.1f'));
-    strain_view_button_Callback;
-% end
+strain_view_button_Callback;
+
 
 function strain_slider_CreateFcn(hObject, eventdata, handles)
-%global COLORSN
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
-%set(hObject,'Value',-COLORSN);
 
 %-------------------------------------------------------------------------
 %       COLOR SATURATION TEXTFIELD (textfield)
 %-------------------------------------------------------------------------
 function strain_color_sat_Callback(hObject, eventdata, handles)
 global COLORSN
-% h = findobj('Tag','main_menu_window');
-% if isempty(h) ~= 1
+
     h = str2num(get(hObject,'String'));
     if h >= 0.0
         warndlg('Put negative integer','!!Warning!!');
@@ -246,13 +227,8 @@ global COLORSN
         set(hObject,'String',num2str(h,'%4.1f'));
     end
         strain_view_button_Callback;
-%     COLORSN = h;
-%     coulomb_view(COLORSN);
-%    set(handles.slider_coul_sat,'Value',str2num(get(hObject,'String')
-% end
 
 function strain_color_sat_CreateFcn(hObject, eventdata, handles)
-%global COLORSN
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end

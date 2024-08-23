@@ -35,10 +35,6 @@ fclose (fid);
     end
 cd (HOME_DIR);
 
-% cell to matrices (n x 1)
-% x = coul{1};
-% y = coul{2};
-% z = coul{3};
 if FUNC_SWITCH == 7         % shear stress change
 	cl = coul{5};
 elseif FUNC_SWITCH == 8     % normal stress change
@@ -92,8 +88,6 @@ else
             cd (PREF_DIR);
         end
 % save CC as a text file for maximum stress change
-%     [m,n] = size(CC);
-%     nall = m * n;
     ccOne = reshape(flipud(CC),n,1);
     depthpick = reshape(flipud(PK_DEPTH),n,1);
     dum1 = zeros(n,1);

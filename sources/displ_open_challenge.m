@@ -30,24 +30,20 @@ if FUNC_SWITCH == 1 || FUNC_SWITCH == 10
 else
     if OUTFLAG == 1 || isempty(OUTFLAG) == 1
         cd output_files;
-%         disp('test1');
+
     else
-%         disp('test2');
+
         cd (PREF_DIR);
     end
     fid = fopen('Displacement.cou','r');
     coul = textscan(fid,'%f %f %f %f %f %f','delimiter','\t','headerlines',3);
     fclose (fid);
-%    disp(['Displacement.cou is saved in ' pwd]);
+
     cd (HOME_DIR);
 % cell to matrices
     ux = [coul{4}];
     uy = [coul{5}];
     uz = [coul{6}];
-%     size(ux)
-%     size(XGRID)
-%     size(YGRID)
-%     IACT
     
     uux = reshape(ux,length(YGRID),length(XGRID));
     uuy = reshape(uy,length(YGRID),length(XGRID));
@@ -80,9 +76,7 @@ if FIXFLAG == 0       % no fixed point
         xds = zeros(length(YGRID),length(XGRID));
         yds = zeros(length(YGRID),length(XGRID));
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%             a  = xy2lonlat([reshape(XGRID,length(XGRID),1) reshape(YGRID,length(YGRID),1)]);
-%             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(a(:,2)),1);
-%             yds = repmat(reshape(a(:,2),length(a(:,2)),1),1,length(a(:,1)));  
+
             a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
             b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(b(:,2)),1);
@@ -165,15 +159,12 @@ else                    % recalculate displacement for the fixed point
 end
 
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     a  = xy2lonlat([reshape(XGRID,length(XGRID),1) reshape(YGRID,length(YGRID),1)]);
-%     xinc = a(2,1)-a(1,1);
-%     yinc = a(2,2)-a(1,2);    
+
 	a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
 	b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
     xinc = a(2,1)-a(1,1);
     yinc = b(2,2)-b(1,2);
-%     a0 = quiver((a(1,1)+xinc),(a(1,2)+yinc*1.5),1.0*LON_PER_X*resz,0.,0); %scale vector (1m)
-%     h = text((a(1,1)+2.0*xinc),(a(1,2)+yinc*3.0),'1m');
+
     a0 = quiver((a(1,1)+xinc),(b(1,2)+yinc*1.5),1.0*LON_PER_X*resz,0.,0); %scale vector (1m)
     h = text((a(1,1)+2.0*xinc),(b(1,2)+yinc*3.0),'1m');
 else
@@ -194,11 +185,11 @@ A_MAIN = gca;
 %-----------    Vertical displ. mapview  ---------------------------
 elseif FUNC_SWITCH == 4
 grid_drawing;
-% set(H_MAIN,'NumberTitle','off','Menubar','figure','Name','Vertical displacement');
+
 set(H_MAIN,'NumberTitle','off','Menubar','figure');
 hold on;
 a1 = 1; %dummy
-% [C,h] = contour(XGRID,YGRID,uuz,10);
+
 CC = zeros(length(YGRID),length(XGRID),'double');
 CC = reshape(uuz,length(YGRID),length(XGRID));
 CC = CC(length(YGRID):-1:1,:);
@@ -206,8 +197,7 @@ buffer = 1.0;
 cmax = max(reshape(max(abs(CC)),length(XGRID),1));
 cmin = min(reshape(min(abs(CC)),length(XGRID),1));
 cmean = mean(reshape(mean(abs(CC)),length(XGRID),1));
-% cmax = cmax + buffer;
-% cmin = 0.0;
+
 COLORSN = cmean;
 coulomb_view(cmean);
 hold on;
@@ -259,13 +249,11 @@ end
 	ylim([min(YGRID),max(YGRID)]);
 	xlabel('X (km)'); ylabel('Y (km)'); zlabel('Z (km)');
     try
-%         azm = str2num(get(findobj('Tag','edit_view_az'),'String'));
-%         elv = str2num(get(findobj('Tag','edit_view_el'),'String'));
-%               view(azm,elv);
+
 % for some reason it does not work so I cannot help using global variable.
         view(VIEW_AZ,VIEW_EL);
     catch
-%        disp('error');
+
         view(15,40);        % default veiw parameters (azimuth,elevation)
     end
 hold on;
@@ -293,11 +281,7 @@ end
 %--- for coloring amount of fault slip for grid 3D
 sl = zeros(m,1);
 a1 = zeros(m,1);
-% slip_max = ones(m,1)*(-100000); slip_min = ones(m,1)*100000;
-% slip_max = 0.0;
-% slip_min = 0.0;
-%for k = 1:m
-%    if int16(S_ELEMENT(k,10))==100
+
     c1 = int16(S_ELEMENT(:,10)) == 100;
     c2 = int16(S_ELEMENT(:,10)) ~= 100;
     
@@ -308,20 +292,12 @@ a1 = zeros(m,1);
         else
             a1 = S_ELEMENT(:,6);
         end
-%         slip_max = ;
-%             slip_max = max(;
-%         end
-%         if sl < slip_min
-%             slip_min = sl;
-%         end
+
         
     sl = c1 .* a1 + c2 .* zeros(m,1);
     slip_max = max(sl);
     slip_min = min(sl);
-%     else
-%         sl = 0.0;
-%     end
-%end
+
 %---
 
 %============= k loop ================== (start)
@@ -363,7 +339,7 @@ for k = 1:m
                     sb = abs(slip_max);
         end
         if slip_max == 0.0 && slip_min == 0.0
-%            disp('No source slip is found. See the input file.');
+
             sb = 1.0;           % in case
         end
         

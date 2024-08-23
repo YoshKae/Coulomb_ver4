@@ -12,8 +12,6 @@ n = 0;
 but = 1;
 
 NUM = NUM + 1;
-% INUM = INUM + 1;
-% ID = INUM;
 idt = NUM;
 INUM = NUM;
 
@@ -73,22 +71,6 @@ ELEMENT(idt,8) = 0.0;     % fault top depth (km)
 ELEMENT(idt,9) = 10.0;    % fault bottom depth (km)
 ID(idt) = 1;
 FCOMMENT(idt).ref = 'added by mouse-click';
-% CALC_DEPTH = (ELEMENT(idt,8)+ELEMENT(idt,9)) / 2.0;
-% POIS = 0.25;
-% YOUNG = 800000;
-% KODE = 100;
-% FRIC = 0.4;
-% SIZE = [2;1;10000];
-% HEAD = cell(2,1);
-% x1 = ['header line 1'];
-% x2 = ['header line 2'];
-% HEAD(1,1) = mat2cell(x1);
-% HEAD(2,1) = mat2cell(x2);
-% R_STRESS = [19.00 -0.01 100.0 0.0;
-%             89.99 89.99  30.0 0.0;
-%            109.00 -0.01   0.0 0.0];
-% SECTION = [-16; -16; 18; 26; 1; 30; 1];
-%% default (end)
 
 H_ELEMENT = element_input_window;
 

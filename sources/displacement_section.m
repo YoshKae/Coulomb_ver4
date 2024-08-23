@@ -106,7 +106,7 @@ for n = 1:NDEPTH-1
         set(gridln2,'LineWidth',PREF(3,4),'Color',PREF(3,1:3));
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%    temp = x;   % for FUNC_SWITCH == 4
+
     x = repmat(x,abs(NDEPTH),1);
     x = reshape(x,1,NSEC*NDEPTH);
     y = repmat(y,1,abs(NSEC));
@@ -129,13 +129,13 @@ end
             hold on;
             a1 = plot([xds(:,k) xds(:,k+1)],[yds(:,k) yds(:,k+1)]);
             set(a1,'Color','b','LineWidth',1);
-%           set(a1,'Color',PREF(3,1:3),'LineWidth',PREF(3,4));
+
         end
         for k = 1:NDEPTH-1
             hold on;
             a1 = plot([xds(k,:) xds(k+1,:)],[yds(k,:) yds(k+1,:)]);
             set(a1,'Color','b','LineWidth',1);
-%            set(a1,'Color',PREF(3,1:3),'LineWidth',PREF(3,4));
+
         end
         title('Deformed wireframe projected onto cross section','FontSize',14); 
         hold on;       
@@ -234,7 +234,7 @@ if strcmp(get(findobj('Tag','menu_earthquakes'), 'Checked'),'on')
         [c1,c2,c3,c4] = coord_conversion(EQ_DATA(:,16),EQ_DATA(:,17),secpos(:,1),secpos(:,2),...
             secpos(:,3),secpos(:,4),secpos(:,5),secpos(:,6),secpos(:,7));
          wcut = abs(c2) <= ones(neq,1,'double') .* EQPICK_WIDTH;
-%         c1flip = (c3*2.0 - c1) .* wcut;
+
         n = sum(rot90(sum(wcut)));
         c1a    = [(c1 + c3) .* wcut EQ_DATA(:,7)];
         c1flip = flipud(sortrows(c1a));

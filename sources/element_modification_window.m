@@ -47,10 +47,7 @@ end
 % --- Executes just before element_modification_window is made visible.
 function element_modification_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to element_modification_window (see VARARGIN)
+
 
 % Choose default command line output for element_modification_window
 handles.output = hObject;
@@ -58,16 +55,9 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes element_modification_window wait for user response (see UIRESUME)
-% uiwait(handles.figure_element_modification);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = element_modification_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -84,9 +74,6 @@ return;
 % --- Executes during object creation, after setting all properties.
 function edit_md_number_CreateFcn(hObject, eventdata, handles)
 global NSELECTED INUM
-% hObject    handle to edit_md_number (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -339,12 +326,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 if IRAKE==1  % rake here
-% 	try
-        set(hObject,'String',num2str(IND_RAKE(NSELECTED),'%5.1f'));
-%     catch
-%         [rake dummy] = comp2rake(ELEMENT(NSELECTED,5),ELEMENT(NSELECTED,6));
-%         set(hObject,'String',num2str(rake,'%5.1f'));
-%     end
+
+    set(hObject,'String',num2str(IND_RAKE(NSELECTED),'%5.1f'));
+
 else
     set(hObject,'String',num2str(ELEMENT(NSELECTED,5),'%7.3f'));
 end
@@ -356,7 +340,7 @@ end
 function edit_md_revslip_Callback(hObject, eventdata, handles)
 global NSELECTED ELEMENT IRAKE IND_RAKE
 if IRAKE==1  % rake here
-%    netslip = sqrt(ELEMENT(NSELECTED,5)^2+ELEMENT(NSELECTED,6)^2);
+
     netslip = str2double(get(hObject,'String'));
     set(hObject,'String',num2str(netslip,'%7.3f'));
     [ELEMENT(NSELECTED,5) ELEMENT(NSELECTED,6)] = rake2comp(IND_RAKE(NSELECTED),netslip);    
@@ -385,7 +369,7 @@ end
 function text_element_md_lat_CreateFcn(hObject, eventdata, handles)
 global IRAKE NSELECTED
 if IRAKE == 1
-    set(hObject,'String','Rake (Åã)');
+    set(hObject,'String','Rake (ÔøΩÔøΩ)');
 else
 	set(hObject,'String','Right-lat. slip(m)');
 end
@@ -433,7 +417,7 @@ x = str2double(get(hObject,'String'));
 if x < 0.0 || x >= ELEMENT(NSELECTED,9)
     h = errordlg('Unrealistic value. No negative & no over bottom depth.');
     waitfor(h);
-%    return;
+
 else
     ELEMENT(NSELECTED,8) = x;
 end
@@ -574,14 +558,10 @@ wfault = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(wfault,'%5.2f'));
 dfault = str2double(get(findobj('Tag','edit_md_dip'),'String'));
 hfault = sin(deg2rad(dfault)) * wfault;
-% x = get(findobj('Tag','radiobutton_md_start'),'Value');
-% if x == 1
+
     ELEMENT(NSELECTED,9) = ELEMENT(NSELECTED,8) + hfault;
     set(findobj('Tag','edit_md_bottom'),'String',num2str(ELEMENT(NSELECTED,9),'%6.2f'));
-% else
-%     ELEMENT(NSELECTED,8) = ELEMENT(NSELECTED,9) - hfault;
-%     set(findobj('Tag','edit_md_top'),'String',num2str(ELEMENT(NSELECTED,8),'%6.2f')); 
-% end
+
 update_seis_moment;
 grid_refreshment;
 
@@ -652,13 +632,13 @@ subfig_clear;
 FUNC_SWITCH = 1;
 grid_drawing;
 fault_overlay;
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1
+
     if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
             isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
         hold on;
         overlay_drawing;
     end
-%end
+
 FUNC_SWITCH = 0; %reset
 flag = check_lonlat_info;
 if flag == 1
@@ -688,13 +668,13 @@ subfig_clear;
 FUNC_SWITCH = 1;
 grid_drawing;
 fault_overlay;
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1
+
     if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
             isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
         hold on;
         overlay_drawing;
     end
-%end
+
 FUNC_SWITCH = 0; %reset
 flag = check_lonlat_info;
 if flag == 1
@@ -723,9 +703,6 @@ if strcmp(button,'Yes')
         ELEMENT(NSELECTED,:)=[];
         KODE(NSELECTED)=[];
         FCOMMENT(NSELECTED).ref=[];
-%         ELEMENT(NSELECTED:end-1,:) = ELEMENT(NSELECTED+1:end,:);
-%         KODE(NSELECTED:end-1) = KODE(NSELECTED+1:end);
-%         FCOMMENT(NSELECTED:end-1) = FCOMMENT(NSELECTED+1:end)
     end
     if (isempty(findobj('Tag','figure_element_modification'))~=1 && isempty(H_ELEMENT_MOD)~=1)
     close(figure(H_ELEMENT_MOD))
@@ -742,17 +719,5 @@ end
 function pushbutton_taper_subdivide_Callback(hObject, eventdata, handles)
 global H_ELEMENT TAPER_CALLED H_ELEMENT_MOD
 
-% if (isempty(findobj('Tag','figure_element_modification'))~=1 && isempty(H_ELEMENT_MOD)~=1)
-%    close(figure(H_ELEMENT_MOD))
-%    H_ELEMENT_MOD = [];
-% end
-
 H_ELEMENT = element_input_window;
 TAPER_CALLED = 1;
-
-
-
-
-
-
-

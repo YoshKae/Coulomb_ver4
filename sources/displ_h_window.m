@@ -47,10 +47,6 @@ guidata(hObject, handles);
 
 % --- この関数からの出力がコマンドラインに返されます。
 function varargout = displ_h_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % ハンドル構造体からデフォルトのコマンドライン出力を取得
 varargout{1} = handles.output;
@@ -119,7 +115,6 @@ set(findobj('Tag','Mouse_click'),'Enable','off');
 x = get(hObject,'Value');
 if x==1;
     temp_reserve = FUNC_SWITCH;
-%     COORD = 1;
     FIXFLAG = 0;
     figure(H_MAIN);
     delete(axes('Parent',H_MAIN));
@@ -127,7 +122,6 @@ if x==1;
     FUNC_SWITCH = temp_reserve;
     h = findobj('Tag','slider_displ');
 	displ_open(get(h,'Value'));
-%    FUNC_SWITCH = 0; %reset
 end
 
 %-------------------------------------------------------------------------
@@ -157,9 +151,7 @@ global GRID
 set(findobj('Tag','Mouse_click'),'Enable','on');
 x = get(hObject,'Value');
 if x==1;
-%    d = warndlg('Make sure the study area and type lon. & lat. as a ref point');
-%    study_area;
-%    COORD = 1;
+
     FIXFLAG = 2;
     mid_lon = (MIN_LON + MAX_LON) / 2.0;
     mid_lat = (MIN_LAT + MAX_LAT) / 2.0;
@@ -183,13 +175,6 @@ FIXX = str2double(get(hObject,'String'));
     FIXFLAG = 1;
     h = findobj('Tag','edit_fixy');
     FIXY = str2double(get(h,'String'));
-%     figure(H_MAIN);
-%     delete(axes('Parent',H_MAIN));
-%     hold on;
-%     FUNC_SWITCH = 2;
-%     h = findobj('Tag','slider_displ');
-% 	displ_open(get(h,'Value'));
-%     FUNC_SWITCH = 0; %reset
     
 % --- Executes during object creation, after setting all properties.
 function edit_fixx_CreateFcn(hObject, eventdata, handles)
@@ -211,13 +196,6 @@ global DISP_SCALE
 FIXY = str2double(get(hObject,'String'));
     h = findobj('Tag','edit_fixx');
     FIXX = str2double(get(h,'String'));
-%     figure(H_MAIN);
-%     delete(axes('Parent',H_MAIN));
-%     hold on;
-%     FUNC_SWITCH = 2;
-%     h = findobj('Tag','slider_displ');
-% 	displ_open(get(h,'Value'));
-%     FUNC_SWITCH = 0; %reset
 
 % --- Executes during object creation, after setting all properties.
 function edit_fixy_CreateFcn(hObject, eventdata, handles)
@@ -249,8 +227,6 @@ global MIN_LON MAX_LON
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% mid_lon = (MIN_LON + MAX_LON)/2.0;
-% set(hObject,'String',num2str(mid_lon,'%7.2f'));
 
 
 %-------------------------------------------------------------------------
@@ -273,8 +249,6 @@ global MIN_LAT MAX_LAT
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% mid_lat = (MIN_LAT + MAX_LAT)/2.0;
-% set(hObject,'String',num2str(mid_lat,'%7.2f'));
 
 
 %-------------------------------------------------------------------------
@@ -301,10 +275,7 @@ set(hObject,'String',num2str(CALC_DEPTH,'%5.2f'));
 %	  Executes on button press in Mouse_click. 
 %=========================================================================
 function Mouse_click_Callback(hObject, eventdata, handles)
-% hObject    handle to Mouse_click (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% selecting the fixed point by mouse
+
 global FIXX FIXY FIXFLAG COORD
 global H_MAIN A_MAIN
 global FUNC_SWITCH
@@ -312,13 +283,10 @@ temp_reserve = FUNC_SWITCH;
 % FIXFLAG = 1;
 xy = [];
 n = 0;
-% but = 1;
-% while but == 1
     figure(H_MAIN);
-    % ca = axes('Parent',H_MAIN);
+
    [xi,yi,but] = ginput(1);
-%    plot(A_MAIN,xi,yi,'ro'); 
-%    n = n+1;
+
    xy(:,1) = [xi;yi];
    FIXX = xy(1,1);
    FIXY = xy(2,1);
@@ -329,7 +297,7 @@ if FIXFLAG == 1
     set(h,'String',num2str(yi,'%7.2f'));
     plot(A_MAIN,xi,yi,'ro'); 
 elseif FIXFLAG == 2
-%     a = xy2lonlat([FIXX FIXY])
+
      h = findobj('Tag','edit_fixlon');
     set(h,'String',num2str(xi,'%7.2f'));
     h = findobj('Tag','edit_fixlat');
@@ -343,12 +311,11 @@ end
     delete(axes('Parent',H_MAIN));
     hold on;
 	FUNC_SWITCH = temp_reserve;
-%     h = findobj('Tag','slider_displ');
-% 	displ_open(get(h,'Value'));
+
 calc_button_Callback
     hold on;
-        plot(A_MAIN,xi,yi,'ro');
-%    FUNC_SWITCH = 0; %reset
+    plot(A_MAIN,xi,yi,'ro');
+
 
     
 %=========================================================================
@@ -362,7 +329,7 @@ global COAST_DATA EQ_DATA AFAULT_DATA
 global H_SECTION HOME_DIR PREF_DIR OUTFLAG INPUT_FILE
 temp_reserve = FUNC_SWITCH;
 %--- action when we change the target depth -----------
-% if FLAG_DEPTH == 1
+
 if IACT ~= 1        
 Okada_halfspace;
 end
@@ -385,9 +352,9 @@ IACT = 1;           % to keep okada output
     dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
     disp(['Displacement.cou is saved in ' pwd]);
     cd (HOME_DIR);
-%     dlmwrite('Displacement.cou',c,'delimiter','\t');
+
     FLAG_DEPTH = 0;
-% end
+
 %------------------------------------------------------
 
 if FIXFLAG == 1         %%%%% fixed cartesian calc.
@@ -429,7 +396,7 @@ else                    %%%%% no fixed point
         FUNC_SWITCH = temp_reserve;
         h = findobj('Tag','slider_displ');
         displ_open(get(h,'Value'));
-%        FUNC_SWITCH = 0; %reset
+
 end
 % ----- overlay drawing --------------------------------
 if isempty(COAST_DATA) ~= 1 | isempty(EQ_DATA) ~= 1 | isempty(AFAULT_DATA) ~= 1
@@ -517,5 +484,5 @@ global SIZE
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% h = get(findobj('Tag','slider_displ'),'Value');
+
 set(hObject,'String',num2str(SIZE(3,1),'%6.0f'));

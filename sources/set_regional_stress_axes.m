@@ -33,16 +33,8 @@ dip_max = 90.0 - rsinp(1,2);
 dip_min = -dip_max;
 minmax(1,1) = dip_min; minmax(1,2) = dip_max;
 if iflag == 1; return; end
-%    disp([num2str(dip_min),' to ',num2str(dip_max)]);
 strike_21 = rsinp(1,1) - 90.0;
 strike_22 = rsinp(1,1) + 90.0;
-
-% strike_inc = 90.0 / abs(dip_max);
-
-
-% a = cos(deg2rad(rsinp(2,2)));
-% b = cos(deg2rad(strike_inc*rsinp(2,2)));
-% theta = rad2deg(acos(b/a));
 
 
 a = sin(deg2rad(rsinp(2,2)))/sin(deg2rad(abs(dip_max)));
@@ -51,18 +43,12 @@ theta = rad2deg(asin(a*b));
 
 strike_21 = strike_21 - theta;
 strike_22 = strike_22 + theta;
-%    disp([num2str(strike_21),' or ',num2str(strike_22)]);
 
 %------------------------------------------------------------------------
 % To find two solutions of sigma 3 from sigma 2-1
 %------------------------------------------------------------------------
 strike_31 = rsinp(1,1) - 90.0;
 strike_32 = rsinp(1,1) + 90.0;
-% fan_dip_3 = 90.0 - strike_inc * rsinp(2,2);
-% dip_3 = fan_dip_3 / strike_inc;
-% a = cos(deg2rad(dip_3));
-% b = cos(deg2rad(strike_inc*dip_3));
-% theta = rad2deg(acos(b/a));
 
 s2 = cos(deg2rad(rsinp(2,2))) * sin(deg2rad(theta));
 h2 = sin(deg2rad(rsinp(2,2)));
@@ -76,7 +62,6 @@ dip_3  = rad2deg(asin(h3));
 theta3 = rad2deg(asin(s3/cos(deg2rad(dip_3))));
 strike_31 = strike_31 - theta3;
 strike_32 = strike_32 + theta3;
-%    disp([num2str(strike_31),' or ',num2str(strike_32)]);
 
 %------------------------------------------------------------------------
 % Make all solutions into matrix

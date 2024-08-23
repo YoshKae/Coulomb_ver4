@@ -77,7 +77,3 @@ set(findobj('Tag','menu_earthquakes'),'Checked','off');
 DEPTH_RANGE_TYPE = repmat(uint8(0),1,1);
 FLAG_PR_AXES = repmat(uint8(0),1,1);
 OVERLAY_MARGIN = 5;
-
-
-
-

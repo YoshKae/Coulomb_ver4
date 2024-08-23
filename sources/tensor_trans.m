@@ -10,12 +10,9 @@ function [sn] = tensor_trans(sinb,cosb,so,nn)
 
 t = zeros(6,6);
 sn = zeros(6,nn);
-
 ver = pi/2.0;
-
 bt = asin(sinb); % contains ys & yf information (applicable for strike = 0-180 deg)
-%     sina = (ELEMENT(ii,4)-ELEMENT(ii,2))/sw;
-%     cosa = (ELEMENT(ii,3)-ELEMENT(ii,1))/sw;
+
 if cosb > 0.0
 % rotation of axes (positive:clock wise, negative, anti-cw)
     xbeta = -bt;
@@ -85,5 +82,3 @@ t(6,6) = xl * ym + yl * xm;
 for k = 1:nn
 sn(:,k) = t(:,:) * so(:,k);
 end
-
-

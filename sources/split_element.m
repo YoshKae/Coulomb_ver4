@@ -23,9 +23,7 @@ for k = 1:m
        s_element(nct,7) = e9(k,7);
        s_element(nct,8) = e9(k,8);
        s_element(nct,9) = e9(k,9);
-       s_element(nct,10) = e9(k,10);
-%        s_element(nct,8) = e9(k,8) + double(l-1) * zinc;
-%        s_element(nct,9) = e9(k,9) + double(l) * zinc;       
+       s_element(nct,10) = e9(k,10);   
     end
 end
 s_element;

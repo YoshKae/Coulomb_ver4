@@ -102,7 +102,6 @@ end
 NODAL_ACT = 1;
 cd (HOME_DIR);
 focal_mech_calc;
-% NODAL_ACT = 0;
 
 %-------------------------------------------------------------------------
 %     NODAL PLANE 2 (radiobutton)  
@@ -134,7 +133,6 @@ end
 NODAL_ACT = 1;
 cd (HOME_DIR);
 focal_mech_calc;
-% NODAL_ACT = 0;
 
 %-------------------------------------------------------------------------
 %     SHUFFLE (radiobutton)  
@@ -164,7 +162,6 @@ end
 NODAL_ACT = 1;
 cd (HOME_DIR);
 focal_mech_calc;
-% NODAL_ACT = 0;
 
 %-------------------------------------------------------------------------
 %     MAX (radiobutton)  
@@ -194,7 +191,7 @@ end
 NODAL_ACT = 1;
 cd (HOME_DIR);
 focal_mech_calc;
-% NODAL_ACT = 0;
+
 
 %-------------------------------------------------------------------------
 %     MIN (radiobutton)  
@@ -224,12 +221,10 @@ end
 NODAL_ACT = 1;
 cd (HOME_DIR);
 focal_mech_calc;
-% NODAL_ACT = 0;
+
 
 %-------------------------------------------------------------------------
 %     CLOSE (pushbutton)  
 %-------------------------------------------------------------------------
 function pushbutton_nodal_close_Callback(hObject, eventdata, handles)
 close(figure(gcf));
-
-

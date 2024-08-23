@@ -92,7 +92,6 @@ LAT_GRID = []; LON_GRID = [];
         try
             try
             fid = fopen(fullfile(pathname, filename),'r');              % for ascii file
-            % fid = fopen(filename,'r');              % for ascii file
             catch
             errordlg('The file might be corrupted or wrong one');
             return;
@@ -184,7 +183,6 @@ dum0 = textscan(fid, '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %
 IRAKE    = 0;
 IND_RAKE = [];
 for k = 1:20
-%    dum0{k}(:);
     if isempty(strmatch('rake',dum0{k}(:)))~=1
         IRAKE = 1;
     end
@@ -195,8 +193,7 @@ dum = textscan(fid,'%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s',1);
 
 
 % fault elements
-% flt = textscan(fid,...
-%     '%3u16 %10.4f32 %10.4f32 %10.4f32 %10.4f32 %3u16 %10.4f32 %10.4f32 %10.4f32 %10.4f32 %10.4f32 %s %s %s %s %s %s %s %s %s %s', NUM);
+
 flt = textscan(fid,...
     '%3u16 %10.9f32 %10.9f32 %10.9f32 %10.9f32 %3u16 %10.9f32 %10.9f32 %10.9f32 %10.9f32 %10.9f32 %s %s %s %s %s %s %s %s %s %s', NUM);
 
@@ -206,13 +203,10 @@ if length(ID) ~= NUM - num_buffer
     disp('**  Please change #fixed in the 3rd row in the input file afterward.  **');
     disp('************************************************************************');
 end
-% if length(ID) < NUM - num_buffer
-    NUM = length(ID);
-% end
 
-% KODE = int16([flt{6}])
+NUM = length(ID);
+
 KODE = uint16([flt{6}]);
-% (ELEMENT: xs, ys, xf, yf, latslip, dipslip, dip, top, bottom)
 ELEMENT = [flt{2:5} flt{7:11}];
 ELEMENT = double(ELEMENT);
 % for comments after element param lineup
@@ -295,7 +289,6 @@ end
 % to change "rake" and "net slip" type to "right-lat" and "reverse" type
 if IRAKE == 1
     if mean(KODE) == 100
-%        IND_RAKE = zeros(NUM*numel(ID),1);
         count = 0;
         for j=1:NUM
             for i=1:ID(j)
@@ -337,6 +330,3 @@ end
 seis_moment;
 disp('---> To calculate deformation, select one of the submenus from ''Functions''.');
 disp(' ');
-
-
-

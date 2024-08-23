@@ -85,7 +85,6 @@ if exist('x')==1 % if the image file exists
     %===== version check バージョンチェック ===========================
 
     try
-%         temp  = urlread('http://www.coulombstress.org/version/version.txt');
         temp  = '3.2.01'; % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
         idx   = strfind(temp,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
         newvs = str2num([temp(1:idx(1)-1) temp(idx(1)+1:idx(2)-1) temp(idx(2)+1:end)]);
@@ -114,10 +113,6 @@ if exist('x')==1 % if the image file exists
     set(th2,'fontsize',12,'fontweight','b','Color','w',... % set: プロパティの値を設定。
         'horizontalalignment','center','verticalalignment','middle',...
         'backgroundcolor','none','edgecolor','none')
-
-% http://earthquake.usgs.gov/research/modeling/coulomb/
-%     new_version =
-%     urlread('http://www.coulombstress.org/version/version.txt');
     
 end
 cd .. % 一つ上のディレクトリに移動
@@ -223,14 +218,6 @@ if isempty(EQ_DATA) % 地震データが空の場合
 else
     set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
-% ---- making grid map view グリッドマップビューを作成する -----------------
-% put try-catch-end in case user push "cancel button" キャンセルボタンを押した場合のtry-catch-endを入れる
-% try % 例外処理
-%     check_overlay_items; % オーバーレイアイテムをチェック
-%     menu_grid_mapview_Callback; % グリッドマップビューをクリックしたときのコールバック関数
-% catch % 例外処理
-%     return
-% end
 
 %-------------------------------------------------------------------------
 %           OPEN (submenu) サブメニューを開く
@@ -238,12 +225,10 @@ end
 function menu_file_open_Callback(hObject, eventdata, handles) % サブメニューを開く
 global GRID % グリッド
 global H_MAIN FUNC_SWITCH EQ_DATA DIALOG_SKIP % メインウィンドウ、関数スイッチ、地震データ、ダイアログスキップ
-% coulomb_init;
-% clear_obj_and_subfig;
+
 DIALOG_SKIP = 0; % ダイアログスキップを0に設定
 input_open(1); % input_open: 入力を開く
 
-% FUNC_SWITCH = 0; % 関数スイッチを0に設定
 if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
@@ -253,7 +238,7 @@ if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使
     all_overlay_enable_off;
     set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
 end
-% menu_clear_overlay_Callback;
+
 check_overlay_items; % オーバーレイアイテムをチェック
 
 %-------------------------------------------------------------------------
@@ -262,8 +247,7 @@ check_overlay_items; % オーバーレイアイテムをチェック
 function menu_open_skipping_Callback(hObject, eventdata, handles) % ダイアログをスキップして開くサブメニューをクリックしたときのコールバック関数
 global GRID FUNC_SWITCH % グリッド、関数スイッチ
 global DIALOG_SKIP IACT % ダイアログスキップ、IACT
-% coulomb_init;
-% clear_obj_and_subfig;
+
 DIALOG_SKIP = 0;
 input_open(3); % 3はオープンウィンドウをスキップすることを意味する
 
@@ -434,7 +418,6 @@ if isempty(h)~=1 & isempty(H_MAIN)~=1 % main_menu_windowのハンドルが空で
     iflag = check_lonlat_info; % 経度と緯度の情報をチェック
     if iflag == 1 % iflagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
     end
 end
 
@@ -507,18 +490,15 @@ subfig_clear;
 FUNC_SWITCH = 1;
 grid_drawing;
 fault_overlay;
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1
-    if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-            isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-        hold on; % 現在の図を保持
-        overlay_drawing; % オーバーレイの描画
-    end
-%end
+if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    hold on; % 現在の図を保持
+    overlay_drawing; % オーバーレイの描画
+end
 FUNC_SWITCH = 0; %reset to 0
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 
 % --------------------------------------------------------------------
@@ -545,8 +525,6 @@ grid_drawing_3d; % 3Dグリッドの描画
 displ_open(2); % 2を開く
 
 H_F3D_VIEW = f3d_view_control_window;
-% figure(H_MAIN); % H_MAINの図を表示
-% menu_gps_Callback; % GPSをクリックしたときのコールバック関数
 gps_3d_overlay; % GPS 3Dオーバーレイ
 
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
@@ -619,11 +597,10 @@ if flag == 1 % flagが1の場合
 %	set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
-    if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-            isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-        figure(H_MAIN); hold on; % H_MAINの図を保持
-        overlay_drawing; % オーバーレイの描画
+if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    figure(H_MAIN); hold on; % H_MAINの図を保持
+    overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
@@ -683,11 +660,11 @@ if flag == 1 % flagが1の場合
 %    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1
-    if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-            isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-        figure(H_MAIN); hold on; % H_MAINの図を保持
-        overlay_drawing; % オーバーレイの描画
+
+if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    figure(H_MAIN); hold on; % H_MAINの図を保持
+    overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
@@ -735,11 +712,11 @@ if flag == 1 % flagが1の場合
 %    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
-    if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-            isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-        figure(H_MAIN); hold on; % H_MAINの図を保持
-        overlay_drawing; % オーバーレイの描画
+
+if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    figure(H_MAIN); hold on; % H_MAINの図を保持
+    overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
@@ -783,8 +760,6 @@ grid_drawing_3d; hold on;
 displ_open(2);
 h = findobj('Tag','xlines'); delete(h);
 h = findobj('Tag','ylines'); delete(h);
-% FUNC_SWITCH = 0; %reset
-% H_VIEWPOINT = viewpoint3d_window;
 
 % --------------------------------------------------------------------
 function menu_3d_wire_Callback(hObject, eventdata, handles) % 3Dワイヤをクリックしたときのコールバック関数
@@ -826,8 +801,7 @@ grid_drawing_3d; hold on; % 3Dグリッドの描画
 displ_open(2); % 2を開く
 h = findobj('Tag','xlines'); delete(h); % xlinesを削除
 h = findobj('Tag','ylines'); delete(h); % ylinesを削除
-% FUNC_SWITCH = 0; %reset
-% H_VIEWPOINT = viewpoint3d_window;
+
 
 % --------------------------------------------------------------------
 function menu_3d_vectors_Callback(hObject, eventdata, handles) % 3Dベクトルをクリックしたときのコールバック関数
@@ -868,8 +842,7 @@ grid_drawing_3d; hold on;
 displ_open(2);
 h = findobj('Tag','xlines'); delete(h);
 h = findobj('Tag','ylines'); delete(h);
-% FUNC_SWITCH = 0; %reset
-% H_VIEWPOINT = viewpoint3d_window;
+
 
 %-------------------------------------------------------------------------
 %           STRAIN (submenu) ひずみサブメニュー 
@@ -886,14 +859,13 @@ H_STRAIN = strain_window; % strain_windowを開く
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 % ----- overlay drawing --------------------------------
-%if ICOORD == 2 && isempty(LON_GRID) ~= 1
-    if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
-            isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
-        figure(H_MAIN); hold on;
-        overlay_drawing;
+
+if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
+    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
+    figure(H_MAIN); hold on;
+    overlay_drawing;
 end
 
 %-------------------------------------------------------------------------
@@ -914,7 +886,6 @@ set(findobj('Tag','edit_coul_fric'),'Visible','off'); % edit_coul_fricを非表�
 flag = check_lonlat_info;
 if flag == 1
     all_overlay_enable_on;
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 
 % --------------------------------------------------------------------
@@ -930,7 +901,6 @@ set(findobj('Tag','edit_coul_fric'),'Visible','off');
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 
 % --------------------------------------------------------------------
@@ -945,7 +915,6 @@ set(findobj('Tag','crosssection_toggle'),'Enable','off');
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 
 % --------------------------------------------------------------------
@@ -961,15 +930,11 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でな�
     waitfor(h);
     return
 end
-% hc = wait_calc_window;   % custom waiting dialog % カスタム待機ダイアログ
 subfig_clear;
 % clear_obj_and_subfig
 FUNC_SWITCH = 10;
-% element_condition(ELEMENT,POIS,YOUNG,FRIC,ID);
-% grid_drawing_3d;
-% displ_open(2);
 H_EC_CONTROL = ec_control_window; % ec_control_windowを開く
-% close(hc);
+
 
 % --------------------------------------------------------------------
 function menu_stress_on_a_fault_Callback(hObject, eventdata, handles)
@@ -985,7 +950,6 @@ H_POINT = point_calc_window; % point_calc_windowを開く
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 
 % --------------------------------------------------------------------
@@ -1215,7 +1179,6 @@ global H_MAIN AFAULT_DATA
         if isempty(AFAULT_DATA) == 1 % AFAULT_DATAが空の場合
             afault_format_window; % afault_format_windowを開く
         else
- %           hold off;
             afault_drawing; % afault_drawingを実行
         end
         hold on;
@@ -1245,11 +1208,7 @@ global H_MAIN H_F3D_VIEW H_EC_CONTROL
         set(gcbo, 'Checked', 'on'); % gcboをonに設定
         hold off;
         earthquake_plot; % 地震プロット
-%         if ~isempty(H_F3D_VIEW) | ~isempty(H_EC_CONTROL)
-%             
-%         else
-            fault_overlay; % フォルトを再度プロット
-%         end
+        fault_overlay; % フォルトを再度プロット
         hold on;
     end
 
@@ -1284,9 +1243,7 @@ global H_MAIN ICOORD LON_GRID PREF
 global H_F3D_VIEW % グラフィックが2Dか3Dかを識別する識別子
 global GPS_DATA SIZE
 
-%     ck = get(findobj('Tag','menu_gps'),'Checked'); % 'Tag'が'menu_gps'のオブジェクトを取得
-   if strcmp(get(gcbo, 'Checked'),'on')
-%     if strcmp(ck,'on')
+    if strcmp(get(gcbo, 'Checked'),'on')
         set(gcbo, 'Checked', 'off');
         set(findobj('Tag','menu_gps'),'Checked','off'); 
         figure(H_MAIN);
@@ -1303,7 +1260,6 @@ global GPS_DATA SIZE
         end
     else 
         set(gcbo, 'Checked', 'on');
-%         set(findobj('Tag','menu_gps'),'Checked','on'); 
         hold off;
         if isempty(H_F3D_VIEW)
             gps_plot;
@@ -1413,9 +1369,6 @@ set(findobj('Tag','menu_coastlines'),'Checked','Off'); % 'Tag'が'menu_coastline
         catch
             return
         end
-% hObject    handle to submenu_clear_coastlines (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 %-------------------------------------------------------------------------
 %       Submenu clear active fault data (submenu) アクティブフォールトデータをクリアするサブメニュー
@@ -1431,9 +1384,6 @@ set(findobj('Tag','menu_activefaults'),'Checked','Off');
         catch
             return
         end
-% hObject    handle to submenu_clear_afaults (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 %-------------------------------------------------------------------------
 %       Submenu clear earthquake data (submenu) 地震データをクリアするサブメニュー
@@ -1456,10 +1406,6 @@ set(findobj('Tag','menu_focal_mech'),'Enable','Off');
         catch
             return
         end
-
-% hObject    handle to submenu_clear_earthquakes (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 %-------------------------------------------------------------------------
 %       Submenu clear volcano data (submenu) 火山データをクリアするサブメニュー
@@ -1493,9 +1439,6 @@ set(findobj('Tag','menu_gps'),'Checked','Off');
         catch
             return
         end
-% hObject    handle to submenu_clear_earthquakes (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % --------------------------------------------------------------------
 function uimenu_fault_modifications_Callback(hObject, eventdata, handles) % uimenu_fault_modificationsをクリックしたときのコールバック関数
@@ -1538,3 +1481,4 @@ global VOLCANO
     else
         set(findobj('Tag','menu_gps'),'Checked','Off');
     end
+    

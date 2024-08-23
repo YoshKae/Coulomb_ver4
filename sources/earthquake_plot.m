@@ -20,7 +20,6 @@ yinc = (yf - ys)/(MAX_LAT-MIN_LAT);
 
 if isempty(EQ_DATA)==1
 % select format using a dialog box (eq_catalog_format_window)
-%     EQ_FORMAT_TYPE = 1; % default (HARVARD CMT)
     h = eq_catalog_format_window;
     waitfor(h);
     if isempty(EQ_ZFORMAT_DATA)
@@ -59,7 +58,6 @@ if isempty(EQ_DATA)==1
         return
     end
     hm = wait_calc_window;
-% hm = msgbox('Now plotting earthquakes. Please wait...');
     lon = EQ_ZFORMAT_DATA(:,1);
     lat = EQ_ZFORMAT_DATA(:,2);
     xx = xs + (lon - MIN_LON) * xinc;
@@ -97,11 +95,7 @@ if isempty(EQ_DATA)==1
 % --- if EQ_DATA already exist ---------------
 elseif isempty(EQ_DATA)~=1
     
-%     if EQ_FLAG == 0
-%         EQ_ZFORMAT_DATA = [];
-%         set(findobj('Tag','menu_earthquake'), 'Checked', 'off');
-%         return
-%     end
+
     
     if ICOORD == 2 && isempty(LON_GRID) ~= 1
         hold on;
@@ -118,7 +112,7 @@ elseif isempty(EQ_DATA)~=1
             EQ_DATA(:,16),EQ_DATA(:,17),EQ_DATA(:,6)*PREF(5,4)/3.0,0,0,'b');
         end
     end
-%    set(h,'MarkerEdgeColor',PREF(5,1:3)); % white edge color for earthquakes 
+
     set(h,'Tag','EqObj');
 end
 disp(' ');

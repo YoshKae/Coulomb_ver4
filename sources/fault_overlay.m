@@ -98,8 +98,6 @@ items1 = uimenu(cmenus(n), 'Label', 'change parameters',...
     'Callback',['element_modification(' num2str(n,'%3i') ')']);
 itemf1 = uimenu(cmenuf(n), 'Label', 'change parameters',...
     'Callback',['element_modification(' num2str(n,'%3i') ')']);
-% item2 = uimenu(cmenu(n), 'Label', 'dotted', 'Callback', cb2);
-% item3 = uimenu(cmenu(n), 'Label', 'solid', 'Callback', cb3);
 
 % write fault number of the starting point
 if FNUM_ONOFF == 1
@@ -111,9 +109,6 @@ else
 end
     set(htx,'fontsize',14,'fontweight','b','Color',[0.1 0.1 0.6]);
 end
-%     set(htx,'fontsize',16,'fontweight','b','Color','w',...
-%         'horizontalalignment','center','verticalalignment','middle',...
-%         'backgroundcolor','none','edgecolor','none')
 
 % Point source
 if KODE == 400 | KODE == 500

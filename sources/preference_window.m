@@ -47,15 +47,10 @@ end
 % --- Executes just before preference_window is made visible.
 function preference_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to preference_window (see VARARGIN)
+
 global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
 global OUTFLAG
 j = get(findobj('Tag','preference_window'),'Position');
-% h = findobj('Tag','preference_window')
-% j = get(h,'Position')
 wind_width = j(1,3);
 wind_height = j(1,4);
 
@@ -73,8 +68,6 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes preference_window wait for user response (see UIRESUME)
-% uiwait(handles.preference_window);
 if OUTFLAG == 1
     h = findobj('Tag','Radiobutton_output');
     set(h,'Value',1);
@@ -89,10 +82,7 @@ end
 
 % --- Outputs from this function are returned to the command line.
 function varargout = preference_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -592,8 +582,6 @@ global LON_GRID
 temp = ICOORD;
 ICOORD = single(get(hObject,'Value'));
 PREF(8,1) = ICOORD;
-% COAST_DATA = [];
-% AFAULT_DATA = [];
 if ICOORD == 1
     XY_RATIO = 1;
 else
@@ -606,8 +594,6 @@ else
 end
 if ICOORD ~= temp
     COORD_ACTION = 1;
-%     figure(H_MAIN);
-%     change_coordinates;
     IACT = 0;
 end
 
@@ -617,7 +603,6 @@ global ICOORD PREF XY_RATIO GRID
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-% ICOORD = 1; % default only for this choise
 if isempty(ICOORD)
 ICOORD = PREF(8,1);
 end
@@ -693,32 +678,6 @@ cd preferences
             end
     save preferences2.mat PREF_DIR INPUT_FILE OUTFLAG FNUM_ONOFF;
 cd ..
-
-% % In the case ICOORD was changed
-% % %function menu_grid_mapview_Callback(hObject, eventdata, handles)
-% global FUNC_SWITCH COAST_DATA EQ_DATA GPS_DATA AFAULT_DATA
-% subfig_clear;
-% FUNC_SWITCH = 1;
-% grid_drawing;
-% fault_overlay;
-% %if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%     if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
-%             isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
-%         hold on;
-%         overlay_drawing;
-%     end
-% %end
-% FUNC_SWITCH = 0; %reset
-% flag = check_lonlat_info;
-% if flag == 1
-% set(findobj('Tag','menu_coastlines'),'Enable','On');
-% set(findobj('Tag','menu_activefaults'),'Enable','On');
-% set(findobj('Tag','menu_earthquakes'),'Enable','On');
-% set(findobj('Tag','menu_gps'),'Enable','On'); 
-% set(findobj('Tag','menu_annotations'),'Enable','On'); 
-% set(findobj('Tag','menu_clear_overlay'),'Enable','On');
-% set(findobj('Tag','menu_trace_put_faults'),'Enable','On');     
-% end
 
 
 %-------------------------------------------------------------------------

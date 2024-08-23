@@ -62,8 +62,7 @@ if SHADE_TYPE == 2
 	cc_new = fliplr(cc_new);
     % keep CC data
     if ICOORD == 2 && isempty(LON_GRID) ~= 1
-%         tempx = new_xgrid;
-%         tempy = new_xgrid;
+
         tempx = XGRID;
         tempy = YGRID;
         new_xgrid(1) = LON_GRID(1);  new_xgrid(end) = LON_GRID(end);
@@ -113,8 +112,6 @@ else
     set(gca,'YDir','normal');
 end
 
-% color saturation (-1 bar to 1 bar)
-%set (ac, 'title','Coulomb output','xlabel','X (km)','ylabel','Y (km)');
 hold on;
 shading(gca,'interp');
 
@@ -164,12 +161,10 @@ hold on;
         ht = title('Coulomb stress change (bar)','FontSize',18);
     otherwise
     end
-% colorbar('location','SouthOutside');
+
 colorbar('location','EastOutside');
 hold on;
-% fault_overlay;
-% hold off;
-%    set(H_MAIN,'Visible','on');
+
 
 %-----------    contour mapview overlay for stress function  ---------------------------
 if FUNC_SWITCH == 7 | FUNC_SWITCH == 8 | FUNC_SWITCH == 9
@@ -196,9 +191,7 @@ else
     [C,h] = contour(XGRID,YGRID,flipud(CC));
 end
 set(h,'LineColor','k','ShowText','on','LevelStep',CONT_INTERVAL);
-% disp(['  Contour interval is now ' num2str(CONT_INTERVAL,'%6.3f')]);
-% disp('  To change the contour interval, use variable CONT_INTERVAL.');
-% disp('  Type here like CONT_INTERVAL = 0.2; Do not make it so small. It takes lots of time.');
+
 i = findobj('Type','patch');
 set(i,'LineWidth',1);
 hold off;
@@ -213,31 +206,22 @@ hold on;
 [m n] = size(CC);
 dd = zeros(m,n);
 dd = (CC./abs(CC)).*log10(abs(CC));
-% cmax = max(reshape(max(abs(CC)),NXINC,1))
+
 cmax = round(max(reshape(max(dd),length(XGRID),1)));
 cmin = round(min(reshape(min(dd),length(XGRID),1)));
-% nn = [cmin:1:cmax];
+
 if isempty(CONT_INTERVAL)
 CONT_INTERVAL = cmax - cmin + 1;
 end
-% nn = [0 0]
-% [C,h] = contour(XGRID,YGRID,flipud(CC),int8(2*log10(abs(N))));
-%if SHADE_TYPE == 1
+
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
 	[C,h] = contour(LON_GRID,LAT_GRID,flipud(dd));
 else
     [C,h] = contour(XGRID,YGRID,flipud(dd));
 end
-% else
-% % [C,h] = contour(new_xgrid,new_ygrid,flipud(cc_new));
-% [C,h] = contour(XGRID,YGRID,flipud(dd));
-% end
-set(h,'LineColor','k','ShowText','on','LevelStep',CONT_INTERVAL);
-% disp(['  Contour interval is now ' num2str(CONT_INTERVAL,'%6.3f')]);
-% disp('  To change the contour interval, use variable CONT_INTERVAL.');
-% disp('  Type here like CONT_INTERVAL = 0.2; Do not make it so small. It takes lots of time.');
 
-% clabel(C,h);
+set(h,'LineColor','k','ShowText','on','LevelStep',CONT_INTERVAL);
+
 i = findobj('Type','patch');
 set(i,'LineWidth',1);
 % hold on;
@@ -275,9 +259,6 @@ hold on;
     end    
     
 set(h,'LineColor','k','ShowText','on','LevelStep',CONT_INTERVAL);
-% disp(['  Contour interval is now ' num2str(CONT_INTERVAL,'%6.3f')]);
-% disp('  To change the contour interval, use variable CONT_INTERVAL.');
-% disp('  Type here like CONT_INTERVAL = 0.2; Do not make it so small. It takes lots of time.');
 i = findobj('Type','patch');
 set(i,'LineWidth',1);
 hold off;
@@ -309,8 +290,7 @@ else
     y = YGRID(1)-((YGRID(end)-YGRID(1))/10.0)/r;
     lsp = ((YGRID(end)-YGRID(1))+(XGRID(end)-XGRID(1)))/75.0;
 end
-% date_and_file_stamp(H_MAIN,INPUT_FILE,x,y,lsp,FUNC_SWITCH,CALC_DEPTH,STRESS_TYPE,...
-%     FRIC,DEPTH_RANGE_TYPE,CALC_DEPTH_RANGE,STRIKE,DIP,RAKE);
+
 if isempty(CALC_DEPTH_RANGE)
     CALC_DEPTH_RANGE = [0:5:10];
 end

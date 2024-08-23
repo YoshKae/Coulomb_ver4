@@ -1,13 +1,5 @@
 function [c] = obj_trans(rx,ry,rz,tx,ty,tz,sx,sy,sz)
-% rx = 30;
-% ry = 0;
-% rz = 0;
-% tx = 0;
-% ty = 0;
-% tz = 0;
-% sx = 1;
-% sy = 1;
-% sz = 1;
+
 rotx = [1 0 0 0;
         0 cos(deg2rad(rx)) -sin(deg2rad(rx)) 0;
         0 sin(deg2rad(rx)) cos(deg2rad(rx)) 0;

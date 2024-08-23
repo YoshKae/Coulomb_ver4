@@ -14,8 +14,6 @@ function [geoid,msg] = geoidtst(geoid)
 %  Written by:  E. Byrns, E. Brown
 %   $Revision: 6.0 $    $Date: 2002/03/05 16:04:27 $
 
-%disp('This is /src/geoidtst.m');
-
 %  Initialize output
 
 if nargout ~= 0;  msg = [];  end

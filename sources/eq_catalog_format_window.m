@@ -23,11 +23,7 @@ end
 % --- Executes just before eq_catalog_format_window is made visible.
 function eq_catalog_format_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to eq_catalog_format_window (see
-% VARARGIN)
+
 
 % Choose default command line output for eq_catalog_format_window
 handles.output = hObject;
@@ -35,16 +31,9 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes eq_catalog_format_window wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = eq_catalog_format_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -54,9 +43,7 @@ varargout{1} = handles.output;
 %     Select catalog format (listbox)  
 %-------------------------------------------------------------------------
 function listbox_format_Callback(hObject, eventdata, handles)
-% hObject    handle to listbox_format (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 
 % Hints: contents = get(hObject,'String') returns listbox_format contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from
@@ -92,11 +79,7 @@ end
     if isempty(EQ_FORMAT_TYPE) == 1
             EQ_FORMAT_TYPE = 1;         % I do not know why this thing happpens....
     end
-%     if strcmp(PLATFORM,'MACI') | strcmp(PLATFORM,'MACI64') | strcmp(PLATFORM,'GLNX86') | strcmp(PLATFORM,'GLNXA64')
-%         dum_intel_mac;
-% % NOTE (Paco Gomez, 18 Nov. 2007):  For GLNXA64 and GLNX86, dum_intel_mac needs to run
-% % or else uigetfile in the selected "catalog" command fails
-%     end
+
     
 switch EQ_FORMAT_TYPE
     % read twice each function for stupid MATLAB 7.4 on Intel Mac .......

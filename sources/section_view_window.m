@@ -47,10 +47,6 @@ end
 % --- Executes just before section_view_window is made visible.
 function section_view_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to section_view_window (see VARARGIN)
 
 global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
 % window width 585 pixel
@@ -71,16 +67,8 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes section_view_window wait for user response (see UIRESUME)
-% uiwait(handles.section_view_window);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = section_view_window_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;

@@ -35,14 +35,12 @@ for k = 1:ns
     yfn(k) = ys + double(k) * yd;
     for m = 1:nd
         ncount = ncount + 1;
-%         tp(m) = top + (m-1) * zd;
         tp(m) = double(m-1) * zd;
         xy = dip_shift([xst(k) yst(k) xfn(k) yfn(k)],el0(7),tp(m));
         el(ncount,1) = xy(1);
         el(ncount,2) = xy(2);
         el(ncount,3) = xy(3);
         el(ncount,4) = xy(4);
-%         bt(m) = top + m * zd;
         bt(m) = double(m) * zd;
         el(ncount,8) = tp(m) + top;
         el(ncount,9) = bt(m) + top;
@@ -58,7 +56,6 @@ el(:,7) = el0(7);
 function xy_shift = dip_shift(xy_org,dip,z)
 xy_shift = zeros(1,4,'double');
 d = double(z / tan(deg2rad(dip)));
-% l = z / tan(deg2rad(dip));
 xs = double(xy_org(1));
 ys = double(xy_org(2));
 xf = double(xy_org(3));
@@ -87,12 +84,3 @@ xy_shift(1) = xs + xx;
 xy_shift(3) = xf + xx;
 xy_shift(2) = ys - yy;
 xy_shift(4) = yf - yy;
-
-
-
-
-
-
-
-
-
