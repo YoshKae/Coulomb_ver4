@@ -25,7 +25,6 @@ global COAST_DATA AFAULT_DATA EQ_DATA
 clear_obj_and_subfig;
 
 set(H_MAIN,'HandleVisibility','on');
-% h = figure(H_MAIN);
 grid_drawing_3d; hold on;
 if isempty(C_SAT) == 1 % in case
     C_SAT = 1;      % default color saturation value is 5 bars
@@ -51,11 +50,7 @@ hold on;
     xlim([min(XGRID),max(XGRID)]);
 	ylim([min(YGRID),max(YGRID)]);
 	xlabel('X (km)'); ylabel('Y (km)'); zlabel('Z (km)');
-%     try
-%         view(VIEW_AZ,VIEW_EL);
-%     catch
         view(15,40);        % default veiw parameters (azimuth,elevation)
-%    end
 hold on;
     depth_max = 0.0;
 
@@ -124,7 +119,6 @@ for k = 1:m
                     sb = abs(slip_max);
         end
         if slip_max == 0.0 && slip_min == 0.0
-%            disp('No source slip is found. See the input file.');
             sb = 1.0;           % in case
         end
         
