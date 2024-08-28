@@ -30,9 +30,7 @@ if FUNC_SWITCH == 1 || FUNC_SWITCH == 10
 else
     if OUTFLAG == 1 || isempty(OUTFLAG) == 1
         cd output_files;
-
     else
-
         cd (PREF_DIR);
     end
     fid = fopen('Displacement.cou','r');
@@ -44,7 +42,6 @@ else
     ux = [coul{4}];
     uy = [coul{5}];
     uz = [coul{6}];
-    
     uux = reshape(ux,length(YGRID),length(XGRID));
     uuy = reshape(uy,length(YGRID),length(XGRID));
     uuz = reshape(uz,length(YGRID),length(XGRID));
@@ -76,7 +73,6 @@ if FIXFLAG == 0       % no fixed point
         xds = zeros(length(YGRID),length(XGRID));
         yds = zeros(length(YGRID),length(XGRID));
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
-
             a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
             b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
             xds = repmat(reshape(a(:,1),1,length(a(:,1))),length(b(:,2)),1);
@@ -102,7 +98,6 @@ if FIXFLAG == 0       % no fixed point
             end
         end
     end
-    
 else                    % recalculate displacement for the fixed point
         [m n] = size(DC3D);
         dc3d_keep = zeros(m,n,'double');
@@ -159,12 +154,10 @@ else                    % recalculate displacement for the fixed point
 end
 
 if ICOORD == 2 && isempty(LON_GRID) ~= 1
-
 	a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
 	b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
     xinc = a(2,1)-a(1,1);
     yinc = b(2,2)-b(1,2);
-
     a0 = quiver((a(1,1)+xinc),(b(1,2)+yinc*1.5),1.0*LON_PER_X*resz,0.,0); %scale vector (1m)
     h = text((a(1,1)+2.0*xinc),(b(1,2)+yinc*3.0),'1m');
 else
@@ -197,7 +190,6 @@ buffer = 1.0;
 cmax = max(reshape(max(abs(CC)),length(XGRID),1));
 cmin = min(reshape(min(abs(CC)),length(XGRID),1));
 cmean = mean(reshape(mean(abs(CC)),length(XGRID),1));
-
 COLORSN = cmean;
 coulomb_view(cmean);
 hold on;
@@ -254,7 +246,7 @@ end
         view(VIEW_AZ,VIEW_EL);
     catch
 
-        view(15,40);        % default veiw parameters (azimuth,elevation)
+        view(15,40); % default veiw parameters (azimuth,elevation)
     end
 hold on;
 % ELEMENT
@@ -281,22 +273,19 @@ end
 %--- for coloring amount of fault slip for grid 3D
 sl = zeros(m,1);
 a1 = zeros(m,1);
-
-    c1 = int16(S_ELEMENT(:,10)) == 100;
-    c2 = int16(S_ELEMENT(:,10)) ~= 100;
-    
-        if F3D_SLIP_TYPE == 1
-            a1 = sqrt(S_ELEMENT(:,5).^2.0 + S_ELEMENT(:,6).^2.0);
-        elseif F3D_SLIP_TYPE == 2
-            a1 = S_ELEMENT(:,5);
-        else
-            a1 = S_ELEMENT(:,6);
-        end
-
-        
-    sl = c1 .* a1 + c2 .* zeros(m,1);
-    slip_max = max(sl);
-    slip_min = min(sl);
+c1 = int16(S_ELEMENT(:,10)) == 100;
+c2 = int16(S_ELEMENT(:,10)) ~= 100;
+    if F3D_SLIP_TYPE == 1
+        a1 = sqrt(S_ELEMENT(:,5).^2.0 + S_ELEMENT(:,6).^2.0);
+    elseif F3D_SLIP_TYPE == 2
+        a1 = S_ELEMENT(:,5);
+    else
+        a1 = S_ELEMENT(:,6);
+    end
+   
+sl = c1 .* a1 + c2 .* zeros(m,1);
+slip_max = max(sl);
+slip_min = min(sl);
 
 %---
 
@@ -547,6 +536,3 @@ elseif FUNC_SWITCH == 10
         colorbar('location','SouthOutside');
 end
 end
-
-% % ------------
-% figure(H_MAIN);

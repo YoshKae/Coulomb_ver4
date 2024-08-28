@@ -191,7 +191,6 @@ A_MAIN = gca;
 %-----------    Vertical displ. mapview  ---------------------------
 elseif FUNC_SWITCH == 4
 grid_drawing;
-% set(H_MAIN,'NumberTitle','off','Menubar','figure','Name','Vertical displacement');
 set(H_MAIN,'NumberTitle','off','Menubar','figure');
 hold on;
 a1 = 1; %dummy
@@ -681,4 +680,3 @@ end
         S_ELEMENT(:,1:4) = temp_element;
     end   
 end
-
