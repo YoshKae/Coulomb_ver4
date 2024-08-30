@@ -1,0 +1,319 @@
+Grid関連
+ICOORD: 1:デカルト座標系，2:マップ座標系（lon.,lat.）
+（平面図関連）
+XGRID: デカルト座標系でのX grid vector (1行，複数列)　（x の刻み)
+YGRID: デカルト座標系でのY grid vector (1行，複数列)　（y の刻み)
+XY_RATIO: 縦横比
+LON_GRID: マップ座標系でのlongitude grid vector (1行，複数列)　（lon. の刻み，XGRIDに対応)
+LAT_GRID：マップ座標系でのlatitude grid vector (1行，複数列)　（lat. の刻み，YGRIDに対応)
+MIN_LAT:　研究対象範囲の緯度最小値
+MAX_LAT:　研究対象範囲の緯度最大値
+ZERO_LAT: リファレンス（0）となる緯度
+MIN_LON: 研究対象範囲の経度最小値
+MAX_LON: 研究対象範囲の経度最大値
+ZERO_LON: リファレンス（0）となる経度
+（平面図への情報重ね合わせ，overlay）
+COAST_DATA: 海岸線データ（？？？）
+AFAULT_DATA: 断層線データ（？？？）
+EQ_DATA: 震源データ（？？？）
+GPS_DATA: GPSデータ（？？？）
+GPS_FLAG % 'horizontal' or 'vertical'
+GPS_SEQN_FLAG % 'on' shows sequential numbers
+VOLCANO: 火山の位置情報データ（？？？）
+SEISSTATION：地震観測地点の位置情報データ（？？？）
+OVERLAYFLAG
+OVERLAY_MARGIN
+EQPICK_WIDTH
+（断面図関連）
+SEC_XS: 始点のX座標値
+SEC_YS: 始点のY座標値
+SEC_XF: 終点のX座標値
+SEC_YF: 終点のY座標値
+SEC_INCRE: 断面図水平方向への増分値（increment）
+SEC_DEPTH: 断面図での深さの最大値
+SEC_DEPTHINC: 断面図での深さ方向への増分値（increment）
+SEC_FLAG
+SEC_DIP: 断面図作成面の傾斜（°）
+SEC_DOWNDIP_INC: 断面図作成面での増分値（increment）
+
+（断層要素関連，主として入力ファイルより）
+HEAD: ヘッダー（入力ファイルの説明書き，2行１列）
+NUM: 総断層数（integer）(入力ファイルでは，’#fixed=   3’)
+POIS: ポアソン比 (入力ファイルでは，’ PR1=       0.250’)
+CALC_DEPTH: 計算深度（km）
+YOUNG: ヤング率（bar）（入力ファイルでは，’  E1=      8.000e+05’）
+FRIC: 摩擦係数（入力ファイルでは，’ FRIC=          0.400’）
+R_STRESS: Regional stress（テクトニックストレス，応力場設定，３行４列）
+	R_STRESS(1,:): sigma-1, R_STRESS(2,:): sigma-2, R_STRESS(3,:): sigma-3
+	R_STRESS(:,1): 方位（北を０°，時計回り，°，０°〜360°）
+	R_STRESS(:,2): プランジ（水平０°，鉛直90°，０°〜90°）
+	R_STRESS(:,3): 応力値の初期値（0kmでの値，bar）
+	R_STRESS(:,4):応力値の深さ方向の勾配
+ある深さでの応力値：
+（R_STRESS(:,3)+深さ（km）ｘR_STRESS(:,4)）0kmでの値，bar）
+ID: 各入力エレメント（断層）の最初の列の値（通常は１）
+INUM（？？？）→断層の総数？たぶん一番大きいIDと同じ
+KODE：　計算のタイプを指定するコード，通常の計算では100
+ELEMENT：断層の位置情報（行：入力ファイルの断層数，行数，ｘ９列）
+	ELEMENT(:,1): 断層始点のX座標値（X-start, km）
+	ELEMENT(:,2): 断層始点のY座標値（Y-start, km）
+	ELEMENT(:,3): 断層終点のX座標値（X-finish, km）
+	ELEMENT(:,4): 断層終点のY座標値（Y- finish, km）
+	ELEMENT(:,5): 右横ずれ成分（rt.lat, m）左横ずれは−
+	ELEMENT(:,6): 逆断層変位成分（reverse, m）正断層は−
+	ELEMENT(:,7): 断層の傾斜（0°-90°）
+	ELEMENT(:,8): 断層の上端の深さ（km）
+	ELEMENT(:,9): 断層の下端の深さ（km）
+FCOMMENT: 個々の断層への短いコメント（構造体として保存）
+GRID: 列ベクトル（6行）．入力ファイルの’Grid Parameters’をそのまま保存
+SIZE: 列ベクトル（３行）．入力ファイルの’Size Parameters’をそのまま保存
+SECTION: 列ベクトル（7行）．入力ファイルの’Cross section default’をそのまま保存
+
+（計算の制御系）
+IACT: Okadaコードの計算が初めて（0）か，既に計算していてそれを再利用するのか（1）
+FUNC_SWITCH:　計算のタイプ．MenuのFunctionに対応
+　1: grid表示（２次元，３次元）Function>2D map view, Function>3D view
+　2: displacement vectors, Function>Displacements>Horizontal displ. (vectors)
+　3: displacement wireframe, Function>Displacements>Horizontal displ. (wireframe)
+　4: displacement (vertical), Function>Displacements>Vertical displ. (color & contours)
+　5: displacement (3D image drape), Function>Displacements>3D image drape
+　5.5: displacement (3D image wireframe), Function>Displacements>3D image wireframe
+　5.7: displacement (3D vectors), Function>Displacements>3D vectors
+　6: strain, Function>Strain
+　7: Function>Shear stress change
+　8: Function>Normal stress change
+　9: Function>Coulomb stress change
+　10: Function>Calc. stress on faults
+　11: Function>Calc. stress on nodal planes
+STRESS_TYPE: Coulomb stress計算のreceiver fault (影響を受ける断層)のタイプ．
+Stress control panel (Coulomb_window.fig)の’Receiver faults’内のラジオボタン選択
+　1: 'radiobutton_optfault'
+　2: 'radiobutton_optss'
+　3: 'radiobutton_optth'
+　4: 'radiobutton_optno'
+　5: 'radiobutton_specified' (default)
+STRAIN_SWITCH: どのタイプの歪みかの切り替え．
+Strain control panel (strain_window.fig)のComponentsのラジオボタンに対応
+　1: EXX
+　2: EYY
+　3: EZZ
+　4: EYZ (windowでは６番目，注意)
+　5: EXZ
+　6: EXY (windowでは４番目，注意)
+　7: Dilatation (EXX+EYY+EZZ)
+　8: Dilatation cross section
+
+
+SHADE_TYPE: 変位，歪み，クーロン応力の表示の際，モザイクか内挿スムージングか
+　1: 'mozaic_radiobutton' (モザイク表示)
+　2: 'interpolating_radiobutton'（スムージング表示）
+
+NODAL_ACT:
+UTM_ACT:
+DEPTH_RANGE_TYPE:
+　0: fixed depth plane（単一計算深度）
+　1: depth range（計算深度に幅を持たせる）
+RECEIVERS
+
+
+(グラフィックの制御系)
+ANATOLIA: カラーコード（紫―白―赤，独自作成のもの）
+SEIS_RATE: カラーコード（青―白―赤，MATLABデフォルト）
+C_SAT: カラーの飽和値（±）
+CONT_INTERVAL: 等値線の間隔
+
+(Graphic Handle制御系)
+clear_obj_and_subfig(> subfig_clearスクリプト)で全ての graphic window をチェックしてクリアに. 以下はハンドル名. ()内は対応するGUIDE figure
+H_MAIN: main window (main_menu_window.fig)
+H_INPUT: input window (input_window.fig)
+H_DISPL: 断層変位（displacement）制御系のwindow (displ_h_window.fig)
+H_COULOMB: クーロン応力変化計算条件のwindow (coulomb_window.fig)
+H_SECTION: (xsec_window.fig)
+H_SEC_WINDOW: (section_view_window.fig)
+H_STRAIN: (strain_window.fig)
+H_GRID_INPUT: (grid_input_window.fig)
+H_STUDY_AREA: (study_area.fig)
+H_ELEMENT: (element_input_window.fig)
+H_UTM: (utm_window.fig)
+H_VERTICAL_DISPL: (vertical_displ_window.fig)
+H_EC_CONTROL: (ec_control_window.fig)
+H_POINT: (point_calc_window.fig)
+H_F3D_VIEW: (f3d_view_control_window.fig)
+H_DEPTH: (depth_range_window.fig)
+H_CALC_PRINCIPAL: (calc_principals_window.fig)
+H_HELP: (coulomb_help_window.fig)
+H_NODAL: (nodal_plane_window.fig)
+H_VIEWPOINT
+H_ELEMENT_MOD:
+H_SPECIFIED_SLIDER
+
+
+
+（コンピュータ，ディレクトリ，設定関連）
+PLATFORM: パソコンの種類（e.g., ‘MACI64’）
+CURRENT_VERSION: Coulombの使用バージョン（e.g., ‘3.4.01’）
+PREF_DIR: デフォルトの入力ファイルディレクトリ（？？？）
+HOME_DIR: ホームディレクトリ
+INPUT_FILE: 入力ファイル名
+PREF: Coulombのpreferences(初期設定),9行ｘ４列
+	PREF(1,:): ‘Fault’, PREF(2,:): ‘Disp.vector’, PREF(3,:):’Grid’,
+PREF(4,:): ‘Coast line’, PREF(5,:):’Earthquake’（←実際のwindowと順番が違うので注意）PREF(6,:): ‘Active fault’
+PREF(7,1): プルダウン：‘Color scheme’ 1:Anatolia, 2:rainbow, 3:black and white
+PREF(7,2:4)=0
+PREF(8,1):プルダウン：’Coordinates’ 1: Cartesian, 2: Lon. & lat.
+PREF(8,2:4)=0
+PREF(9,:): ‘Volcano’
+列は１：R(0-1), ２：G(0-1)，３:B(0-1), 4:point(大きさ太さ)
+
+
+
+global H_MAIN                           % handle for main graphic window
+global SCRS SCRW_X SCRW_Y               % variable for screen size control
+global IACT
+global FUNC_SWITCH STRAIN_SWITCH
+global SHADE_TYPE STRESS_TYPE DEPTH_RANGE_TYPE
+% global AX AY AZ
+global STRIKE DIP RAKE
+global IRAKE
+global MAPTLFLAG RECEIVERS
+global IND_RAKE
+global IIRET
+% ----- outputs should be kept in the memory -----
+global DC3D DC3DS DC3DE S_ELEMENT CC
+
+
+
+------------------------------------------------------------------------functions 関数とその周辺------------------------------------------------------------------------
+coulomb.m
+地震の応力変化を計算・解析するためのソフトウェア「Coulomb」の起動スクリプトです。コードは、Coulombの初期化、必要なデータや設定の読み込み、メインウィンドウの表示を行います。このスクリプトを実行することで、CoulombのGUIが立ち上がり、ユーザーは地震関連の解析を行うことができます。
+
+【source】
+about_box_window
+この関数は、アプリケーションの「About」ボックスを表示するためのGUIウィンドウを作成・管理します。GUIは、ユーザーが選択したオプションや表示する情報を管理し、ウィンドウの表示位置や内容を制御します。タイトル画面の表示関数と考えていい。
+
+adjust_char_space
+指定された文字列 a を指定されたフォーマット format で整形し、指定されたスペース数 nspace になるように前に空白を追加して整列させる関数です。
+
+adjust_principal
+与えられた角度 b（主軸の方位角）と d（主軸の傾斜角）を調整する関数です。この調整は、標準的な地質学的または力学的な主軸の表現に合わせるために行われます。
+
+afault_drawing
+ASCIIファイルから活断層データを読み取り、そのデータを基に活断層の位置を地図上に描画するための関数。
+
+afault_format_window 
+MATLAB GUI（グラフィカルユーザーインターフェース）ウィンドウを作成し、ユーザーが活断層データのフォーマットを選択するための設定を行うための関数です。このGUIは、ユーザーが緯度経度（Latitude/Longitude）の順序を選択するためのラジオボタン、キャンセルボタン、OKボタンなどの操作を提供します。
+
+annotation_window
+MATLABのGUIウィンドウを作成し、ユーザーがグラフや図に注釈を追加するためのインターフェースを提供する関数です。このウィンドウでは、ユーザーが注釈を入力したり、フォントサイズを設定したり、入力をキャンセルまたは確定したりすることができます。この関数は、MATLAB GUI ウィンドウを通じて、グラフや図に注釈を追加するためのインターフェースを提供します。ユーザーは注釈テキストとフォントサイズを指定し、それを確定（OK）またはキャンセル（Cancel）することができます。
+
+bb2（old, temp）
+このコードは、地震のダブルカップル焦点メカニズム（地震モーメントテンソル）を表すビーチボール図を描画するためのMATLAB関数 です。ビーチボール図は、地震の発生メカニズム（特に断層の動きの方向）を視覚的に示すために用いられます。この関数は、入力として地震の焦点メカニズムを受け取り、それを基にビーチボール図を描画します。
+
+calc_coulomb
+この関数は、指定された断層のストライク、ディップ、レーキ角度に基づいて、その断層面上のせん断応力、法線応力、およびクーロン応力を計算するためのものです。この関数は、特定の応力場における断層の力学的状態を評価する際に使用され、地震発生の可能性を評価するための重要なツールとなります。
+1.	行列のスカラー変換:
+入力として与えられた角度（ストライク、ディップ、レーキ）や摩擦係数は、通常行列形式で与えられますが、それらをスカラーに変換して処理します。
+2.	座標変換:
+断層面のストライク、ディップ、レーキ角度を元に、断層面の空間配置を定義し、それらをラジアンに変換します。また、断層面の方向ベクトル（x、y、z方向）を計算します。
+3.	応力テンソルの計算:
+各断層面において、応力場がどのように分布しているかを計算します。これは、入力された応力テンソルと断層面の方向ベクトルを用いて行われます。
+4.	せん断応力、法線応力、クーロン応力の算出:
+各断層面におけるせん断応力と法線応力を計算し、クーロン応力を求めます。クーロン応力は、地震の発生可能性を評価する際に特に重要です。
+5.	結果の出力:
+計算されたせん断応力、法線応力、およびクーロン応力が、それぞれベクトル形式で出力されます。
+
+
+calc_element
+このスクリプトは、他の関数やスクリプトで共有されるべき要素とグリッドに関する基本的な情報を計算します。このコードは、入力ファイルの読み込み (input_open) 後に配置されることを前提としています。コード内では、要素のストライク角（断層の走向角）、平均ストライク角、平均傾斜角、平均レーキ角（すべり角）、平均深度、グリッドの位置などが計算されます。また、地図情報が存在する場合は、経度と緯度のグリッド情報も計算されます。
+
+calc_principals_window
+このMATLABコードは、地質学や構造力学における主応力（Principal Stress）を計算・表示するためのGUIウィンドウを作成します。ユーザーは、このウィンドウを通じてSigma1（最大主応力）、Sigma2（中間主応力）、Sigma3（最小主応力）の各方向と傾斜を入力し、それらの計算結果を表示します。GUI内で行われる計算は、地質構造の分析において重要な役割を果たす、地域的な応力軸の方向を設定するものです。
+
+calc_seis_moment
+地震のモーメント（モーメントマグニチュード、Mw）を計算するためのものです。具体的には、断層の幾何学的特性（長さ、幅、滑り量）、地盤の物理特性（ポアソン比、ヤング率）を用いて、地震モーメント（Mo）とそれに基づくモーメントマグニチュード（Mw）を求めます。
+
+change_coordinates
+このスクリプトは、座標系の切り替えと、地図上に様々なデータをオーバーレイするための処理を行います。change_coordinates スクリプトでは、座標系の変更とその確認が行われ、menu_grid_mapview_Callback 関数では、グリッドや地図要素（海岸線、活断層、地震、GPSデータなど）の描画やオーバーレイの管理が行われます。
+
+change_study_area_window
+このコードは、「研究対象領域の変更」ウィンドウを管理するためのMATLAB GUI関数です。このGUIを使用して、ユーザーは研究対象となる地理的領域（経度・緯度の範囲）を変更できます。更後の領域に収まらない断層データを削除するオプションも提供され、領域変更をキャンセルすることも可能です。
+
+change_study_area
+研究対象領域の変更を行うための処理を行い、その後、更新されたデータに基づいて描画やオーバーレイを再構成するものです。
+
+check_coul_input
+MATLABのGUIにおけるCoulomb計算の入力フィールドから値を取得し、それらが適切な範囲内にあるかどうかを確認するために使用されます。入力値が不正である場合には、警告ダイアログが表示され、適切なデフォルト値がフィールドに設定されます。このスクリプトは、ユーザーが間違った値を入力した場合に、エラーを防ぐために重要です。"xsec_window.m" と連携しています
+
+check_lonlat_info 
+緯度・経度に関するグローバル変数がすべて適切に設定されているかを確認します。具体的には、最小および最大の緯度・経度、そして基準点となるゼロポイントの緯度・経度が空でないか（設定されているか）をチェックし、設定されていない項目がある場合は iflag を 0 に、すべてが設定されている場合は iflag を 1 に設定して返します。
+
+check_sec_input
+断面図ウィンドウに入力された値を検証するためのものです。主に、断面の開始点と終了点、深さ、距離などの値が適切かどうかをチェックします。入力された値が適切でない場合、例えば深さが負の値であったり、増分が不十分である場合には警告ダイアログを表示します。また、指定された範囲が研究領域（GRIDで定義されたエリア）内に収まっているかどうかもチェックします。このスクリプトは、UTM座標系を使用していない場合にのみ動作します。"xsec_window.m"と連動しています
+
+check_unit_vector
+地図や図面上で表示される単位ベクトルが適切なサイズになるように調整します。ユーザーが指定した範囲 (xs, xf) と表示される単位ベクトルのサイズ (oneMeterSize) に基づいて、表示に適した単位（メートル）を選択します。関数は、最小および最大の比率制限 (ratioMin, ratioMax) を満たすように単位を調整します。
+
+clear_obj_and_subfig
+MATLABのGUI環境で使用されるもので、メインウィンドウ（H_MAIN）上に表示されているすべてのオブジェクトをクリアし、特定のGUI要素（メニューバーやツールバー）を非表示にするために使用されます。最初に、サブフィギュアをクリアするカスタム関数 subfig_clear が呼び出され、次にメインウィンドウ内のすべての子オブジェクトを取得し、その一部を削除します。最後に、メインウィンドウのメニューバーとツールバーを非表示に設定します。
+
+coastline_drawing
+ASCII形式のファイルから海岸線データを読み込み、そのデータを地図上に描画するためのMATLAB関数です。読み込んだデータを適切な座標系に変換し、地図上の指定された範囲内にあるデータを描画します。古いフォーマットや新しいフォーマットのデータに対応し、海岸線セグメント間をNaNタグで区切ることで、連続した描画を実現します。また、メモリ使用量を削減するためにデータを single 型に変換します。この関数は、地図作成や地理情報システム（GIS）における海岸線の表示に役立つものです。
+
+coastline_format
+海岸線のフォーマットを設定するためのMATLAB GUIアプリケーションの実装です。GUIは、ユーザーが海岸線の表示や形式を設定するためのインターフェースを提供します。coastline_format 関数は、GUIの初期化、表示、コールバック処理などを管理しています。これにより、ユーザーは対話的に海岸線のフォーマットを設定できます。
+
+comp2rake
+横ずれ（latslip）と傾斜ずれ（dipslip）の値をもとに、掘削角（rake）と総ずれ量（netslip）を計算します。総ずれ量は、横ずれと傾斜ずれの平方和の平方根で求められ、掘削角はアークタンジェント関数を使用して計算されます。掘削角が180度を超える場合には、360度から引くことで調整されます。
+
+coordinate_conversion
+グローバル座標系から断層座標系（Okadaモデルに基づく座標系）への座標変換を行います。具体的には、断層の位置（始点と終点）や傾斜角に基づいて、断層の中心を基準にして座標を変換します。また、断層の長さと幅も計算して出力します。この変換は、地震や断層の研究で重要な役割を果たす断層面の解析に使用されることを意図しています。
+
+coulomb_.m
+このスクリプトは、Coulomb応力解析の結果をレンダリングするためのMATLAB GUIを作成します。以下の機能が含まれています：
+　・Open Coulomb ボタン: Coulombデータを開くボタン。
+　・Open Input ボタン: 入力データを開くボタン。
+　・Exit ボタン: GUIを終了するボタン。
+　・カラー飽和値入力フィールド: Coulomb応力のレンダリングで使用するカラー飽和値を
+　　　　　　　　　　　　　　　入力するテキストフィールド。
+　・スライダー: Coulomb応力のビューを変更するためのスライダー。
+　・説明テキスト: カラー飽和値入力フィールドに隣接する説明テキスト。
+このGUIを使用して、Coulomb応力のレンダリング結果を簡単に操作し、視覚的に確認することができます。
+
+coulomb_calc_and_view
+Coulombストレスの計算と可視化を行うMATLABスクリプトの一部で、特定の地殻変動や断層活動に関連するストレス状態を評価するために使用されます。UTM座標系を基にした深度や位置情報を使用し、異なる応力条件下での最適な断層パラメータ（ストライク、ディップ、レーク）を計算します。また、計算結果をファイルに保存し、断面ビューやスリップラインの描画を行います。
+
+coulomb_doc.m（メモ）
+Coulomb解析に関連するグローバル変数を定義し、それらの変数を適切に管理するためのメモとして使われています。各変数は、解析の異なる部分で使用され、例えば、スクリーンサイズ、入力パラメータ、図のハンドル、計算結果などを保持します。このメモは、今後の開発や調整に役立てるために、コード内で使用される変数の役割を明確にしています。
+
+coulomb_help_window
+MATLABで作成されたGUI（グラフィカルユーザーインターフェース）を用いた「Coulomb Help Window」の機能を実装するものです。このウィンドウは、Coulomb関連のヘルプ情報を検索・表示するためのインターフェースを提供します。
+•	GUI初期化: GUIの表示位置やサイズを設定し、必要なハンドルを管理します。
+•	ヘルプ検索機能: ユーザーが入力した検索ワードに基づいて、関連するヘルプ情報を検索し、結果をリストボックスやテキストフィールドに表示します。
+•	クローズ機能: ウィンドウを閉じるためのボタンを提供します。
+全体として、このウィンドウは、Coulombモデルに関連する情報を効率的に検索し、ユーザーに表示するための補助ツールとして機能します。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+【utm】
+utm_window.m
+このコードは、MATLABのGUIを使用してUTM座標に関連する入力を管理するウィンドウを実装した関数です。ユーザーが地理情報や断層データを入力し、その情報に基づいて計算やプロットを行うことを目的としています。このウィンドウは、さまざまなパラメータ（緯度、経度、深さ、断層の長さ、幅、ストライク、ディップ、レイクなど）を入力して、それに基づいて計算を行い、結果を表示することができます。また、入力されたデータを使って断層の位置や動きを計算し、その結果を視覚化するための機能も含まれています。
+
+
+
+
+
