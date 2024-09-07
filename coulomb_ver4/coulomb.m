@@ -22,8 +22,6 @@ try
     msgbox('You already open Coulomb. Do not lauch another one.');
     return
 catch
-    % Coulombが起動していない場合は続行
-end
 
 clear all;
 % 全てのグローバル変数を初期化します。グローバル変数はすべて大文字で定義され、プログラム実行中に値を確認できます。
@@ -80,7 +78,7 @@ global IVECTOR
 global IMAXSHEAR
 
 % 現行バージョンの設定
-CURRENT_VERSION = '3.4.2';
+CURRENT_VERSION = '4.0.0';
 % 全ての警告を無効化
 warning ('off','all');
 

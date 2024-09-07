@@ -22,8 +22,6 @@ try
     msgbox('You already open Coulomb. Do not lauch another one.');
     return
 catch
-    % Coulombが起動していない場合は続行
-end
 
 clear all;
 % 全てのグローバル変数を初期化します。グローバル変数はすべて大文字で定義され、プログラム実行中に値を確認できます。
