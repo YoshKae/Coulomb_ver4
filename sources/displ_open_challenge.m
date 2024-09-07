@@ -1,6 +1,6 @@
 function displ_open(scl)
-% For rendering the displacement vectors
-% 
+% 変位ベクトルを描画するための関数
+
 global XGRID YGRID CALC_DEPTH
 global SIZE KODE
 global H_MAIN A_MAIN
@@ -21,55 +21,55 @@ global OUTFLAG PREF_DIR HOME_DIR
 global VIEW_AZ VIEW_EL IACT
 global IRAKE IND_RAKE
 
+% カラーの飽和値の初期設定
 if isempty(C_SAT) == 1
-    C_SAT = 5;      % default color saturation value is 5 bars
+    C_SAT = 5;  % デフォルトのカラー飽和値は5
 end
 
+% 特定の計算モードに応じて、変位データを読み込むか新規に作成する
 if FUNC_SWITCH == 1 || FUNC_SWITCH == 10
-    dummy = zeros(length(YGRID),length(XGRID));
+    dummy = zeros(length(YGRID),length(XGRID));  % グリッドのサイズに応じたダミー行列を作成
 else
     if OUTFLAG == 1 || isempty(OUTFLAG) == 1
-        cd output_files;
+        cd output_files;  % 出力ファイルディレクトリに移動
     else
-        cd (PREF_DIR);
+        cd (PREF_DIR);  % プリファレンスディレクトリに移動
     end
-    fid = fopen('Displacement.cou','r');
-    coul = textscan(fid,'%f %f %f %f %f %f','delimiter','\t','headerlines',3);
-    fclose (fid);
+    fid = fopen('Displacement.cou','r');  % 変位データを含むファイルを開く
+    coul = textscan(fid,'%f %f %f %f %f %f','delimiter','\t','headerlines',3);  % ファイルの内容を読み込む
+    fclose (fid);  % ファイルを閉じる
 
-    cd (HOME_DIR);
-% cell to matrices
+    cd (HOME_DIR);  % ホームディレクトリに戻る
+    % データを行列に変換
     ux = [coul{4}];
     uy = [coul{5}];
     uz = [coul{6}];
-    uux = reshape(ux,length(YGRID),length(XGRID));
-    uuy = reshape(uy,length(YGRID),length(XGRID));
-    uuz = reshape(uz,length(YGRID),length(XGRID));
-%     delete(gca);
-    hold on;
+    uux = reshape(ux,length(YGRID),length(XGRID));  % X方向の変位を再整形
+    uuy = reshape(uy,length(YGRID),length(XGRID));  % Y方向の変位を再整形
+    uuz = reshape(uz,length(YGRID),length(XGRID));  % Z方向の変位を再整形
+    hold on;  % 現在の図を保持
 end
 
-%-----------    Horizontal displ. mapview  ---------------------------
+%-----------    水平変位のマップビュー  ---------------------------
 if FUNC_SWITCH == 2 || FUNC_SWITCH == 3
-grid_drawing;
-set(H_MAIN,'NumberTitle','off','Menubar','figure');
+    grid_drawing;  % グリッド描画を行う
+    set(H_MAIN,'NumberTitle','off','Menubar','figure');  % メインウィンドウの設定を変更
 
 hold on;
-% resizing using "Exaggeration" in input file and slider value (scl)
-% notice that uux, uuy, and uuz are "m" unit but now looks "km"
-% that's why I use "/1000"
+% 入力ファイルとスライダーの値 (scl) を使用してサイズを調整
+% uux, uuy, uuz は "m" 単位だが、現在は "km" 単位に変換されているため "/1000" を使用
 resz = (SIZE(3,1)/1000)*scl;
-if FIXFLAG == 0       % no fixed point
-    if FUNC_SWITCH == 2  % VECTOR PLOT
+if FIXFLAG == 0       % 固定点がない場合
+    if FUNC_SWITCH == 2  % ベクトルプロットの場合
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
             a = xy2lonlat([reshape(XGRID,length(XGRID),1) zeros(length(XGRID),1)]);
             b = xy2lonlat([zeros(length(YGRID),1) reshape(YGRID,length(YGRID),1)]);
             a1 = quiver(a(:,1),b(:,2),uux*LON_PER_X*resz,uuy*LAT_PER_Y*resz,0);
         else
-            a1 = quiver(XGRID,YGRID,uux*resz,uuy*resz,0);
+            a1 = quiver(XGRID,YGRID,uux*resz,uuy*resz,0);  % ベクトルプロットを描画
         end
         hold on;
-    else                % FUNC_SWITCH == 3 (distorted wireframe)
+    else  % FUNC_SWITCH == 3 (歪んだワイヤーフレーム)
         xds = zeros(length(YGRID),length(XGRID));
         yds = zeros(length(YGRID),length(XGRID));
         if ICOORD == 2 && isempty(LON_GRID) ~= 1
@@ -98,7 +98,7 @@ if FIXFLAG == 0       % no fixed point
             end
         end
     end
-else                    % recalculate displacement for the fixed point
+else  % 固定点がある場合の変位の再計算
         [m n] = size(DC3D);
         dc3d_keep = zeros(m,n,'double');
         dc3d_keep = DC3D;

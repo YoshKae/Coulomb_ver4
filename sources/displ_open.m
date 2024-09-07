@@ -1,6 +1,6 @@
 function displ_open(scl)
 % For rendering the displacement vectors
-% 
+
 global XGRID YGRID CALC_DEPTH
 global SIZE KODE
 global H_MAIN A_MAIN
