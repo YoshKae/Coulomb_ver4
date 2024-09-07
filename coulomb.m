@@ -10,7 +10,7 @@
 %  then type 'coulomb' in the command window.
 %
 
-%   Copyright 2022 Shinji Toda (toda@irides.tohoku.ac.jp Internal Research 
+%   Copyright 2022 Shinji Toda (toda@irides.tohoku.ac.jp Internal Research
 %   Institute of Disaster Science, Tohoku University)
 %   $Revision: 3.4 $  $Date: 2022/04/09$
 
