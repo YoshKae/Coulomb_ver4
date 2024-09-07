@@ -1,75 +1,60 @@
 function varargout = f3d_view_control_window(varargin)
-% F3D_VIEW_CONTROL_WINDOW M-file for f3d_view_control_window.fig
-%      F3D_VIEW_CONTROL_WINDOW, by itself, creates a new F3D_VIEW_CONTROL_WINDOW or raises the existing
-%      singleton*.
-%
-%      H = F3D_VIEW_CONTROL_WINDOW returns the handle to a new F3D_VIEW_CONTROL_WINDOW or the handle to
-%      the existing singleton*.
-%
-%      F3D_VIEW_CONTROL_WINDOW('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in F3D_VIEW_CONTROL_WINDOW.M with the given input arguments.
-%
-%      F3D_VIEW_CONTROL_WINDOW('Property','Value',...) creates a new F3D_VIEW_CONTROL_WINDOW or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before f3d_view_control_window_OpeningFunction gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to f3d_view_control_window_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
+% 3Dビューの制御を行うためのGUIウィンドウを作成または既存のものを表示する。
 
-% Edit the above text to modify the response to help f3d_view_control_window
+% H = F3D_VIEW_CONTROL_WINDOWは、新しいF3D_VIEW_CONTROL_WINDOWを作成するか、既存のシングルトン*を表示する。
+% F3D_VIEW_CONTROL_WINDOW('CALLBACK',hObject,eventData,handles,...)は、
+% 指定されたコールバック関数を実行する。
 
-% Last Modified by GUIDE v2.5 29-Jul-2006 08:34:28
+% F3D_VIEW_CONTROL_WINDOW('Property','Value',...)は、新しいウィンドウを作成するか、
+% 既存のシングルトンを表示する。プロパティ名と値のペアが適用される。
 
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
+% --- 初期化コード - 編集しないでください。
+gui_Singleton = 1;  % GUIをシングルトンとして動作させる設定
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
                    'gui_OpeningFcn', @f3d_view_control_window_OpeningFcn, ...
                    'gui_OutputFcn',  @f3d_view_control_window_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
+
 if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
+    gui_State.gui_Callback = str2func(varargin{1});  % コールバック関数が指定されている場合、その関数を設定
 end
 
 if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});  % 出力がある場合は実行結果を返す
 else
-    gui_mainfcn(gui_State, varargin{:});
+    gui_mainfcn(gui_State, varargin{:});  % 出力がない場合はGUIを表示するだけ
 end
-% End initialization code - DO NOT EDIT
+% --- 初期化コード終了 - 編集しないでください。
 
-
-% --- Executes just before f3d_view_control_window is made visible.
+% --- f3d_view_control_windowが表示される前に実行される関数
 function f3d_view_control_window_OpeningFcn(hObject, eventdata, handles, varargin)
-global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width
-global H_MAIN C_POINT
-h = findobj('Tag','f3d_view_control_window');
-j = get(h,'Position');
-wind_width = j(1,3);
-wind_height = j(1,4);
-dummy = findobj('Tag','main_menu_window');
-if isempty(dummy)~=1
- h = get(dummy,'Position');
-end
-xpos = h(1,1) + h(1,3) + 5;
-ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
-set(hObject,'Position',[xpos ypos wind_width wind_height]);
+global SCRS SCRW_X SCRW_Y % スクリーンサイズ（1x4, [x y width height]）と幅
+global H_MAIN C_POINT  % メインウィンドウと中心点の情報を保持するグローバル変数
 
-% Choose default command line output for f3d_view_control_window
+% ウィンドウの位置を設定
+h = findobj('Tag','f3d_view_control_window');  % f3d_view_control_windowのハンドルを取得
+j = get(h,'Position');  % ウィンドウの位置とサイズを取得
+wind_width = j(1,3);  % ウィンドウの幅
+wind_height = j(1,4);  % ウィンドウの高さ
+dummy = findobj('Tag','main_menu_window');  % メインメニューウィンドウのハンドルを取得
+if isempty(dummy)~=1
+ h = get(dummy,'Position');  % メインメニューウィンドウの位置を取得
+end
+xpos = h(1,1) + h(1,3) + 5;  % メインメニューの横に配置
+ypos = (SCRS(1,4) - SCRW_Y) - wind_height;  % ウィンドウのY座標を計算
+set(hObject,'Position',[xpos ypos wind_width wind_height]);  % 新しい位置とサイズを設定
+
+% f3d_view_control_windowのデフォルトのコマンドライン出力を設定
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
+% ハンドル構造体を更新
+guidata(hObject, handles);  % 更新されたハンドルデータを保存
 
-% --- Outputs from this function are returned to the command line.
+% --- コマンドラインへの出力を返す
 function varargout = f3d_view_control_window_OutputFcn(hObject, eventdata, handles) 
-
-% Get default command line output from handles structure
+% デフォルトのコマンドライン出力をハンドル構造体から取得して返す
 varargout{1} = handles.output;
 
 
@@ -77,12 +62,13 @@ varargout{1} = handles.output;
 %     Net slip (radiobutton)  
 %-------------------------------------------------------------------------
 function radiobutton_net_slip_Callback(hObject, eventdata, handles)
+% Net slip（総スリップ量）を選択したときのコールバック
 global F3D_SLIP_TYPE FUNC_SWITCH
-x = get(hObject,'Value');
+x = get(hObject,'Value');  % ボタンの状態を取得
 if x == 1
-    F3D_SLIP_TYPE = 1;
-    set(findobj('Tag','radiobutton_strike_slip'),'Value',0.0);
-    set(findobj('Tag','radiobutton_dip_slip'),'Value',0.0);
+    F3D_SLIP_TYPE = 1;  % 総スリップ量を選択
+    set(findobj('Tag','radiobutton_strike_slip'),'Value',0.0);  % 他のラジオボタンをオフにする
+    set(findobj('Tag','radiobutton_dip_slip'),'Value',0.0);  % 他のラジオボタンをオフにする
 end
 
 
@@ -90,12 +76,13 @@ end
 %     Strike-slip slip (radiobutton)  
 %-------------------------------------------------------------------------
 function radiobutton_strike_slip_Callback(hObject, eventdata, handles)
+% ストライクスリップを選択したときのコールバック
 global F3D_SLIP_TYPE FUNC_SWITCH
-x = get(hObject,'Value');
+x = get(hObject,'Value');  % ボタンの状態を取得
 if x == 1
-    F3D_SLIP_TYPE = 2;
-    set(findobj('Tag','radiobutton_net_slip'),'Value',0.0);
-    set(findobj('Tag','radiobutton_dip_slip'),'Value',0.0);
+    F3D_SLIP_TYPE = 2;  % ストライクスリップを選択
+    set(findobj('Tag','radiobutton_net_slip'),'Value',0.0);  % 他のラジオボタンをオフにする
+    set(findobj('Tag','radiobutton_dip_slip'),'Value',0.0);  % 他のラジオボタンをオフにする
 end
 
 
@@ -103,12 +90,13 @@ end
 %     Dip slip slip (radiobutton)  
 %-------------------------------------------------------------------------
 function radiobutton_dip_slip_Callback(hObject, eventdata, handles)
+% ディップスリップを選択したときのコールバック
 global F3D_SLIP_TYPE FUNC_SWITCH
-x = get(hObject,'Value');
+x = get(hObject,'Value');  % ボタンの状態を取得
 if x == 1
-    F3D_SLIP_TYPE = 3;
-    set(findobj('Tag','radiobutton_net_slip'),'Value',0.0);
-    set(findobj('Tag','radiobutton_strike_slip'),'Value',0.0);
+    F3D_SLIP_TYPE = 3;  % ディップスリップを選択
+    set(findobj('Tag','radiobutton_net_slip'),'Value',0.0);  % 他のラジオボタンをオフにする
+    set(findobj('Tag','radiobutton_strike_slip'),'Value',0.0);  % 他のラジオボタンをオフにする
 end
 
 
@@ -116,36 +104,40 @@ end
 %     Saturation slip (text box)  
 %-------------------------------------------------------------------------
 function edit_slip_color_sat_Callback(hObject, eventdata, handles)
+% スリップの色の飽和度を変更する際のコールバック
 global C_SLIP_SAT
-C_SLIP_SAT = str2double(get(hObject,'String'));
-set(hObject,'String',num2str(C_SLIP_SAT,'%6.2f'));
+C_SLIP_SAT = str2double(get(hObject,'String'));  % 入力された値を取得し、数値に変換
+set(hObject,'String',num2str(C_SLIP_SAT,'%6.2f'));  % 数値をフォーマットして表示
 
 %--------------------
 function edit_slip_color_sat_CreateFcn(hObject, eventdata, handles)
+% スリップの飽和度を初期設定する関数
 global C_SLIP_SAT
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-	set(hObject,'String',num2str(C_SLIP_SAT,'%6.2f'));    
+set(hObject,'String',num2str(C_SLIP_SAT,'%6.2f'));  
 
 %-------------------------------------------------------------------------
 %     Redrawing (pushbutton)  
 %-------------------------------------------------------------------------
 function pushbutton_redraw_Callback(hObject, eventdata, handles)
+% 再描画ボタンが押されたときのコールバック
 global F3D_SLIP_TYPE FUNC_SWITCH
 
-FUNC_SWITCH = 1;
-grid_drawing_3d;
-displ_open(2);
-flag = check_lonlat_info;
+FUNC_SWITCH = 1;  % 再描画フラグを設定
+grid_drawing_3d;  % 3Dグリッドを描画
+displ_open(2);  % 表示を更新
+flag = check_lonlat_info;  % 経度緯度情報を確認
 if flag == 1
-    all_overlay_enable_on;
+    all_overlay_enable_on;  % 全てのオーバーレイを有効化
 end
 
 
 %----------------------------------------------------------
 function all_overlay_enable_on
-set(findobj('Tag','menu_gridlines'),'Enable','On');
-set(findobj('Tag','menu_coastlines'),'Enable','On');
-set(findobj('Tag','menu_activefaults'),'Enable','On');
-set(findobj('Tag','menu_earthquakes'),'Enable','On');    
+% オーバーレイ機能を全て有効にする
+set(findobj('Tag','menu_gridlines'),'Enable','On');  % グリッド線を有効化
+set(findobj('Tag','menu_coastlines'),'Enable','On');  % 海岸線を有効化
+set(findobj('Tag','menu_activefaults'),'Enable','On');  % 活断層を有効化
+set(findobj('Tag','menu_earthquakes'),'Enable','On');  % 地震の情報を有効化
