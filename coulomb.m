@@ -14,6 +14,7 @@
 %   Institute of Disaster Science, Tohoku University)
 %   $Revision: 3.4 $  $Date: 2022/04/09$
 
+global H_MAIN                           % メイングラフィックウィンドウのハンドル
 
 % ===== Coulombがすでに起動しているか確認 =====================
 % すでにCoulombが起動している場合は新たなインスタンスの起動を防ぐ
@@ -22,13 +23,13 @@ try
     msgbox('You already open Coulomb. Do not lauch another one.');
     return
 catch
+end
 
 clear all;
 % 全てのグローバル変数を初期化します。グローバル変数はすべて大文字で定義され、プログラム実行中に値を確認できます。
 % 詳細については 'global_variable_explanatio.m' を参照してください。
 
 %===== グローバル変数の定義 ============================================
-global H_MAIN                           % メイングラフィックウィンドウのハンドル
 global SCRS SCRW_X SCRW_Y               % スクリーンサイズ制御用の変数
 
 % ----- 入力ファイルから読み取る基本的な変数 -----
