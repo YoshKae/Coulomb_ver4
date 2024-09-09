@@ -28,10 +28,10 @@ clear all;
 
 %===== グローバル変数の定義 ============================================
 global H_MAIN   % メイングラフィックウィンドウのハンドル
-global SCR_SIZE % スクリーンサイズ制御関連のカテゴリのグローバル変数構造体
-SCR_SIZE.SCRS = [];
-SCR_SIZE.SCRW_X = [];
-SCR_SIZE.SCRW_Y = [];
+global SCR_SIZE       % スクリーンサイズ制御関連のカテゴリのグローバル変数構造体
+SCR_SIZE.SCRS = [];   % 現在のコンピュータの画面サイズ(1行, 4列(1, 1, max_horizontal_res_width, max_vertical_res_height))
+SCR_SIZE.SCRW_X = []; % 画面の余白の幅
+SCR_SIZE.SCRW_Y = []; % 画面の余白の幅と高さ
 
 % ----- 入力ファイルから読み取る基本的な変数 -----
 global INPUT_VARS % 入力ファイルから読み取る基本的な変数のカテゴリのグローバル変数構造体
@@ -68,12 +68,12 @@ COORD_VARS.LAT_GRID = []; % 緯度のグリッド、Latitude grid vector (1行�
 
 % ----- 計算制御に関する変数 ------
 global CALC_CONTROL % 計算制御に関する変数のカテゴリのグローバル変数構造体
-CALC_CONTROL.IACT = [];
-CALC_CONTROL.FUNC_SWITCH = [];
-CALC_CONTROL.STRAIN_SWITCH = [];
-CALC_CONTROL.SHADE_TYPE = [];
-CALC_CONTROL.STRESS_TYPE = [];
-CALC_CONTROL.DEPTH_RANGE_TYPE = [];
+CALC_CONTROL.IACT = [];             % Okadaコードの計算が未実施（0）か実施済み（1）かを示す変数
+CALC_CONTROL.FUNC_SWITCH = [];      % 計算のタイプ(1~11)
+CALC_CONTROL.STRAIN_SWITCH = [];    % 歪みの切り替え(1:EXX, 2:EYY, 3:EZZ, 4:EYZ, 5:EXZ, 6:EXY, 7:Dilatation(EXX+EYY+EZZ), 8:Dilatation cross section)
+CALC_CONTROL.SHADE_TYPE = [];       % 計算結果のシェーディングの種類(1:モザイク表示, 2:スムージング表示)
+CALC_CONTROL.STRESS_TYPE = [];      % レシーバー断層の種類(1~5)
+CALC_CONTROL.DEPTH_RANGE_TYPE = []; % 計算深度の種類(1:単一の深度, 2:幅のある深度)
 CALC_CONTROL.STRIKE = [];
 CALC_CONTROL.DIP = [];
 CALC_CONTROL.RAKE = [];
@@ -85,9 +85,9 @@ CALC_CONTROL.IIRET = [];
 
 % ----- メモリ内に保持される出力 -----
 global MEMORY_OUTPUT
-MEMORY_OUTPUT.DC3D = [];
-MEMORY_OUTPUT.DC3DS = [];
-MEMORY_OUTPUT.DC3DE = [];
+MEMORY_OUTPUT.DC3D = [];      % 岡田式の計算結果の出力 (N_CELL行, 14列)
+MEMORY_OUTPUT.DC3DS = [];     % クロスセクション計算用にDC3Dの上書きを防ぐための複製物
+MEMORY_OUTPUT.DC3DE = [];     % エラー計算用にDC3Dの上書きを防ぐための複製物
 MEMORY_OUTPUT.S_ELEMENT = [];
 MEMORY_OUTPUT.CC = [];
 
@@ -110,8 +110,8 @@ OVERLAY_VARS.COAST_DATA = [];
 OVERLAY_VARS.AFAULT_DATA = [];
 OVERLAY_VARS.EQ_DATA = [];
 OVERLAY_VARS.GPS_DATA = [];
-OVERLAY_VARS.GPS_FLAG = [];                           % 'horizontal' または 'vertical'
-OVERLAY_VARS.GPS_SEQN_FLAG  = [];                          % 'on' で連続番号を表示
+OVERLAY_VARS.GPS_FLAG = [];
+OVERLAY_VARS.GPS_SEQN_FLAG  = [];
 OVERLAY_VARS.VOLCANO = [];
 OVERLAY_VARS.SEISSTATION = [];
 OVERLAY_VARS.OVERLAYFLAG = [];
@@ -120,20 +120,20 @@ OVERLAY_VARS.EQPICK_WIDTH = [];
 
 % ----- グラフィック制御に関する変数 ------
 global GRAPHICS_VARS % グラフィック制御に関する変数のカテゴリのグローバル変数構造体
-GRAPHICS_VARS.ANATOLIA
-GRAPHICS_VARS.SEIS_RATE % カラーマップ用の変数（このファイルでロード）
-GRAPHICS_VARS.C_SAT
-GRAPHICS_VARS.CONT_INTERVAL
+GRAPHICS_VARS.ANATOLIA      % カラーコード（紫―白―赤，独自作成のもの）
+GRAPHICS_VARS.SEIS_RATE     % カラーコード（青―白―赤，MATLABデフォルト）
+GRAPHICS_VARS.C_SAT         % カラーの飽和値（±）
+GRAPHICS_VARS.CONT_INTERVAL % 等値線の間隔
 
 % ----- コンピュータID、ディレクトリ制御、設定 ------------------
 global SYSTEM_VARS
-SYSTEM_VARS.PLATFORM = [];
-SYSTEM_VARS.CURRENT_VERSION = [];
-SYSTEM_VARS.PREF_DIR = [];
-SYSTEM_VARS.HOME_DIR = [];
-SYSTEM_VARS.INPUT_FILE = [];
-SYSTEM_VARS.PREF = [];
-SYSTEM_VARS.OUTFLAG = []; % 0: ユーザフォルダへの出力、1: デフォルトフォルダへの出力
+SYSTEM_VARS.PLATFORM = [];        % コンピュータの種類
+SYSTEM_VARS.CURRENT_VERSION = []; % 現行バージョン
+SYSTEM_VARS.PREF_DIR = [];        % デフォルトの出力ディレクトリ
+SYSTEM_VARS.HOME_DIR = [];        % ユーザのホームディレクトリ
+SYSTEM_VARS.INPUT_FILE = [];      % 入力ファイルの名前
+SYSTEM_VARS.PREF = [];            % Coulombのpreferences(初期設定),9行4列
+SYSTEM_VARS.OUTFLAG = [];         % 0: ユーザフォルダへの出力、1: デフォルトフォルダへの出力
 SYSTEM_VARS.C_SLIP_SAT = [];
 SYSTEM_VARS.IVECTOR = [];
 SYSTEM_VARS.IMAXSHEAR = [];
