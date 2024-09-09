@@ -1,4 +1,4 @@
-function varargout = ec_control_window(varargin)
+function varargout = ec_control_window2(varargin)
 % EC_CONTROL_WINDOW は新しい EC_CONTROL_WINDOW を作成するか、既存のシングルトンを表示します。
 
 %    H = EC_CONTROL_WINDOW は、新しい EC_CONTROL_WINDOW または既存のシングルトンへのハンドルを返します。
@@ -35,38 +35,33 @@ end
 function ec_control_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % この関数は、ウィンドウが表示される前の初期設定を行います。
 
-global SCRS SCRW_X SCRW_Y % スクリーンサイズと幅を定義するグローバル変数
+global SCR_SIZE % スクリーンサイズと幅を定義するグローバル変数
 global EC_STRESS_TYPE % ストレスの種類を表すグローバル変数
 
 % ウィンドウの位置を設定する
-h = findobj('Tag','ec_control_window');
+h = findobj('Tag','ec_control_window2');
 j = get(h,'Position');
 wind_width = j(1,3);  % ウィンドウ幅
 wind_height = j(1,4);  % ウィンドウ高さ
 dummy = findobj('Tag','main_menu_window');
 if isempty(dummy)~=1
- h = get(dummy,'Position');
+    h = get(dummy,'Position');
 end
-
 xpos = h(1,1) + h(1,3) + 5;  % X位置
-ypos = (SCRS(1,4) - SCRW_Y) - wind_height;  % Y位置
+ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height;  % Y位置
 set(hObject,'Position',[xpos ypos wind_width wind_height]);  % ウィンドウ位置を設定
 
 % デフォルトのストレスタイプを設定
 EC_STRESS_TYPE = 1;
-
 % ウィンドウのデフォルト出力を設定
 handles.output = hObject;
-
 % ハンドル構造を更新
 guidata(hObject, handles);
 
 % --- この関数の出力はコマンドラインに返されます。
 function varargout = ec_control_window_OutputFcn(hObject, eventdata, handles) 
-
 % ハンドル構造体からデフォルトのコマンドライン出力を取得する
 varargout{1} = handles.output;
-
 
 %-------------------------------------------------------------------------
 %     COULOMB 右横ずれ (radiobutton)  
@@ -83,7 +78,6 @@ if x == 1
 	set(findobj('Tag','radiobutton_coul_ind_rake'),'Value',0.0);
     set(findobj('Tag','radiobutton_normal_stress'),'Value',0.0);
 end
-
 
 %-------------------------------------------------------------------------
 %     COULOMB 逆断層 (radiobutton)  
@@ -153,20 +147,20 @@ set(hObject,'String',num2str(EC_RAKE,'%6.1f'));
 %     COEFF FRICTION (textfield) 摩擦係数
 %-------------------------------------------------------------------------
 function edit_ec_friction_Callback(hObject, eventdata, handles)
-global FRIC
-FRIC = str2num(get(hObject,'String'));  % 摩擦係数の値を取得
-if FRIC > 1.0 | FRIC < 0.0  % 範囲外の値の場合、警告
+global INPUT_VARS
+INPUT_VARS.FRIC = str2num(get(hObject,'String'));  % 摩擦係数の値を取得
+if INPUT_VARS.FRIC > 1.0 | INPUT_VARS.FRIC < 0.0  % 範囲外の値の場合、警告
     h = warndlg('Put the number in a range of 0 to 1.','!! Warning !!');
     waitfor(h);
 end
-set(hObject,'String',num2str(FRIC,'%4.2f'));
+set(hObject,'String',num2str(INPUT_VARS.FRIC,'%4.2f'));
 
 function edit_ec_friction_CreateFcn(hObject, eventdata, handles)
-global FRIC
+global INPUT_VARS.FRIC
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'String',num2str(FRIC,'%4.2f'));
+set(hObject,'String',num2str(INPUT_VARS.FRIC,'%4.2f'));
 
 %-------------------------------------------------------------------------
 %     NORMAL STRESS CHANGE (radiobutton) 正断層応力変化
@@ -186,52 +180,48 @@ end
 %     COLOR SATURATION LIMITS (textfield) カラー飽和限界
 %-------------------------------------------------------------------------
 function edit_color_bar_sat_Callback(hObject, eventdata, handles)
-global C_SAT
-C_SAT = str2num(get(hObject,'String'));  % カラー飽和限界の値を取得
-if C_SAT >= 100.0 | C_SAT <= 0.0  % 範囲外の値の場合、警告
+global GRAPHICS_VARS
+GRAPHICS_VARS.C_SAT = str2num(get(hObject,'String'));  % カラー飽和限界の値を取得
+if GRAPHICS_VARS.C_SAT >= 100.0 | GRAPHICS_VARS.C_SAT <= 0.0  % 範囲外の値の場合、警告
     h = warndlg('Put the positive number in a range of 0.01 to 99.99','!! Warning !!');
     waitfor(h);
 end
-set(hObject,'String',num2str(C_SAT,'%5.2f'));
+set(hObject,'String',num2str(GRAPHICS_VARS.C_SAT,'%5.2f'));
 
 function edit_color_bar_sat_CreateFcn(hObject, eventdata, handles)
-global C_SAT
+global GRAPHICS_VARS
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'String',num2str(C_SAT,'%5.2f'));
+set(hObject,'String',num2str(GRAPHICS_VARS.C_SAT,'%5.2f'));
 
 %-------------------------------------------------------------------------
 %     CALC & VIEW (pushbutton) 計算と表示
 %-------------------------------------------------------------------------
 function pushbutton_ec_calc_view_Callback(hObject, eventdata, handles)
-global ELEMENT POIS YOUNG FRIC ID
-global FUNC_SWITCH
-global DC3D IACT
-global H_MAIN H_EC_CONTROL
-global IMAXSHEAR
+global INPUT_VARS
+global CALC_CONTROL
+global SYSTEM_VARS
+global H_MAIN
 
-hc = wait_calc_window;  % 計算中の待機ダイアログを表示
+hc = wait_calc_window2;  % 計算中の待機ダイアログを表示
 ch = get(H_MAIN,'Children');
-
-FUNC_SWITCH = 10;  % 機能スイッチを設定
-
+CALC_CONTROL.FUNC_SWITCH = 10;  % 機能スイッチを設定
 tic
-element_condition(ELEMENT,POIS,YOUNG,FRIC,ID);
+element_condition(INPUT_VARS.ELEMENT, INPUT_VARS.POIS, INPUT_VARS.YOUNG, INPUT_VARS.FRIC, INPUT_VARS.ID);
 t1 = toc;
 disp([' Elapsed time for element stress calculation = ' num2str(t1,'%10.1f') ' sec.']);
 
 % 3Dグラフィック描画を実行
-if IMAXSHEAR ~= 3
-    tic
+if SYSTEM_VARS.IMAXSHEAR ~= 3
+    tic % 時間計測開始
     grid_drawing_3d;
-    displ_open(2);
-    t2 = toc;
+    displ_open2(2);
+    t2 = toc; % 時間計測終了
     disp([' Elapsed time for 3D graphic rendering = ' num2str(t2,'%10.1f') ' sec.']);
 else
     warndlg('Numerical output only','!! Warning !!')
 end
-
 close(hc) % 待機ダイアログを閉じる
 
 %-------------------------------------------------------------------------
