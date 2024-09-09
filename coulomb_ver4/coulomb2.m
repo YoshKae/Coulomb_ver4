@@ -94,7 +94,7 @@ addpath([w f 'sources'],[w f 'sources/eq_format_filter'],[w f 'input_files'],...
     [w f 'slides'],[w f 'okada_source_conversion'],[w f 'output_files'],...
     [w f 'resources'],[w f 'resources/ge_toolbox'],[w f 'active_fault_data'],...
     [w f 'earthquake_data'],...
-    [w f 'license'],[w f 'utm'],[w f 'preferences'],[w f 'plug_ins']);
+    [w f 'license'],[w f 'utm'],[w f 'preferences2'],[w f 'plug_ins']);
 
 % プラットフォーム依存の処理を行うためにコンピュータの種類を取得
 PLATFORM = computer;
@@ -117,7 +117,7 @@ HOME_DIR = pwd;
 
 %===== 初期化 ====================================================
 % 初期化関数を呼び出し
-coulomb_init;
+coulomb_init2;
 
 % 追加の初期化
 IACT          = repmat(uint8(0),1,1);   % デフォルトでは計算しない
@@ -168,14 +168,14 @@ end
 
 
 %===== ウェルカムスクリーンの表示 =====================================
-h = about_box_window; % ウェルカムウィンドウを表示
+h = about_box_window2; % ウェルカムウィンドウを表示
 pause(2);             % 2秒間待機
 close(h);             % ウィンドウを閉じる
 
 
 %===== 設定ファイルを開く ============================================
-cd preferences
-fid = fopen('preferences.dat','r');  
+cd preferences2
+fid = fopen('preferences2.dat','r');  
 if isempty(fid)==1
     % デフォルトの値を作成して保存する
     PREF = [1.0 0.0 0.0 1.2;... % ソース断層
@@ -244,15 +244,15 @@ clear a afault_pref b c coast_pref color_pref d e eq_pref f fault_pref volcano_p
 clear fid g grid_pref h h_grid margin_ratio vector_pref w
 
 
-%===== メインウィンドウの表示 ========================================
-H_MAIN = main_menu_window;
-set(H_MAIN,'Toolbar','figure');                  % メインウィンドウにツールバーを設定
-set(H_MAIN,'Name',['Coulomb ',CURRENT_VERSION]); % メインウィンドウの名前を設定
-
-
 %===== コンソールにウェルカムメッセージを表示 ==============
 disp('====================================================');
 disp(['            Welcome to Coulomb ' CURRENT_VERSION]);
 disp('====================================================');
 disp('Start from Input menu to read or build an input file.');
 disp('  ');
+
+
+%===== メインウィンドウの表示 ========================================
+H_MAIN = main_menu_window;
+set(H_MAIN,'Toolbar','figure');                  % メインウィンドウにツールバーを設定
+set(H_MAIN,'Name',['Coulomb ',CURRENT_VERSION]); % メインウィンドウの名前を設定
