@@ -1,5 +1,4 @@
-function varargout = displ_h_window(varargin)
-
+function varargout = displ_h_window2(varargin)
 % 初期化コードの開始
 % GUIのシングルトンインスタンスと状態を定義し、コールバック関数を設定します
 gui_Singleton = 1;
@@ -24,32 +23,29 @@ end
 % この関数は、displ_h_window が表示される直前に実行されます。
 function displ_h_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % この関数は、GUI が作成されるときに呼び出されます。
-global SCRS SCRW_X SCRW_Y % スクリーンサイズ (1x4, [x y width height]) と幅・高さを定義
+global SCR_SIZE % スクリーンサイズ (1x4, [x y width height]) と幅・高さを定義
 
 set(findobj('Tag','Mouse_click'),'Enable','Off'); % マウスクリックを無効にする
-h = findobj('Tag','displ_h_window');
+h = findobj('Tag','displ_h_window2');
 j = get(h,'Position');
 wind_width = j(1,3);
 wind_height = j(1,4);
-dummy = findobj('Tag','main_menu_window');
+dummy = findobj('Tag','main_menu_window2');
 if isempty(dummy)~=1
- h = get(dummy,'Position');
+    h = get(dummy,'Position');
 end
 xpos = h(1,1) + h(1,3) + 5;
-ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
+ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height;
 set(hObject,'Position',[xpos ypos wind_width wind_height]); % ウィンドウの位置を設定
 
 % displ_h_window のデフォルトのコマンドライン出力を選択
 handles.output = hObject;
-
 % ハンドル構造体の更新
 guidata(hObject, handles);
-
 % UIRESUME が呼び出されるまで、displ_h_window はユーザーの応答を待ちます
 
 % --- この関数からの出力がコマンドラインに返されます。
 function varargout = displ_h_window_OutputFcn(hObject, eventdata, handles) 
-
 % ハンドル構造体からデフォルトのコマンドライン出力を取得
 varargout{1} = handles.output;
 
@@ -67,20 +63,19 @@ varargout{1} = handles.output;
 %=========================================================================
 function slider_displ_Callback(hObject, eventdata, handles)
 % スライダーを動かしたときの処理
-global FUNC_SWITCH
-global H_MAIN
-global DISP_SCALE
-global SIZE
+global H_MAIN DISP_SCALE
+global CALC_CONTROL
+global INPUT_VARS
 
-temp_reserve = FUNC_SWITCH; % 現在の関数スイッチの状態を一時的に保存
+temp_reserve = CALC_CONTROL.FUNC_SWITCH; % 現在の関数スイッチの状態を一時的に保存
 h = findobj('Tag','exaggeration');
-v = get(hObject,'Value') * SIZE(3,1); % スライダーの値に基づいてスケールを設定
+v = get(hObject,'Value') * INPUT_VARS.SIZE(3,1); % スライダーの値に基づいてスケールを設定
 set(h,'String',num2str(v,'%6.0f')); % スケール値を表示
 figure(H_MAIN);
 delete(axes('Parent',H_MAIN)); % メインウィンドウの既存のグラフを削除
 
 hold on;
-FUNC_SWITCH = temp_reserve; % 関数スイッチの状態を復元
+CALC_CONTROL.FUNC_SWITCH = temp_reserve; % 関数スイッチの状態を復元
 DISP_SCALE = get(hObject,'Value'); % スケールを更新
 calc_button_Callback; % 計算を実行
 
@@ -98,17 +93,17 @@ DISP_SCALE = get(hObject,'Value'); % スケールの初期値を設定
 %-------------------------------------------------------------------------
 function uipanel_reference_SelectionChangeFcn(hObject,eventdata,handles)
 % パネルの選択が変更されたときの処理
-global COORD
+global COORD_VARS
 selection = get(hObject,'SelectedObject')
 switch get(selection,'Tag')
     case 'radiobutton_nofix'
         radiobutton_nofix_Callback;
-        COORD = 1; % デカルト座標系を選択
+        COORD_VARS.ICOORD = 1; % デカルト座標系を選択
     case 'radiobutton_fixcart'
         radiobutton_fixcart_Callback;
-        COORD = 1; % デカルト座標系を選択
+        COORD_VARS.ICOORD = 1; % デカルト座標系を選択
     case 'radiobutton_fixlonlat'
-        COORD = 2; % 経度・緯度座標系を選択
+        COORD_VARS.ICOORD = 2; % 経度・緯度座標系を選択
 end
 
 %-------------------------------------------------------------------------
@@ -116,16 +111,17 @@ end
 %-------------------------------------------------------------------------
 function radiobutton_nofix_Callback(hObject, eventdata, handles)
 % "No Fix"が選択されたときの処理
-global H_MAIN FIXFLAG FUNC_SWITCH
+global H_MAIN FIXFLAG
+global CALC_CONTROL 
 set(findobj('Tag','Mouse_click'),'Enable','off'); % マウスクリックを無効にする
 x = get(hObject,'Value');
 if x==1;
-    temp_reserve = FUNC_SWITCH;
+    temp_reserve = CALC_CONTROL.FUNC_SWITCH;
     FIXFLAG = 0;
     figure(H_MAIN);
     delete(axes('Parent',H_MAIN)); % メインウィンドウの既存のグラフを削除
     hold on;
-    FUNC_SWITCH = temp_reserve;
+    CALC_CONTROL.FUNC_SWITCH = temp_reserve;
     h = findobj('Tag','slider_displ');
     displ_open(get(h,'Value')); % 表示を更新
 end
@@ -135,11 +131,12 @@ end
 %-------------------------------------------------------------------------
 function radiobutton_fixcart_Callback(hObject, eventdata, handles)
 % "Fixed Cartesian"が選択されたときの処理
-global COORD  FIXFLAG H_MAIN FIXX FIXY FUNC_SWITCH
+global FIXFLAG FIXX FIXY
+global CALC_CONTROL
 set(findobj('Tag','Mouse_click'),'Enable','on'); % マウスクリックを有効にする
 x = get(hObject,'Value');
 if x==1;
-    COORD = 1;
+    CALC_CONTROL.ICOORD = 1;
     FIXFLAG = 1;
     h = findobj('Tag','edit_fixx');
     FIXX = str2double(get(h,'String'));
@@ -152,16 +149,14 @@ end
 %-------------------------------------------------------------------------
 function radiobutton_fixlonlat_Callback(hObject, eventdata, handles)
 % "Fixed Lon & Lat"が選択されたときの処理
-global COORD  FIXFLAG H_MAIN FIXX FIXY FUNC_SWITCH
-global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
-global GRID
-
+global FIXFLAG FIXX FIXY
+global COORD_VARS
 set(findobj('Tag','Mouse_click'),'Enable','on'); % マウスクリックを有効にする
 x = get(hObject,'Value');
 if x==1;
     FIXFLAG = 2;
-    mid_lon = (MIN_LON + MAX_LON) / 2.0; % 中央経度を計算
-    mid_lat = (MIN_LAT + MAX_LAT) / 2.0; % 中央緯度を計算
+    mid_lon = (COORD_VARS.MIN_LON + COORD_VARS.MAX_LON) / 2.0; % 中央経度を計算
+    mid_lat = (COORD_VARS.MIN_LAT + COORD_VARS.MAX_LAT) / 2.0; % 中央緯度を計算
     h = findobj('Tag','edit_fixlon');
     set(h,'String',num2str(mid_lon,'%7.2f'));
     h = findobj('Tag','edit_fixlat');
@@ -176,9 +171,10 @@ end
 %-------------------------------------------------------------------------
 function edit_fixx_Callback(hObject, eventdata, handles)
 % 固定されたX座標が入力されたときの処理
-global COORD  FIXFLAG H_MAIN FIXX FIXY FUNC_SWITCH
+global FIXFLAG FIXX FIXY
+global CALC_CONTROL
 FIXX = str2double(get(hObject,'String'));
-COORD = 1;
+CALC_CONTROL.ICOORD = 1;
 FIXFLAG = 1;
 h = findobj('Tag','edit_fixy');
 FIXY = str2double(get(h,'String'));
@@ -188,7 +184,7 @@ function edit_fixx_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-global FIXX FIXY FIXFLAG
+global FIXX
 FIXX = str2double(get(hObject,'String'));
 
 %-------------------------------------------------------------------------
@@ -196,8 +192,7 @@ FIXX = str2double(get(hObject,'String'));
 %-------------------------------------------------------------------------
 function edit_fixy_Callback(hObject, eventdata, handles)
 % 固定されたY座標が入力されたときの処理
-global COORD  FIXFLAG H_MAIN FIXX FIXY FUNC_SWITCH
-global DISP_SCALE
+global FIXFLAG FIXX FIXY
 FIXY = str2double(get(hObject,'String'));
 h = findobj('Tag','edit_fixx');
 FIXX = str2double(get(h,'String'));
@@ -207,7 +202,7 @@ function edit_fixy_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-global FIXX FIXY FIXFLAG
+global FIXY
 FIXY = str2double(get(hObject,'String'));
 
 %-------------------------------------------------------------------------
@@ -215,10 +210,7 @@ FIXY = str2double(get(hObject,'String'));
 %-------------------------------------------------------------------------
 function edit_fixlon_Callback(hObject, eventdata, handles)
 % 固定された経度が入力されたときの処理
-global COORD  FIXFLAG H_MAIN FIXX FIXY FUNC_SWITCH
-global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
-global GRID
-
+global FIXX FIXY
 target_lon = str2double(get(hObject,'String'));
 target_lat = str2double(get(findobj('Tag','edit_fixlat'),'String'));
 set(hObject,'String',num2str(target_lon,'%7.2f'));
@@ -228,7 +220,6 @@ FIXY = a(2);
     
 % --- テキストフィールドが作成されたときの初期設定
 function edit_fixlon_CreateFcn(hObject, eventdata, handles)
-global MIN_LON MAX_LON
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -238,10 +229,7 @@ end
 %-------------------------------------------------------------------------
 function edit_fixlat_Callback(hObject, eventdata, handles)
 % 固定された緯度が入力されたときの処理
-global COORD  FIXFLAG H_MAIN FIXX FIXY FUNC_SWITCH
-global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
-global GRID
-
+global FIXX FIXY
 target_lon = str2double(get(findobj('Tag','edit_fixlon'),'String'));
 target_lat = str2double(get(hObject,'String'));
 set(hObject,'String',num2str(target_lat,'%7.2f'));
@@ -251,7 +239,6 @@ FIXY = a(2);
     
 % --- テキストフィールドが作成されたときの初期設定
 function edit_fixlat_CreateFcn(hObject, eventdata, handles)
-global MIN_LAT MAX_LAT
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -261,36 +248,35 @@ end
 %-------------------------------------------------------------------------
 function edit_displdepth_Callback(hObject, eventdata, handles)
 % 計算深度が入力されたときの処理
-global CALC_DEPTH FLAG_DEPTH IACT
-CALC_DEPTH = str2num(get(hObject,'String'));
+global FLAG_DEPTH
+global INPUT_VARS
+global CALC_CONTROL
+INPUT_VARS.CALC_DEPTH = str2num(get(hObject,'String'));
 FLAG_DEPTH = 1;
-IACT = 0;
+CALC_CONTROL.IACT = 0;
 
 % --- テキストフィールドが作成されたときの初期設定
 function edit_displdepth_CreateFcn(hObject, eventdata, handles)
-global CALC_DEPTH
+global INPUT_VARS
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'String',num2str(CALC_DEPTH,'%5.2f'));
+set(hObject,'String',num2str(INPUT_VARS.CALC_DEPTH,'%5.2f'));
 
 %=========================================================================
 %	  Executes on button press in Mouse_click. マウスクリックに対応するコールバック関数
 %=========================================================================
 function Mouse_click_Callback(hObject, eventdata, handles)
 % マウスクリックに対応する処理
-
-global FIXX FIXY FIXFLAG COORD
+global FIXX FIXY FIXFLAG
 global H_MAIN A_MAIN
-global FUNC_SWITCH
+global CALC_CONTROL
 
-temp_reserve = FUNC_SWITCH;
+temp_reserve = CALC_CONTROL.FUNC_SWITCH;
 xy = [];
 n = 0;
 figure(H_MAIN);
-
 [xi,yi,but] = ginput(1); % クリックした位置の座標を取得
-
 xy(:,1) = [xi;yi];
 FIXX = xy(1,1);
 FIXY = xy(2,1);
@@ -302,7 +288,7 @@ if FIXFLAG == 1
     set(h,'String',num2str(yi,'%7.2f'));
     plot(A_MAIN,xi,yi,'ro'); 
 elseif FIXFLAG == 2
-     h = findobj('Tag','edit_fixlon');
+    h = findobj('Tag','edit_fixlon');
     set(h,'String',num2str(xi,'%7.2f'));
     h = findobj('Tag','edit_fixlat');
     set(h,'String',num2str(yi,'%7.2f'));
@@ -315,43 +301,45 @@ end
 figure(H_MAIN);
 delete(axes('Parent',H_MAIN));
 hold on;
-FUNC_SWITCH = temp_reserve;
+CALC_CONTROL.FUNC_SWITCH = temp_reserve;
 
 calc_button_Callback
 hold on;
-plot(A_MAIN,xi,yi,'ro');
+plot(A_MAIN, xi, yi, 'ro');
     
 %=========================================================================
 %	  CALC & VIEW BUTTON 計算および表示ボタンに対応するコールバック関数
 %=========================================================================
 function calc_button_Callback(hObject, eventdata, handles)
 % 計算および表示ボタンが押されたときの処理
+global FIXFLAG H_MAIN A_MAIN FIXX FIXY
+global FLAG_DEPTH H_SECTION
+global COORD_VARS
+global CALC_CONTROL
+global OKADA_OUTPUT
+global SYSTEM_VARS
+global OVERLAY_VARS
 
-global FIXFLAG H_MAIN A_MAIN FIXX FIXY FUNC_SWITCH
-global IACT DC3D FLAG_DEPTH ICOORD LON_GRID
-global COAST_DATA EQ_DATA AFAULT_DATA
-global H_SECTION HOME_DIR PREF_DIR OUTFLAG INPUT_FILE
-
-temp_reserve = FUNC_SWITCH;
+temp_reserve = CALC_CONTROL.FUNC_SWITCH;
 %--- 深度が変更されたときの処理 -----------
 
-if IACT ~= 1        
-    Okada_halfspace;
+if CALC_CONTROL.IACT ~= 1        
+    Okada_halfspace2;
 end
 
-IACT = 1; % Okadaの結果を保持
-a = DC3D(:,1:2);
-b = DC3D(:,5:8);
+CALC_CONTROL.IACT = 1; % Okadaの結果を保持
+a = OKADA_OUTPUT.DC3D(:,1:2);
+b = OKADA_OUTPUT.DC3D(:,5:8);
 c = horzcat(a,b);
 format long;
 
-if OUTFLAG == 1 | isempty(OUTFLAG) == 1
+if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1
     cd output_files;
 else
-    cd (PREF_DIR);
+    cd (SYSTEM_VARS.PREF_DIR);
 end
 
-header1 = ['Input file selected: ',INPUT_FILE];
+header1 = ['Input file selected: ', SYSTEM_VARS.INPUT_FILE];
 header2 = 'x y z UX UY UZ';
 header3 = '(km) (km) (km) (m) (m) (m)';
 dlmwrite('Displacement.cou',header1,'delimiter',''); 
@@ -359,7 +347,7 @@ dlmwrite('Displacement.cou',header2,'-append','delimiter','');
 dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
 dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
 disp(['Displacement.cou is saved in ' pwd]);
-cd (HOME_DIR);
+cd (SYSTEM_VARS.HOME_DIR);
 
 FLAG_DEPTH = 0;
 
@@ -373,11 +361,11 @@ if FIXFLAG == 1
     figure(H_MAIN);
     delete(axes('Parent',H_MAIN));
     hold on;
-    FUNC_SWITCH = temp_reserve;
+    CALC_CONTROL.FUNC_SWITCH = temp_reserve;
     h = findobj('Tag','slider_displ');
-	displ_open(get(h,'Value'));
+	displ_open2(get(h,'Value'));
     hold on;
-    plot(A_MAIN,FIXX,FIXY,'ro');  
+    plot(A_MAIN, FIXX, FIXY, 'ro');  
 
 % 経度・緯度座標系での計算
 elseif FIXFLAG == 2
@@ -387,13 +375,14 @@ elseif FIXFLAG == 2
         b1 = str2double(get(h1,'String'));
         b2 = str2double(get(h2,'String'));
         a = lonlat2xy([b1 b2]);
-        FIXX = a(1); FIXY = a(2);
+        FIXX = a(1);
+        FIXY = a(2);
         figure(H_MAIN);
         delete(axes('Parent',H_MAIN));
         hold on;
-    	FUNC_SWITCH = temp_reserve;
+    	CALC_CONTROL.FUNC_SWITCH = temp_reserve;
         h = findobj('Tag','slider_displ');
-        displ_open(get(h,'Value'));
+        displ_open2(get(h,'Value'));
         hold on;
         plot(A_MAIN,b1,b2,'ro');
     else
@@ -405,15 +394,15 @@ else
     figure(H_MAIN);
     delete(axes('Parent',H_MAIN));
     hold on;
-    FUNC_SWITCH = temp_reserve;
+    CALC_CONTROL.FUNC_SWITCH = temp_reserve;
     h = findobj('Tag','slider_displ');
-    displ_open(get(h,'Value'));
+    displ_open2(get(h,'Value'));
 end
 
 % ----- オーバーレイ描画 --------------------------------
-if isempty(COAST_DATA) ~= 1 | isempty(EQ_DATA) ~= 1 | isempty(AFAULT_DATA) ~= 1
+if isempty(OVERLAY_VARS.COAST_DATA) ~= 1 | isempty(OVERLAY_VARS.EQ_DATA) ~= 1 | isempty(OVERLAY_VARS.AFAULT_DATA) ~= 1
     hold on;
-    overlay_drawing;
+    overlay_drawing2;
 end
 
 % ----- 断面ウィンドウが存在する場合の更新処理 ------------
@@ -424,8 +413,8 @@ if (isempty(h)~=1 && isempty(H_SECTION)~=1)
 end
 
 % ----- 表示をカルテシアンまたは経度・緯度座標系で更新
-if IACT == 0
-    if ICOORD == 1
+if CALC_CONTROL.IACT == 0
+    if COORD_VARS.ICOORD == 1
         set(findobj('Tag','radiobutton_fixlonlat'),'Visible','off');
         set(findobj('Tag','text_disp_lon'),'Visible','off');
         set(findobj('Tag','text_disp_lat'),'Visible','off');
@@ -459,11 +448,10 @@ end
 %-------------------------------------------------------------------------
 function cross_section_w_Callback(hObject, eventdata, handles)
 % 断面ウィンドウボタンが押されたときの処理
-
 global H_SEC_WINDOW
-global FUNC_SWITCH
+global CALC_CONTROL
 
-temp_reserve = FUNC_SWITCH;
+temp_reserve = CALC_CONTROL.FUNC_SWITCH;
 H_SEC_WINDOW = xsec_window; % 断面ウィンドウを表示
 set(findobj('Tag','text_downdip_inc'),'Visible','off');
 set(findobj('Tag','edit_downdip_inc'),'Visible','off');
@@ -471,25 +459,24 @@ set(findobj('Tag','text_downdip_inc_km'),'Visible','off');
 set(findobj('Tag','text_section_dip'),'Visible','off');
 set(findobj('Tag','edit_section_dip'),'Visible','off');
 set(findobj('Tag','text_section_dip_deg'),'Visible','off');
-FUNC_SWITCH = temp_reserve; % 状態をリセット
+CALC_CONTROL.FUNC_SWITCH = temp_reserve; % 状態をリセット
 
 %-------------------------------------------------------------------------
 %	  EXAGGERATION (Textfield) 誇張（Exaggeration）に対応するテキストフィールドのコールバック関数
 %-------------------------------------------------------------------------
 function exaggeration_Callback(hObject, eventdata, handles)
 % 誇張が変更されたときの処理
-
-global SIZE
+global INPUT_VARS
 global DISP_SCALE
 
 ds = str2num(get(hObject,'String'));
-DISP_SCALE = int32(ds/SIZE(3,1)); % 誇張スケールを設定
+DISP_SCALE = int32(ds/INPUT_VARS.SIZE(3,1)); % 誇張スケールを設定
 set(hObject,'String',num2str(ds,'%6.0f'));
 h = findobj('Tag','slider_displ');
 mx = get(h,'Max');
 if DISP_SCALE >= mx
     set(h,'Value',mx);
-    set(hObject,'String',num2str(mx*SIZE(3,1),'%6.0f'));
+    set(hObject,'String',num2str(mx*INPUT_VARS.SIZE(3,1),'%6.0f'));
 else
     set(h,'Value',DISP_SCALE);
 end
@@ -497,8 +484,8 @@ calc_button_Callback;
 
 function exaggeration_CreateFcn(hObject, eventdata, handles)
 % テキストフィールドが作成されたときの初期設定
-global SIZE
+global INPUT_VARS
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'String',num2str(SIZE(3,1),'%6.0f')); % 初期の誇張スケールを設定
+set(hObject,'String',num2str(INPUT_VARS.SIZE(3,1),'%6.0f')); % 初期の誇張スケールを設定

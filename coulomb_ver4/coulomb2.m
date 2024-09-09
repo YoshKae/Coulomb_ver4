@@ -85,12 +85,12 @@ CALC_CONTROL.IND_RAKE = [];
 CALC_CONTROL.IIRET = [];
 
 % ----- メモリ内に保持される出力 -----
-global MEMORY_OUTPUT
-MEMORY_OUTPUT.DC3D = [];      % 岡田式の計算結果の出力 (N_CELL行, 14列)
-MEMORY_OUTPUT.DC3DS = [];     % クロスセクション計算用にDC3Dの上書きを防ぐための複製物
-MEMORY_OUTPUT.DC3DE = [];     % エラー計算用にDC3Dの上書きを防ぐための複製物
-MEMORY_OUTPUT.S_ELEMENT = [];
-MEMORY_OUTPUT.CC = [];
+global OKADA_OUTPUT
+OKADA_OUTPUT.DC3D = [];      % 岡田式の計算結果の出力 (N_CELL行, 14列)
+OKADA_OUTPUT.DC3DS = [];     % クロスセクション計算用にDC3Dの上書きを防ぐための複製物
+OKADA_OUTPUT.DC3DE = [];     % エラー計算用にDC3Dの上書きを防ぐための複製物
+OKADA_OUTPUT.S_ELEMENT = [];
+OKADA_OUTPUT.CC = [];
 
 % ----- 断面図に関連する変数 -----
 global SECTION_VARS

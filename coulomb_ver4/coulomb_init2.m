@@ -9,7 +9,7 @@ global VIEW_AZ VIEW_EL
 global INPUT_VARS
 global COORD_VARS
 global CALC_CONTROL
-global MEMORY_OUTPUT
+global OKADA_OUTPUT
 global SECTION_VARS
 global OVERLAY_VARS
 global SYSTEM_VARS
@@ -35,7 +35,7 @@ INPUT_VARS.FCOMMENT = struct('ref',[]);  % コメントを格納する構造体
 INPUT_VARS.GRID = [];       % グリッド情報
 INPUT_VARS.SIZE = [];       % サイズ情報
 INPUT_VARS.SECTION = [];    % セクション情報
-MEMORY_OUTPUT.S_ELEMENT = [];  % S要素データ
+OKADA_OUTPUT.S_ELEMENT = [];  % S要素データ
 
 % 水平方向の変位計算のためのフラグ (0: 固定点なし, 1: 固定点あり)
 FIXFLAG = repmat(uint8(0),1,1);  % 初期化：固定点なし
