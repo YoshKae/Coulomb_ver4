@@ -1,4 +1,4 @@
-function varargout = overlay_window(varargin)
+function varargout = overlay_window2(varargin)
 % この関数はGUIで地震や断層のオーバーレイ表示を管理するためのものです。
 % GUIの開始、コールバック関数、プロパティの適用、出力管理を行います。
 
@@ -28,7 +28,6 @@ function overlay_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % GUIウィンドウが表示される直前に実行されます。
 % コマンドライン出力のデフォルト設定
 handles.output = hObject;
-
 % ハンドル構造を更新
 guidata(hObject, handles);
 
@@ -39,66 +38,68 @@ varargout{1} = handles.output;
 
 % --- ラジオボタンでストレスの種類を選択するパネルのコールバック
 function uipanel6_SelectionChangeFcn(hObject, eventdata, handles)
-% STRESS_TYPE: Coulomb応力計算で使用するストレスの種類
-global STRESS_TYPE
+global CALC_CONTROL
 selection = get(hObject, 'SelectedObject'); % 選択されたオブジェクトの取得
 switch get(selection, 'Tag')
     case 'radiobutton_optfault'
-        STRESS_TYPE = 1; % 最適化された断層のストレス
+        CALC_CONTROL.STRESS_TYPE = 1; % 最適化された断層のストレス
     case 'radiobutton_optss'
-        STRESS_TYPE = 2; % ストライクスリップ（横ずれ断層）のストレス
+        CALC_CONTROL.STRESS_TYPE = 2; % ストライクスリップ（横ずれ断層）のストレス
     case 'radiobutton_optth'
-        STRESS_TYPE = 3; % スラスト（逆断層）のストレス
+        CALC_CONTROL.STRESS_TYPE = 3; % スラスト（逆断層）のストレス
     case 'radiobutton_optno'
-        STRESS_TYPE = 4; % ストレスがない場合
+        CALC_CONTROL.STRESS_TYPE = 4; % ストレスがない場合
     case 'radiobutton_specified'
-        STRESS_TYPE = 5; % 指定されたストレス
+        CALC_CONTROL.STRESS_TYPE = 5; % 指定されたストレス
 end
 
 % ラジオボタンの個別コールバック関数（選択されたストレスタイプを変更）
 function radiobutton_optfault_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
+global CALC_CONTROL
 x = get(hObject, 'Value');
 if x == 1
-    STRESS_TYPE = 1;
+    CALC_CONTROL.STRESS_TYPE = 1;
 end
 
 function radiobutton_optss_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
+global CALC_CONTROL
 x = get(hObject, 'Value');
 if x == 1
-    STRESS_TYPE = 2;
+    CALC_CONTROL.STRESS_TYPE = 2;
 end
 
 function radiobutton_optth_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
+global CALC_CONTROL
 x = get(hObject, 'Value');
 if x == 1
-    STRESS_TYPE = 3;
+    CALC_CONTROL.STRESS_TYPE = 3;
 end
 
 function radiobutton_optno_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
+global CALC_CONTROL
 x = get(hObject, 'Value');
 if x == 1
-    STRESS_TYPE = 4;
+    CALC_CONTROL.STRESS_TYPE = 4;
 end
 
 function radiobutton_specified_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
+global CALC_CONTROL
 x = get(hObject, 'Value');
 if x == 1
-    STRESS_TYPE = 5;
+    CALC_CONTROL.STRESS_TYPE = 5;
 end
 
 % --- Coulomb応力の計算を行う関数
 function pushbutton_coul_calc_Callback(hObject, eventdata, handles)
 % Coulomb応力の計算処理
-global DC3D CALC_DEPTH SHEAR NORMAL R_STRESS IACT STRESS_TYPE
+global SHEAR NORMAL
+global INPUT_VARS
+global OKADA_OUTPUT
+global CALC_CONTROL
 
 % GUIから摩擦係数と計算深度の取得
 friction = str2num(get(findobj('Tag', 'edit_coul_fric'), 'String'));
-CALC_DEPTH = str2num(get(findobj('Tag', 'edit_coul_depth'), 'String'));
+INPUT_VARS.CALC_DEPTH = str2num(get(findobj('Tag', 'edit_coul_depth'), 'String'));
 
 % 深度が0の場合、計算を行わないための最低値を設定
 if friction == 0.0
@@ -107,7 +108,7 @@ end
 beta = 0.5 * (atan(1.0 / friction));
 
 % ストレスのタイプに応じて計算を実施
-if STRESS_TYPE == 5
+if CALC_CONTROL.STRESS_TYPE == 5
     strike = str2num(get(findobj('Tag', 'edit_spec_strike'), 'String'));
     dip = str2num(get(findobj('Tag', 'edit_spec_dip'), 'String'));
     rake = str2num(get(findobj('Tag', 'edit_spec_rake'), 'String'));
@@ -115,7 +116,7 @@ end
 
 % Coulomb応力の計算結果をファイルに書き込む
 coulomb = SHEAR + friction * NORMAL;
-b = [DC3D(:,1), DC3D(:,2), -DC3D(:,5), coulomb, SHEAR, NORMAL];
+b = [OKADA_OUTPUT.DC3D(:,1), OKADA_OUTPUT.DC3D(:,2), -OKADA_OUTPUT.DC3D(:,5), coulomb, SHEAR, NORMAL];
 dlmwrite('dcff.cou', b, 'delimiter', '\t', 'precision', '%.6f');
 
 % --- Coulomb応力のカラー表示の調整（スライダー）
