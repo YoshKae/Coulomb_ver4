@@ -1,10 +1,9 @@
+function varargout = main_menu_window(varargin)
 % 関数の役割: メインメニューウィンドウのエントリポイント。GUIの初期化を行う。
 % varargout: 可変長出力引数
 % varargin: 可変長入力引数
-function varargout = main_menu_window(varargin)
 
 % GUIの状態を設定
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0; % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。0は複数のインスタンスを許可。
 % gui_State: GUIの状態を管理する構造体
@@ -17,7 +16,6 @@ gui_State = struct('gui_Name',       mfilename, ... % gui_Name: GUIの名前。m
 if nargin && ischar(varargin{1}) % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
     gui_State.gui_Callback = str2func(varargin{1}); % str2func: 文字列を関数ハンドルに変換。
 end
-
 if nargout % nargout: 出力引数の数。gui_mainfcnはメイン関数を呼び出して、GUIの初期化や操作を行う。
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
 else
@@ -25,30 +23,23 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
-
 %-------------------------------------------------------------------------
 %   Main menu opening function メインメニューを開く関数
 %-------------------------------------------------------------------------
 function main_menu_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % hObject: GUIのハンドル。handles: GUIのハンドルを格納する構造体。
-
-% Choose default command line output for main_menu_window
-global SCRS SCRW_X SCRW_Y
-% global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width スクリーンサイズとウィンドウ位置を設定。
+% main_menu_windowのデフォルトのコマンドライン出力を選択
+global SCR_SIZE
 
 handles.output = hObject; % handles.output: GUIの出力を設定。
-
 guidata(hObject, handles); % guidata: handles構造体を更新。
-
-    h = findobj('Tag','main_menu_window'); % findobj: オブジェクトを検索。
-    j = get(h,'Position'); % get: プロパティの値を取得。
-    wind_width = j(1,3); % ウィンドウの幅
-    wind_height = j(1,4); % ウィンドウの高さ
-    xpos = SCRW_X; % ウィンドウのx座標
-    ypos = (SCRS(1,4) - SCRW_Y) - wind_height; % ウィンドウのy座標
-    set(hObject,'Position',[xpos ypos wind_width wind_height]); % set: プロパティの値を設定。
-
+h = findobj('Tag','main_menu_window'); % findobj: オブジェクトを検索。
+j = get(h,'Position'); % get: プロパティの値を取得。
+wind_width = j(1,3); % ウィンドウの幅
+wind_height = j(1,4); % ウィンドウの高さ
+xpos = SCR_SIZE.SCRW_X; % ウィンドウのx座標
+ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height; % ウィンドウのy座標
+set(hObject,'Position',[xpos ypos wind_width wind_height]); % set: プロパティの値を設定。
 
 
 %-------------------------------------------------------------------------
@@ -58,39 +49,33 @@ function varargout = main_menu_window_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output; % handles.output: GUIの出力を取得。
 
-
-
 %=========================================================================
 %    DATA (menu) データメニュー
 %=========================================================================
 function data_menu_Callback(hObject, eventdata, handles) % データメニューをクリックしたときのコールバック関数
 
-
-
 %-------------------------------------------------------------------------
 %           ABOUT (submenu) アバウトサブメニュー
 %-------------------------------------------------------------------------
 function menu_about_Callback(hObject, eventdata, handles) % アバウトサブメニューをクリックしたときのコールバック関数
-global CURRENT_VERSION % グローバル変数の定義
-cd slides % slidesディレクトリに移動
-str = ['About_image.jpg']; % 画像ファイル名
+global SYSTEM_VARS
+cd slides2 % slidesディレクトリに移動
+str = ['About_image2.jpg']; % 画像ファイル名
 [x,imap] = imread(str); % imread: 画像ファイルを読み込む。
-if exist('x')==1 % if the image file exists
+if exist('x')==1
     h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
-    axes('position',[0 0 1 1]); % axes: 軸を作成。
-    axis image; % axis: 軸の設定。
-    image(x) % image: 画像を表示。
-    drawnow % drawnow: グラフィックスの更新。
+    axes('position',[0 0 1 1]); % 軸を作成。
+    axis image;                 % 軸の設定。
+    image(x)                    % 画像を表示。
+    drawnow                     % グラフィックスの更新。
 
     %===== version check バージョンチェック ===========================
-
     try
         temp  = '3.2.01'; % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
         idx   = strfind(temp,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
         newvs = str2num([temp(1:idx(1)-1) temp(idx(1)+1:idx(2)-1) temp(idx(2)+1:end)]);
-        idx   = strfind(CURRENT_VERSION,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
-        curvs = str2num([CURRENT_VERSION(1:idx(1)-1) CURRENT_VERSION(idx(1)+1:idx(2)-1) CURRENT_VERSION(idx(2)+1:end)]);
-
+        idx   = strfind(SYSTEM_VARS.CURRENT_VERSION,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
+        curvs = str2num([SYSTEM_VARS.CURRENT_VERSION(1:idx(1)-1) SYSTEM_VARS.CURRENT_VERSION(idx(1)+1:idx(2)-1) SYSTEM_VARS.CURRENT_VERSION(idx(2)+1:end)]);
         if newvs > curvs % 新しいのがあれば更新表示
             versionmsg = [' New version ' temp ' is found. Visit the following website.'];
         else
@@ -98,59 +83,65 @@ if exist('x')==1 % if the image file exists
         end
     catch
         % インターネットとつながっていなかった場合、あとでバージョンをチェックするようにメッセージを表示
-            versionmsg = 'No internet connection. Check the version later.'; 
+        versionmsg = 'No internet connection. Check the version later.'; 
     end
     
-    th = text(460.0,385.0,['  version ' CURRENT_VERSION '  ']); % 現在のバージョンを表示
-    set(th,'fontsize',16,'fontweight','b','Color','w',... % set: プロパティの値を設定。
-        'horizontalalignment','center','verticalalignment','middle',...
-        'backgroundcolor','none','edgecolor','none')
-    th1 = text(305.0,420.0,versionmsg); % 新しいバージョンがある場合、メッセージを表示
-    set(th1,'fontsize',14,'fontweight','b','Color','w',... % set: プロパティの値を設定。
-        'horizontalalignment','center','verticalalignment','middle',...
-        'backgroundcolor','k','edgecolor','none')
+    th = text(460.0,385.0,['  version ' SYSTEM_VARS.CURRENT_VERSION '  ']); % 現在のバージョンを表示
+    set(th,'fontsize',16,'fontweight','b','Color','w',...                   % set: プロパティの値を設定。
+        'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
+    th1 = text(305.0,420.0,versionmsg);                                     % 新しいバージョンがある場合、メッセージを表示
+    set(th1,'fontsize',14,'fontweight','b','Color','w',...                  % set: プロパティの値を設定。
+        'horizontalalignment','center','verticalalignment','middle','backgroundcolor','k','edgecolor','none')
     th2 = text(320.0,420.0,' http://earthquake.usgs.gov/research/modeling/coulomb/ '); % USGSのサイトへのリンク
-    set(th2,'fontsize',12,'fontweight','b','Color','w',... % set: プロパティの値を設定。
-        'horizontalalignment','center','verticalalignment','middle',...
-        'backgroundcolor','none','edgecolor','none')
-    
+    set(th2,'fontsize',12,'fontweight','b','Color','w',...                             % set: プロパティの値を設定。
+        'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
 end
 cd .. % 一つ上のディレクトリに移動
-
-
 
 %-------------------------------------------------------------------------
 %           NEW (submenu)  新規作成サブメニュー
 %-------------------------------------------------------------------------
-function menu_new_Callback(hObject, eventdata, handles) % 新規作成サブメニューをクリックしたときのコールバック関数
-global GRID FUNC_SWITCH ICOORD % 直交座標か緯度経度のスイッチの定義
-global H_GRID_INPUT COAST_DATA AFAULT_DATA % グリッド入力ウィンドウのハンドル
-global ELEMENT IACT S_ELEMENT INPUT_FILE INUM % 要素、IACT、S_ELEMENT、入力ファイル、INUM
-coulomb_init; % coulomb_init: グローバル変数の初期化
-clear_obj_and_subfig; % clear_obj_and_subfig: オブジェクトとサブフィギュアをクリア
-IACT = 0; % IACT: アクティブな要素のインデックス
+function menu_new_Callback(hObject, eventdata, handles)
+% 新規作成サブメニューをクリックしたときのコールバック関数
+
+global H_GRID_INPUT% グリッド入力ウィンドウのハンドル
+global ELEMENT S_ELEMENT INPUT_FILE INUM
+
+global INPUT_VARS
+global COORD_VARS
+global OVERLAY_VARS
+global CALC_CONTROL
+
+coulomb_init2;
+clear_obj_and_subfig;
+
+CALC_CONTROL.IACT = 0;
 INUM = 0; % INUM: 要素の数
-ELEMENT = []; S_ELEMENT = []; % 要素の初期化
-GRID = []; % グリッドの初期化
-COAST_DATA = []; AFAULT_DATA = []; % 海岸データ、断層データの初期化
+ELEMENT = []; 
+S_ELEMENT = []; % 要素の初期化
+INPUT_VARS.GRID = []; % グリッドの初期化
+OVERLAY_VARS.COAST_DATA = [];
+OVERLAY_VARS.AFAULT_DATA = []; % 海岸データ、断層データの初期化
 INPUT_FILE = 'untitled'; % 入力ファイル名
-if ICOORD == 2          % in case the current coordinates mode is 'Lon & lat' (ICOORD=2) % 現在の座標モードが「経度と緯度」の場合
+
+if COORD_VARS.ICOORD == 2          % in case the current coordinates mode is 'Lon & lat' (COORD_VARS.ICOORD=2) % 現在の座標モードが「経度と緯度」の場合
     h = warndlg('Coordinates mode automatically changes to ''Cartesian'' now','!! Warning !!'); % warndlg: 警告ダイアログを表示
     waitfor(h); % waitfor: モーダルダイアログボックスの終了を待つ
-    ICOORD = 1;         % change to x & y cartesian coordinates % xとyの直交座標に変更
+    COORD_VARS.ICOORD = 1;         % change to x & y cartesian coordinates % xとyの直交座標に変更
 end
-if isempty(GRID) % グリッドが空の場合
+if isempty(INPUT_VARS.GRID) % グリッドが空の場合
     % default values
-    GRID(1,1) = -50.01; % x start
-    GRID(2,1) = -50.01; % y start
-    GRID(3,1) =  50.00; % x finish
-    GRID(4,1) =  50.00; % y finish
-    GRID(5,1) =   5.00; % x increment % xの増分
-    GRID(6,1) =   5.00; % y increment % yの増分
+    INPUT_VARS.GRID(1,1) = -50.01; % x start
+    INPUT_VARS.GRID(2,1) = -50.01; % y start
+    INPUT_VARS.GRID(3,1) =  50.00; % x finish
+    INPUT_VARS.GRID(4,1) =  50.00; % y finish
+    INPUT_VARS.GRID(5,1) =   5.00; % x increment % xの増分
+    INPUT_VARS.GRID(6,1) =   5.00; % y increment % yの増分
 end
+
 H_GRID_INPUT = grid_input_window; % grid_input_window: グリッド入力ウィンドウ
-FUNC_SWITCH = 0; % 関数スイッチを0に設定
-if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+CALC_CONTROL.FUNC_SWITCH = 0; % 関数スイッチを0に設定
+if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on; % すべての関数を有効にする
     set(findobj('Tag','menu_file_save'),'Enable','On'); % ファイル保存メニュー
     set(findobj('Tag','menu_file_save_ascii'),'Enable','On'); % ファイル保存メニュー
@@ -164,11 +155,15 @@ end
 %           NEW from Map (submenu)  地図から新規作成サブメニュー
 %-------------------------------------------------------------------------
 function menu_new_map_Callback(hObject, eventdata, handles) % 地図から新規作成サブメニューをクリックしたときのコールバック関数
-global H_UTM GRID COAST_DATA AFAULT_DATA % UTMウィンドウ、グリッド、海岸データ、断層データ
-global IACT INPUT_FILE INUM % IACT、入力ファイル、INUM
-coulomb_init; % グローバル変数の初期化
+global H_UTM COAST_DATA AFAULT_DATA % UTMウィンドウ、グリッド、海岸データ、断層データ
+global INPUT_FILE INUM
+
+global INPUT_VARS
+global CALC_CONTROL
+
+coulomb_init2; % グローバル変数の初期化
 clear_obj_and_subfig; % オブジェクトとサブフィギュアをクリア
-IACT = 0;
+CALC_CONTROL.IACT = 0;
 INUM = 0;
 COAST_DATA = []; AFAULT_DATA = []; % 海岸データ、断層データの初期化
 INPUT_FILE = 'untitled'; % 入力ファイル名
@@ -181,7 +176,7 @@ all_overlay_enable_off; % すべてのオーバーレイを無効にする
 %
 H_UTM = utm_window; % utm_window: UTMウィンドウ
 waitfor(H_UTM); % waitfor: モーダルダイアログボックスの終了を待つ
-if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on; % すべての関数を有効にする
     set(findobj('Tag','menu_file_save'),'Enable','On');
     set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
@@ -195,16 +190,18 @@ end
 %           OPEN/most recent file (submenu) 最近使用したファイルを開くサブメニュー
 %-------------------------------------------------------------------------
 function menu_most_recent_file_Callback(hObject, eventdata, handles) % 最近使用したファイルを開くサブメニューをクリックしたときのコールバック関数
-global GRID % グリッド
-global FUNC_SWITCH DIALOG_SKIP % 関数スイッチ、ダイアログスキップ
+global CALC_CONTROL.FUNC_SWITCH DIALOG_SKIP % 関数スイッチ、ダイアログスキップ
 global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA % 海岸データ、断層データ、地震データ、GPSデータ
 global VOLCANO % 火山データ
-coulomb_init;
+
+global INPUT_VARS
+
+coulomb_init2;
 clear_obj_and_subfig;
 DIALOG_SKIP = 0;
 last_input;
-FUNC_SWITCH = 0;
-if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+CALC_CONTROL.FUNC_SWITCH = 0;
+if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
     set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
@@ -223,13 +220,14 @@ end
 %           OPEN (submenu) サブメニューを開く
 %-------------------------------------------------------------------------
 function menu_file_open_Callback(hObject, eventdata, handles) % サブメニューを開く
-global GRID % グリッド
-global H_MAIN FUNC_SWITCH EQ_DATA DIALOG_SKIP % メインウィンドウ、関数スイッチ、地震データ、ダイアログスキップ
+global H_MAIN CALC_CONTROL.FUNC_SWITCH EQ_DATA DIALOG_SKIP % メインウィンドウ、関数スイッチ、地震データ、ダイアログスキップ
+
+global INPUT_VARS
 
 DIALOG_SKIP = 0; % ダイアログスキップを0に設定
 input_open(1); % input_open: 入力を開く
 
-if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
     set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
@@ -245,14 +243,17 @@ check_overlay_items; % オーバーレイアイテムをチェック
 %           OPEN/SKIPPING DIALOG (submenu) ダイアログをスキップして開くサブメニュー
 %-------------------------------------------------------------------------
 function menu_open_skipping_Callback(hObject, eventdata, handles) % ダイアログをスキップして開くサブメニューをクリックしたときのコールバック関数
-global GRID FUNC_SWITCH % グリッド、関数スイッチ
-global DIALOG_SKIP IACT % ダイアログスキップ、IACT
+global INPUT_VARS.GRID CALC_CONTROL.FUNC_SWITCH % グリッド、関数スイッチ
+global DIALOG_SKIP % ダイアログスキップ
+
+global INPUT_VARS
+global CALC_CONTROL
 
 DIALOG_SKIP = 0;
 input_open(3); % 3はオープンウィンドウをスキップすることを意味する
 
-% FUNC_SWITCH = 0;
-if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+% CALC_CONTROL.FUNC_SWITCH = 0;
+if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
     set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
@@ -263,9 +264,9 @@ if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使
 end
 try % 例外処理
     check_overlay_items; % オーバーレイアイテムをチェック
-    if IACT == 0 % ユーザーがキャンセルを選択した場合、IACTは1から 'input_open.m' に転送される
+    if CALC_CONTROL.IACT == 0 % ユーザーがキャンセルを選択した場合、CALC_CONTROL.IACTは1から 'input_open.m' に転送される
     menu_grid_mapview_Callback;
-    FUNC_SWITCH = 0;
+    CALC_CONTROL.FUNC_SWITCH = 0;
     end
 catch
     return
@@ -275,14 +276,11 @@ end
 %           SAVE  AS .MAT(submenu) .MAT形式で保存するサブメニュー  
 %-------------------------------------------------------------------------
 function menu_file_save_Callback(hObject, eventdata, handles) % .MAT形式で保存するサブメニューをクリックしたときのコールバック関数
-global INUM HEAD NUM POIS CALC_DEPTH YOUNG FRIC R_STRESS ID KODE ELEMENT
-global FCOMMENT GRID SIZE SECTION 
-global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
-global PREF
-global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
-global VOLCANO SEISSTATION
-global HOME_DIR PREF_DIR
-    if isempty(PREF)==1 % prefが空の場合
+global INPUT_VARS
+global OVERLAY_VARS
+global SYSTEM_VARS
+
+    if isempty(SYSTEM_VARS.PREF)==1 % prefが空の場合
        % デフォルト値を作成して保存する
        PREF = [1.0 0.0 0.0 1.2;...
                0.0 0.0 0.0 1.0;...
@@ -294,17 +292,17 @@ global HOME_DIR PREF_DIR
                1.0 0.0 0.0 0.0;...
                0.9 0.9 0.1 1.0];    % volcano 火山のデフォルト値
     end
-    if isempty(PREF_DIR) ~= 1 % PREF_DIRが空でない場合
+    if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
         try
-            cd(PREF_DIR); % PREF_DIRに移動
+            cd(SYSTEM_VARS.PREF_DIR); % PREF_DIRに移動
         catch
-            cd(HOME_DIR); % HOME_DIRに移動
+            cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
         end
     else
         try
             cd('input_files'); % input_filesに移動
         catch
-            cd(HOME_DIR); % HOME_DIRに移動
+            cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
         end    
     end
     [filename,pathname] = uiputfile('*.mat',... % uiputfile: ファイルを保存するダイアログボックスを表示
@@ -314,13 +312,13 @@ global HOME_DIR PREF_DIR
     else
         disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
     end
-    save(fullfile(pathname,filename), 'HEAD','NUM','POIS','CALC_DEPTH',... % save: ファイルに変数を保存
-        'YOUNG','FRIC','R_STRESS','ID','KODE','ELEMENT','FCOMMENT',...
-        'GRID','SIZE','SECTION','PREF','MIN_LAT','MAX_LAT','ZERO_LAT',...
-        'MIN_LON','MAX_LON','ZERO_LON','COAST_DATA','AFAULT_DATA',...
-        'EQ_DATA','GPS_DATA','VOLCANO','SEISSTATION',...
+    save(fullfile(pathname,filename), 'INPUT_VARS.HEAD','INPUT_VARS.NUM','INPUT_VARS.POIS','INPUT_VARS.CALC_DEPTH',... % save: ファイルに変数を保存
+        'INPUT_VARS.YOUNG','INPUT_VARS.FRIC','INPUT_VARS.R_STRESS','INPUT_VARS.ID','INPUT_VARS.KODE','INPUT_VARS.ELEMENT','INPUT_VARS.FCOMMENT',...
+        'INPUT_VARS.GRID','INPUT_VARS.SIZE','INPUT_VARS.SECTION','SYSTEM_VARS.PREF','COORD_VARS.MIN_LAT','COORD_VARS.MAX_LAT','COORD_VARS.ZERO_LAT',...
+        'COORD_VARS.MIN_LON','COORD_VARS.MAX_LON','COORD_VARS.ZERO_LON','OVERLAY_VARS.COAST_DATA','OVERLAY_VARS.FAULT_DATA',...
+        'OVERLAY_VARS.EQ_DATA','OVERLAY_VARS.GPS_DATA','OVERLAY_VARS.VOLCANO','OVERLAY_VARS.SEISSTATION',...
         '-mat');
-    cd(HOME_DIR); % HOME_DIRに移動
+    cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
     
 %-------------------------------------------------------------------------
 %           SAVE AS ASCII (submenu) ASCII形式で保存するサブメニュー  
@@ -483,11 +481,14 @@ function menu_grid_Callback(hObject, eventdata, handles) % グリッドサブメ
 
 % --------------------------------------------------------------------
 function menu_grid_mapview_Callback(hObject, eventdata, handles) % グリッドマップビューをクリックしたときのコールバック関数
-global FUNC_SWITCH ICOORD LON_GRID COAST_DATA EQ_DATA GPS_DATA AFAULT_DATA % 関数スイッチ、ICOORD、LON_GRID、COAST_DATA、EQ_DATA、GPS_DATA、AFAULT_DATA
+global CALC_CONTROL.FUNC_SWITCH COAST_DATA EQ_DATA GPS_DATA AFAULT_DATA
 global ELEMENT ID KODE % 要素、ID、KODE
+
+global COORD_VARS
+
 % global H_MAIN
 subfig_clear;
-FUNC_SWITCH = 1;
+CALC_CONTROL.FUNC_SWITCH = 1;
 grid_drawing;
 fault_overlay;
 if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
@@ -495,7 +496,7 @@ if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない
     hold on; % 現在の図を保持
     overlay_drawing; % オーバーレイの描画
 end
-FUNC_SWITCH = 0; %reset to 0
+CALC_CONTROL.FUNC_SWITCH = 0; %reset to 0
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
@@ -503,12 +504,13 @@ end
 
 % --------------------------------------------------------------------
 function menu_grid_3d_Callback(hObject, eventdata, handles) % 3Dグリッドをクリックしたときのコールバック関数
-global FUNC_SWITCH F3D_SLIP_TYPE H_F3D_VIEW % 関数スイッチ、F3D_SLIP_TYPE、H_F3D_VIEW
+global CALC_CONTROL.FUNC_SWITCH F3D_SLIP_TYPE H_F3D_VIEW % 関数スイッチ、F3D_SLIP_TYPE、H_F3D_VIEW
 global ELEMENT POIS YOUNG FRIC ID H_MAIN H_VIEWPOINT % 要素、POIS、YOUNG、FRIC、ID、H_MAIN、H_VIEWPOINT
-global ICOORD LON_GRID
 global C_SLIP_SAT
+
+global COORD_VARS
 % これまでの3Dプロットで「注釈」を使用することはできません
-if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
     h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.',... % 警告ダイアログを表示
         '!! Warning !!'); % 警告ダイアログを表示
     waitfor(h); % モーダルダイアログボックスの終了を待つ
@@ -516,7 +518,7 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でな�
 end
 subfig_clear; % サブフィギュアをクリア
 hc = wait_calc_window; % wait_calc_window: 計算ウィンドウを待つ
-FUNC_SWITCH = 1; % 関数スイッチを1に設定
+CALC_CONTROL.FUNC_SWITCH = 1; % 関数スイッチを1に設定
 F3D_SLIP_TYPE = 1;  % ネットスリップ
 element_condition(ELEMENT,POIS,YOUNG,FRIC,ID); % 要素条件
 
@@ -542,20 +544,24 @@ function menu_displacement_Callback(hObject, eventdata, handles) % ディスプ�
 %                       VECTORS (sub-submenu) ベクトルサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_vectors_Callback(hObject, eventdata, handles) % ベクトルサブサブメニューをクリックしたときのコールバック関数
-global FUNC_SWITCH % 関数スイッチ
-global DC3D IACT % DC3D、IACT
-global H_DISPL ICOORD FIXFLAG INPUT_FILE
+global CALC_CONTROL.FUNC_SWITCH % 関数スイッチ
+global DC3D
+global H_DISPL FIXFLAG INPUT_FILE
 global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
 global GPS_FLAG GPS_SEQN_FLAG
 global OUTFLAG PREF_DIR HOME_DIR H_MAIN
+
+global COORD_VARS
+global CALC_CONTROL
+
 subfig_clear; % サブフィギュアをクリア
-FUNC_SWITCH = 2; % 関数スイッチを2に設定
+CALC_CONTROL.FUNC_SWITCH = 2; % 関数スイッチを2に設定
 FIXFLAG = 0; % FIXFLAGを0に設定
 % Okadaハーフスペースの再計算を回避するため
-if IACT ~= 1        
+if CALC_CONTROL.IACT ~= 1        
     Okada_halfspace; % Okadaハーフスペースを計算
 end
-IACT = 1; % Okadaの出力を保持するため
+CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
     a = DC3D(:,1:2); % DC3Dの1から2列を取得
     b = DC3D(:,5:8); % DC3Dの5から8列を取得
     c = horzcat(a,b); % aとbを水平に連結
@@ -576,13 +582,13 @@ IACT = 1; % Okadaの出力を保持するため
     cd (HOME_DIR);
 displ_open(2); % 2を開く
 H_DISPL = displ_h_window;
-if ICOORD == 1 % ICOORDが1の場合 → 経度と緯度のメニューを非表示
+if COORD_VARS.ICOORD == 1 % COORD_VARS.ICOORDが1の場合 → 経度と緯度のメニューを非表示
     set(findobj('Tag','radiobutton_fixlonlat'),'Visible','off'); % radiobutton_fixlonlatを非表示
     set(findobj('Tag','text_disp_lon'),'Visible','off'); % text_disp_lonを非表示
     set(findobj('Tag','text_disp_lat'),'Visible','off'); % text_disp_latを非表示
     set(findobj('Tag','edit_fixlon'),'Visible','off'); % edit_fixlonを非表示
     set(findobj('Tag','edit_fixlat'),'Visible','off'); % edit_fixlatを非表示
-else % ICOORDが1でない場合 → カートジアン座標のメニューを非表示
+else % COORD_VARS.ICOORDが1でない場合 → カートジアン座標のメニューを非表示
     set(findobj('Tag','radiobutton_fixcart'),'Visible','off');
     set(findobj('Tag','text_cart_x'),'Visible','off');
     set(findobj('Tag','text_cart_y'),'Visible','off'); 
@@ -607,19 +613,22 @@ end
 %                       WIREFRAME (sub-submenu) ワイヤフレームサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_wireframe_Callback(hObject, eventdata, handles) % ワイヤフレームサブサブメニューをクリックしたときのコールバック関数
-global FUNC_SWITCH FIXFLAG % 関数スイッチ、FIXFLAG
-global DC3D IACT
-global H_DISPL ICOORD INPUT_FILE
+global CALC_CONTROL.FUNC_SWITCH FIXFLAG % 関数スイッチ、FIXFLAG
+global DC3D
+global H_DISPL INPUT_FILE
 global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
 global OUTFLAG PREF_DIR HOME_DIR H_MAIN
+
+global COORD_VARS
+global CALC_CONTROL
 subfig_clear; % サブフィギュアをクリア
-FUNC_SWITCH = 3; % 関数スイッチを3に設定
+CALC_CONTROL.FUNC_SWITCH = 3; % 関数スイッチを3に設定
 FIXFLAG    = 0; % FIXFLAGを0に設定
 % Okadaハーフスペースの再計算を回避するため
-if IACT ~= 1
+if CALC_CONTROL.IACT ~= 1
 Okada_halfspace; % Okadaハーフスペースを計算
 end
-IACT = 1; % Okadaの出力を保持するため
+CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
     a = DC3D(:,1:2); % DC3Dの1から2列を取得
     b = DC3D(:,5:8); % DC3Dの5から8列を取得
     c = horzcat(a,b); % aとbを水平に連結
@@ -671,20 +680,23 @@ end
 %                       CONTOURS (sub-submenu) コンターサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_contours_Callback(hObject, eventdata, handles) % コンターサブサブメニューをクリックしたときのコールバック関数
-global FUNC_SWITCH
-global DC3D IACT VD_CHECKED SHADE_TYPE INPUT_FILE
+global CALC_CONTROL.FUNC_SWITCH
+global DC3D VD_CHECKED SHADE_TYPE INPUT_FILE
 global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
 global OUTFLAG PREF_DIR HOME_DIR H_MAIN
+
+global CALC_CONTROL
+
 subfig_clear; % サブフィギュアをクリア
-FUNC_SWITCH = 4; % 関数スイッチを4に設定
+CALC_CONTROL.FUNC_SWITCH = 4; % 関数スイッチを4に設定
 VD_CHECKED = 0; % default
 SHADE_TYPE = 1; % default
 grid_drawing; % グリッドの描画
 % to escape recalculation of Okada half space
-if IACT ~= 1
+if CALC_CONTROL.IACT ~= 1
 Okada_halfspace; % Okadaハーフスペースを計算
 end
-IACT = 1; % to keep okada output
+CALC_CONTROL.IACT = 1; % to keep okada output
     a = DC3D(:,1:2); % DC3Dの1から2列を取得
     b = DC3D(:,5:8); % DC3Dの5から8列を取得
     c = horzcat(a,b); % aとbを水平に連結
@@ -723,21 +735,24 @@ end
 %                       3D IMAGE (sub-submenu) 3Dイメージサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_3d_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH
-global DC3D IACT INPUT_FILE ICOORD LON_GRID
+global DC3D INPUT_FILE
 global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
+
+global COORD_VARS
+global CALC_CONTROL
+
 subfig_clear;
-FUNC_SWITCH = 5;
-if ICOORD == 2 && isempty(LON_GRID) ~= 1
+CALC_CONTROL.FUNC_SWITCH = 5;
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1
     h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
         '!! Warning !!'); % 警告ダイアログを表示
     waitfor(h);
 end
 % Okadaハーフスペースの再計算を回避するため
-if IACT ~= 1        
+if CALC_CONTROL.IACT ~= 1        
 Okada_halfspace;
 end
-IACT = 1;           % to keep okada output
+CALC_CONTROL.IACT = 1;           % to keep okada output
     a = DC3D(:,1:2);
     b = DC3D(:,5:8);
     c = horzcat(a,b);
@@ -763,21 +778,24 @@ h = findobj('Tag','ylines'); delete(h);
 
 % --------------------------------------------------------------------
 function menu_3d_wire_Callback(hObject, eventdata, handles) % 3Dワイヤをクリックしたときのコールバック関数
-global FUNC_SWITCH
-global DC3D IACT INPUT_FILE ICOORD LON_GRID
+global DC3D INPUT_FILE
 global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
+
+global COORD_VARS
+global CALC_CONTROL
+
 subfig_clear;
-FUNC_SWITCH = 5.5; % 関数スイッチを5.5に設定
-if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
+CALC_CONTROL.FUNC_SWITCH = 5.5; % 関数スイッチを5.5に設定
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
     h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
         '!! Warning !!'); % 警告ダイアログを表示
     waitfor(h);
 end
 % Okadaハーフスペースの再計算を回避するため
-if IACT ~= 1        
+if CALC_CONTROL.IACT ~= 1        
 Okada_halfspace; % Okadaハーフスペースを計算
 end
-IACT = 1;           % to keep okada output
+CALC_CONTROL.IACT = 1;           % to keep okada output
     a = DC3D(:,1:2); % DC3Dの1から2列を取得
     b = DC3D(:,5:8); % DC3Dの5から8列を取得
     c = horzcat(a,b); % aとbを水平に連結
@@ -805,21 +823,24 @@ h = findobj('Tag','ylines'); delete(h); % ylinesを削除
 
 % --------------------------------------------------------------------
 function menu_3d_vectors_Callback(hObject, eventdata, handles) % 3Dベクトルをクリックしたときのコールバック関数
-global FUNC_SWITCH
-global DC3D IACT INPUT_FILE ICOORD LON_GRID
+global DC3D INPUT_FILE
 global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
+
+global COORD_VARS
+global CALC_CONTROL
+
 subfig_clear; % サブフィギュアをクリア
-FUNC_SWITCH = 5.7; % 関数スイッチを5.7に設定
-if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
+CALC_CONTROL.FUNC_SWITCH = 5.7; % 関数スイッチを5.7に設定
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
     h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
         '!! Warning !!'); % 警告ダイアログを表示
     waitfor(h); % モーダルダイアログボックスの終了を待つ
 end
 % to escape recalculation of Okada half space
-if IACT ~= 1        
+if CALC_CONTROL.IACT ~= 1        
 Okada_halfspace;
 end
-IACT = 1;           % to keep okada output
+CALC_CONTROL.IACT = 1;           % to keep okada output
     a = DC3D(:,1:2);
     b = DC3D(:,5:8);
     c = horzcat(a,b);
@@ -848,11 +869,14 @@ h = findobj('Tag','ylines'); delete(h);
 %           STRAIN (submenu) ひずみサブメニュー 
 %-------------------------------------------------------------------------
 function menu_strain_Callback(hObject, eventdata, handles)
-global H_STRAIN IACT H_MAIN
-global FUNC_SWITCH SHADE_TYPE STRAIN_SWITCH
+global H_STRAIN H_MAIN
+global SHADE_TYPE STRAIN_SWITCH
 global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
-subfig_clear; IACT = 0;
-FUNC_SWITCH = 6;
+
+global CALC_CONTROL
+
+subfig_clear; CALC_CONTROL.IACT = 0;
+CALC_CONTROL.FUNC_SWITCH = 6;
 SHADE_TYPE = 1; % default
 STRAIN_SWITCH = 1; % default sig XX
 H_STRAIN = strain_window; % strain_windowを開く
@@ -875,11 +899,14 @@ function menu_stress_Callback(hObject, eventdata, handles) % 応力サブメニ�
 
 % --------------------------------------------------------------------
 function menu_shear_stress_change_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH IACT
 global STRESS_TYPE
 global H_COULOMB
-subfig_clear;   IACT = 0;
-FUNC_SWITCH = 7;    STRESS_TYPE = 5;
+
+global CALC_CONTROL
+
+subfig_clear;
+CALC_CONTROL.IACT = 0;
+CALC_CONTROL.FUNC_SWITCH = 7;    STRESS_TYPE = 5;
 H_COULOMB = coulomb_window;
 set(findobj('Tag','text_fric'),'Visible','off'); % text_fricを非表示
 set(findobj('Tag','edit_coul_fric'),'Visible','off'); % edit_coul_fricを非表示
@@ -890,11 +917,13 @@ end
 
 % --------------------------------------------------------------------
 function menu_normal_stress_change_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH IACT
 global STRESS_TYPE
 global H_COULOMB
-subfig_clear; IACT = 0;
-FUNC_SWITCH = 8; STRESS_TYPE = 5;
+
+global CALC_CONTROL
+
+subfig_clear; CALC_CONTROL.IACT = 0;
+CALC_CONTROL.FUNC_SWITCH = 8; STRESS_TYPE = 5;
 H_COULOMB = coulomb_window; % coulomb_windowを開く
 set(findobj('Tag','text_fric'),'Visible','off');
 set(findobj('Tag','edit_coul_fric'),'Visible','off');
@@ -905,11 +934,14 @@ end
 
 % --------------------------------------------------------------------
 function menu_coulomb_stress_change_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH IACT
 global STRESS_TYPE
 global H_COULOMB
-subfig_clear;   IACT = 0;
-FUNC_SWITCH = 9;    STRESS_TYPE = 5;
+
+global CALC_CONTROL
+
+subfig_clear;
+CALC_CONTROL.IACT = 0;
+CALC_CONTROL.FUNC_SWITCH = 9;    STRESS_TYPE = 5;
 H_COULOMB = coulomb_window; % coulomb_windowを開く
 set(findobj('Tag','crosssection_toggle'),'Enable','off');
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
@@ -920,11 +952,14 @@ end
 % --------------------------------------------------------------------
 function menu_stress_on_faults_Callback(hObject, eventdata, handles) % フォルト上の応力をクリックしたときのコールバック関数
 global ELEMENT POIS YOUNG FRIC ID
-global FUNC_SWITCH ICOORD LON_GRID
 global h_grid
-global DC3D IACT
+global DC3D
 global H_MAIN H_EC_CONTROL H_VIEWPOINT
-if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
+
+global COORD_VARS
+global CALC_CONTROL
+
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
     h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.',...
         '!! Warning !!');
     waitfor(h);
@@ -932,17 +967,20 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でな�
 end
 subfig_clear;
 % clear_obj_and_subfig
-FUNC_SWITCH = 10;
+CALC_CONTROL.FUNC_SWITCH = 10;
 H_EC_CONTROL = ec_control_window; % ec_control_windowを開く
 
 
 % --------------------------------------------------------------------
 function menu_stress_on_a_fault_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH H_POINT IACT
-IACT = 0;
-if FUNC_SWITCH ~= 7 && FUNC_SWITCH ~= 8 && FUNC_SWITCH ~= 9
+global H_VIEWPOINT
+
+global CALC_CONTROL
+
+CALC_CONTROL.IACT = 0;
+if CALC_CONTROL.FUNC_SWITCH ~= 7 && CALC_CONTROL.FUNC_SWITCH ~= 8 && CALC_CONTROL.FUNC_SWITCH ~= 9
     subfig_clear;
-    FUNC_SWITCH = 1;
+    CALC_CONTROL.FUNC_SWITCH = 1;
     grid_drawing;
     fault_overlay;
 end
@@ -954,8 +992,8 @@ end
 
 % --------------------------------------------------------------------
 function menu_focal_mech_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH NODAL_ACT NODAL_STRESS HOME_DIR
-FUNC_SWITCH = 11; % 関数スイッチを11に設定
+global CALC_CONTROL.FUNC_SWITCH NODAL_ACT NODAL_STRESS HOME_DIR
+CALC_CONTROL.FUNC_SWITCH = 11; % 関数スイッチを11に設定
 NODAL_ACT = 0; % NODAL_ACTを0に設定
 NODAL_STRESS = []; % NODAL_STRESSを空にする
 cd (HOME_DIR); % HOME_DIRに移動
@@ -968,25 +1006,31 @@ function menu_change_parameters_Callback(hObject, eventdata, handles) % パラ�
 
 % --------------------------------------------------------------------
 function menu_all_parameters_Callback(hObject, eventdata, handles) % すべてのパラメータをクリックしたときのコールバック関数
-global H_INPUT IACT
+global H_INPUT
+global CALC_CONTROL
 H_INPUT = input_window;
 waitfor(H_INPUT);
-IACT = 0;
+CALC_CONTROL.IACT = 0;
 menu_grid_mapview_Callback;     % redraw the renewed grid
 
 % --------------------------------------------------------------------
 function menu_grid_size_Callback(hObject, eventdata, handles)
 global GRID
-global IACT ICOORD LON_GRID LON_PER_X LAT_PER_Y XY_RATIO
-temp1 = GRID(5,1); temp2 = GRID(6,1);
-if ICOORD == 2 && isempty(LON_GRID) ~= 1
+global LON_PER_X LAT_PER_Y
+
+global INPUT_VARS
+global COORD_VARS
+global CALC_CONTROL
+
+temp1 = INPUT_VARS.GRID(5,1); temp2 = INPUT_VARS.GRID(6,1);
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1
     prompt = {'Enter new lon. increment(deg):','Enter new lat. increment(deg):'}; % 新しい経度の増分(度)を入力してください
-    defc1 = num2str(GRID(5,1)*LON_PER_X,'%9.3f'); % defc1を設定
-    defc2 = num2str(GRID(6,1)*LAT_PER_Y,'%9.3f'); % defc2を設定
+    defc1 = num2str(INPUT_VARS.GRID(5,1)*LON_PER_X,'%9.3f'); % defc1を設定
+    defc2 = num2str(INPUT_VARS.GRID(6,1)*LAT_PER_Y,'%9.3f'); % defc2を設定
 else
     prompt = {'Enter new x increment(km):','Enter new y increment(km):'}; % 新しいxの増分(km)を入力してください
-    defc1 = num2str(GRID(5,1),'%9.3f'); % defc1を設定
-    defc2 = num2str(GRID(6,1),'%9.3f'); % defc2を設定
+    defc1 = num2str(INPUT_VARS.GRID(5,1),'%9.3f'); % defc1を設定
+    defc2 = num2str(INPUT_VARS.GRID(6,1),'%9.3f'); % defc2を設定
 end
 name = 'Grid Size'; % グリッドサイズ
 numlines = 1; % numlinesを1に設定
@@ -995,16 +1039,16 @@ options.WindowStyle = 'normal'; % オプションのウィンドウスタイル�
 answer = inputdlg(prompt,name,numlines,{defc1,defc2},options); % ダイアログボックスに入力する
 answer = [answer]; % answerを[answer]に設定
     n = 5;
-    xlim = (GRID(3)-GRID(1))/n; % xlimを(GRID(3)-GRID(1))/nに設定
-    ylim = (GRID(4)-GRID(2))/n; % ylimを(GRID(4)-GRID(2))/nに設定
-if ICOORD == 2 && isempty(LON_GRID) ~= 1
-    GRID(5,1) = str2double(answer(1))/LON_PER_X;
-    GRID(6,1) = str2double(answer(2))/LAT_PER_Y;
+    xlim = (INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/n; % xlimを(INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/nに設定
+    ylim = (INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/n; % ylimを(INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/nに設定
+if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1
+    INPUT_VARS.GRID(5,1) = str2double(answer(1))/LON_PER_X;
+    INPUT_VARS.GRID(6,1) = str2double(answer(2))/LAT_PER_Y;
     xlim = xlim/LON_PER_X;
     ylim = ylim/LAT_PER_Y;
 else
-    GRID(5,1) = str2double(answer(1));
-    GRID(6,1) = str2double(answer(2));
+    INPUT_VARS.GRID(5,1) = str2double(answer(1));
+    INPUT_VARS.GRID(6,1) = str2double(answer(2));
 end
 if str2double(answer(1)) > xlim
     warndlg('The x increment might be large relative to the study area. Not acceptable.'); % xの増分が研究領域に対して大きい可能性があります。受け入れられません。
@@ -1014,22 +1058,24 @@ if str2double(answer(2)) > xlim
     warndlg('The y increment might be large relative to the study area. Not acceptable.'); % yの増分が研究領域に対して大きい可能性があります。受け入れられません。
     return
 end
-if isnan(GRID(5,1)) == 1 | isempty(GRID(5,1)) == 1
-    GRID(5,1) = temp1;
+if isnan(INPUT_VARS.GRID(5,1)) == 1 | isempty(INPUT_VARS.GRID(5,1)) == 1
+    INPUT_VARS.GRID(5,1) = temp1;
 end
-if isnan(GRID(6,1)) == 1 | isempty(GRID(6,1)) == 1
-    GRID(6,1) = temp2;
+if isnan(INPUT_VARS.GRID(6,1)) == 1 | isempty(INPUT_VARS.GRID(6,1)) == 1
+    INPUT_VARS.GRID(6,1) = temp2;
 end
 % to calculate and save numbers for basic info
 calc_element; % 要素を計算
-IACT = 0; % IACTを0に設定
+CALC_CONTROL.IACT = 0; % CALC_CONTROL.IACTを0に設定
 menu_grid_mapview_Callback; % 更新されたグリッドを再描画
 
 % --------------------------------------------------------------------
 function menu_calc_depth_Callback(hObject, eventdata, handles) % 計算深度をクリックしたときのコールバック関数
 global CALC_DEPTH
-global IACT
 global H_DISPL
+
+global CALC_CONTROL
+
 temp = CALC_DEPTH; % tempをCALC_DEPTHに設定
 prompt = 'Enter new calculation depth (positive):'; % 新しい計算深度(正)を入力してください
 name = 'Calc. Depth'; % Calc. Depth
@@ -1050,7 +1096,7 @@ h = findobj('Tag','displ_h_window');
 if (isempty(h)~=1 && isempty(H_DISPL)~=1)
     set(findobj('Tag','edit_displdepth'),'String',num2str(CALC_DEPTH,'%5.2f')); % edit_displdepthにCALC_DEPTHを設定
 end
-IACT = 0;
+CALC_CONTROL.IACT = 0;
 menu_grid_mapview_Callback;     % redraw the renewed grid
 
 % --------------------------------------------------------------------
@@ -1239,9 +1285,11 @@ global H_MAIN PREF
 %           GPS stations (submenu) GPSステーションサブメニュー
 %-------------------------------------------------------------------------
 function menu_gps_Callback(hObject, eventdata, handles) % GPSステーションサブメニューをクリックしたときのコールバック関数
-global H_MAIN ICOORD LON_GRID PREF
+global H_MAIN PREF
 global H_F3D_VIEW % グラフィックが2Dか3Dかを識別する識別子
 global GPS_DATA SIZE
+
+global COORD_VARS
 
     if strcmp(get(gcbo, 'Checked'),'on')
         set(gcbo, 'Checked', 'off');
