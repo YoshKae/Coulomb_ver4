@@ -1,20 +1,20 @@
+function varargout = main_menu_window(varargin)
 % 関数の役割: メインメニューウィンドウのエントリポイント。GUIの初期化を行う。
 % varargout: 可変長出力引数
 % varargin: 可変長入力引数
-function varargout = main_menu_window(varargin)
 
 % GUIの状態を設定
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0; % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。0は複数のインスタンスを許可。
 % gui_State: GUIの状態を管理する構造体
-gui_State = struct('gui_Name',       mfilename, ... % gui_Name: GUIの名前。mファイル名と同じ。
+gui_State = struct('gui_Name',       mfilename, ...     % gui_Name: GUIの名前。mファイル名と同じ。
                    'gui_Singleton',  gui_Singleton, ... % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。
                    'gui_OpeningFcn', @main_menu_window_OpeningFcn, ... % gui_OpeningFcn: GUIが開かれるときに呼び出される関数。
-                   'gui_OutputFcn',  @main_menu_window_OutputFcn, ... % gui_OutputFcn: GUIが閉じられるときに呼び出される関数。
-                   'gui_LayoutFcn',  [] , ... % gui_LayoutFcn: GUIのレイアウト関数。
-                   'gui_Callback',   []); % gui_Callback: GUIのコールバック関数。
-if nargin && ischar(varargin{1}) % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
+                   'gui_OutputFcn',  @main_menu_window_OutputFcn, ...  % gui_OutputFcn: GUIが閉じられるときに呼び出される関数。
+                   'gui_LayoutFcn',  [] , ...       % gui_LayoutFcn: GUIのレイアウト関数。
+                   'gui_Callback',   []);           % gui_Callback: GUIのコールバック関数。
+if nargin && ischar(varargin{1})                    % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
     gui_State.gui_Callback = str2func(varargin{1}); % str2func: 文字列を関数ハンドルに変換。
 end
 
@@ -26,7 +26,6 @@ end
 % End initialization code - DO NOT EDIT
 
 
-
 %-------------------------------------------------------------------------
 %   Main menu opening function メインメニューを開く関数
 %-------------------------------------------------------------------------
@@ -34,21 +33,19 @@ function main_menu_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % hObject: GUIのハンドル。handles: GUIのハンドルを格納する構造体。
 
 % Choose default command line output for main_menu_window
-global SCRS SCRW_X SCRW_Y
-% global SCRS SCRW_X SCRW_Y % screen size (1x4, [x y width height]) & width スクリーンサイズとウィンドウ位置を設定。
+global SCRS SCRW_X SCRW_Y % スクリーンサイズとウィンドウ位置を設定。
 
 handles.output = hObject; % handles.output: GUIの出力を設定。
 
 guidata(hObject, handles); % guidata: handles構造体を更新。
 
-    h = findobj('Tag','main_menu_window'); % findobj: オブジェクトを検索。
-    j = get(h,'Position'); % get: プロパティの値を取得。
-    wind_width = j(1,3); % ウィンドウの幅
-    wind_height = j(1,4); % ウィンドウの高さ
-    xpos = SCRW_X; % ウィンドウのx座標
-    ypos = (SCRS(1,4) - SCRW_Y) - wind_height; % ウィンドウのy座標
-    set(hObject,'Position',[xpos ypos wind_width wind_height]); % set: プロパティの値を設定。
-
+h = findobj('Tag','main_menu_window'); % findobj: オブジェクトを検索。
+j = get(h,'Position');                 % get: プロパティの値を取得。
+wind_width = j(1,3);                   % ウィンドウの幅
+wind_height = j(1,4);                  % ウィンドウの高さ
+xpos = SCRW_X;                         % ウィンドウのx座標
+ypos = (SCRS(1,4) - SCRW_Y) - wind_height; % ウィンドウのy座標
+set(hObject,'Position',[xpos ypos wind_width wind_height]); % set: プロパティの値を設定。
 
 
 %-------------------------------------------------------------------------
@@ -59,38 +56,37 @@ function varargout = main_menu_window_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output; % handles.output: GUIの出力を取得。
 
 
-
 %=========================================================================
 %    DATA (menu) データメニュー
 %=========================================================================
-function data_menu_Callback(hObject, eventdata, handles) % データメニューをクリックしたときのコールバック関数
-
+function data_menu_Callback(hObject, eventdata, handles)
+% データメニューをクリックしたときのコールバック関数
 
 
 %-------------------------------------------------------------------------
 %           ABOUT (submenu) アバウトサブメニュー
 %-------------------------------------------------------------------------
-function menu_about_Callback(hObject, eventdata, handles) % アバウトサブメニューをクリックしたときのコールバック関数
-global CURRENT_VERSION % グローバル変数の定義
-cd slides % slidesディレクトリに移動
+function menu_about_Callback(hObject, eventdata, handles)
+% アバウトサブメニューをクリックしたときのコールバック関数
+
+global CURRENT_VERSION     % グローバル変数の定義
+cd slides                  % slidesディレクトリに移動
 str = ['About_image.jpg']; % 画像ファイル名
-[x,imap] = imread(str); % imread: 画像ファイルを読み込む。
-if exist('x')==1 % if the image file exists
+[x,imap] = imread(str);    % imread: 画像ファイルを読み込む。
+if exist('x')==1           % if the image file exists
     h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
     axes('position',[0 0 1 1]); % axes: 軸を作成。
-    axis image; % axis: 軸の設定。
-    image(x) % image: 画像を表示。
-    drawnow % drawnow: グラフィックスの更新。
+    axis image;                 % axis: 軸の設定。
+    image(x)                    % image: 画像を表示。
+    drawnow                     % drawnow: グラフィックスの更新。
 
     %===== version check バージョンチェック ===========================
-
     try
-        temp  = '3.2.01'; % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
+        temp  = '3.2.01';          % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
         idx   = strfind(temp,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
         newvs = str2num([temp(1:idx(1)-1) temp(idx(1)+1:idx(2)-1) temp(idx(2)+1:end)]);
         idx   = strfind(CURRENT_VERSION,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
         curvs = str2num([CURRENT_VERSION(1:idx(1)-1) CURRENT_VERSION(idx(1)+1:idx(2)-1) CURRENT_VERSION(idx(2)+1:end)]);
-
         if newvs > curvs % 新しいのがあれば更新表示
             versionmsg = [' New version ' temp ' is found. Visit the following website.'];
         else
@@ -98,26 +94,23 @@ if exist('x')==1 % if the image file exists
         end
     catch
         % インターネットとつながっていなかった場合、あとでバージョンをチェックするようにメッセージを表示
-            versionmsg = 'No internet connection. Check the version later.'; 
+        versionmsg = 'No internet connection. Check the version later.'; 
     end
     
     th = text(460.0,385.0,['  version ' CURRENT_VERSION '  ']); % 現在のバージョンを表示
-    set(th,'fontsize',16,'fontweight','b','Color','w',... % set: プロパティの値を設定。
+    set(th,'fontsize',16,'fontweight','b','Color','w',...       % set: プロパティの値を設定。
         'horizontalalignment','center','verticalalignment','middle',...
         'backgroundcolor','none','edgecolor','none')
-    th1 = text(305.0,420.0,versionmsg); % 新しいバージョンがある場合、メッセージを表示
+    th1 = text(305.0,420.0,versionmsg);                    % 新しいバージョンがある場合、メッセージを表示
     set(th1,'fontsize',14,'fontweight','b','Color','w',... % set: プロパティの値を設定。
         'horizontalalignment','center','verticalalignment','middle',...
         'backgroundcolor','k','edgecolor','none')
     th2 = text(320.0,420.0,' http://earthquake.usgs.gov/research/modeling/coulomb/ '); % USGSのサイトへのリンク
-    set(th2,'fontsize',12,'fontweight','b','Color','w',... % set: プロパティの値を設定。
+    set(th2,'fontsize',12,'fontweight','b','Color','w',...                             % set: プロパティの値を設定。
         'horizontalalignment','center','verticalalignment','middle',...
         'backgroundcolor','none','edgecolor','none')
-    
 end
 cd .. % 一つ上のディレクトリに移動
-
-
 
 %-------------------------------------------------------------------------
 %           NEW (submenu)  新規作成サブメニュー
@@ -178,7 +171,6 @@ set(findobj('Tag','menu_file_save_ascii'),'Enable','Off'); % ファイル保存�
 set(findobj('Tag','menu_file_save_ascii2'),'Enable','Off'); % ファイル保存メニュー
 all_functions_enable_off; % すべての関数を無効にする
 all_overlay_enable_off; % すべてのオーバーレイを無効にする
-%
 H_UTM = utm_window; % utm_window: UTMウィンドウ
 waitfor(H_UTM); % waitfor: モーダルダイアログボックスの終了を待つ
 if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
@@ -251,7 +243,6 @@ global DIALOG_SKIP IACT % ダイアログスキップ、IACT
 DIALOG_SKIP = 0;
 input_open(3); % 3はオープンウィンドウをスキップすることを意味する
 
-% FUNC_SWITCH = 0;
 if ~isempty(GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
@@ -594,7 +585,6 @@ end
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%	set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
 if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
@@ -657,7 +647,6 @@ H_DISPL = displ_h_window; % ディスプレイスメントウィンドウ
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
 
@@ -709,7 +698,6 @@ fault_overlay; % フォルトオーバーレイ
 flag = check_lonlat_info; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
 
@@ -778,24 +766,24 @@ if IACT ~= 1
 Okada_halfspace; % Okadaハーフスペースを計算
 end
 IACT = 1;           % to keep okada output
-    a = DC3D(:,1:2); % DC3Dの1から2列を取得
-    b = DC3D(:,5:8); % DC3Dの5から8列を取得
-    c = horzcat(a,b); % aとbを水平に連結
-    format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1 % OUTFLAGが1または空の場合
-	cd output_files; % output_filesに移動
-    else
-	cd (PREF_DIR);
-    end
-    header1 = ['Input file selected: ',INPUT_FILE];
-    header2 = 'x y z UX UY UZ';
-    header3 = '(km) (km) (km) (m) (m) (m)';
-    dlmwrite('Displacement.cou',header1,'delimiter','');
-    dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-    disp(['Displacement.cou is saved in ' pwd]);
-    cd (HOME_DIR);
+a = DC3D(:,1:2); % DC3Dの1から2列を取得
+b = DC3D(:,5:8); % DC3Dの5から8列を取得
+c = horzcat(a,b); % aとbを水平に連結
+format long;
+if OUTFLAG == 1 | isempty(OUTFLAG) == 1 % OUTFLAGが1または空の場合
+    cd output_files; % output_filesに移動
+else
+    cd (PREF_DIR);
+end
+header1 = ['Input file selected: ',INPUT_FILE];
+header2 = 'x y z UX UY UZ';
+header3 = '(km) (km) (km) (m) (m) (m)';
+dlmwrite('Displacement.cou',header1,'delimiter','');
+dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
+disp(['Displacement.cou is saved in ' pwd]);
+cd (HOME_DIR);
 
 grid_drawing_3d; hold on; % 3Dグリッドの描画
 displ_open(2); % 2を開く
@@ -811,8 +799,7 @@ global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
 subfig_clear; % サブフィギュアをクリア
 FUNC_SWITCH = 5.7; % 関数スイッチを5.7に設定
 if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でない場合
-    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
-        '!! Warning !!'); % 警告ダイアログを表示
+    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.','!! Warning !!'); % 警告ダイアログを表示
     waitfor(h); % モーダルダイアログボックスの終了を待つ
 end
 % to escape recalculation of Okada half space
@@ -820,24 +807,24 @@ if IACT ~= 1
 Okada_halfspace;
 end
 IACT = 1;           % to keep okada output
-    a = DC3D(:,1:2);
-    b = DC3D(:,5:8);
-    c = horzcat(a,b);
-    format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1
-	cd output_files;
-    else
-	cd (PREF_DIR);
-    end
-    header1 = ['Input file selected: ',INPUT_FILE];
-    header2 = 'x y z UX UY UZ';
-    header3 = '(km) (km) (km) (m) (m) (m)';
-    dlmwrite('Displacement.cou',header1,'delimiter',''); 
-    dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-    disp(['Displacement.cou is saved in ' pwd]);
-    cd (HOME_DIR);
+a = DC3D(:,1:2);
+b = DC3D(:,5:8);
+c = horzcat(a,b);
+format long;
+if OUTFLAG == 1 | isempty(OUTFLAG) == 1
+    cd output_files;
+else
+    cd (PREF_DIR);
+end
+header1 = ['Input file selected: ',INPUT_FILE];
+header2 = 'x y z UX UY UZ';
+header3 = '(km) (km) (km) (m) (m) (m)';
+dlmwrite('Displacement.cou',header1,'delimiter',''); 
+dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
+disp(['Displacement.cou is saved in ' pwd]);
+cd (HOME_DIR);
 grid_drawing_3d; hold on;
 displ_open(2);
 h = findobj('Tag','xlines'); delete(h);
@@ -930,8 +917,7 @@ if ICOORD == 2 && isempty(LON_GRID) ~= 1 % ICOORDが2で、LON_GRIDが空でな�
     waitfor(h);
     return
 end
-subfig_clear;
-% clear_obj_and_subfig
+subfig_clear; % clear_obj_and_subfig
 FUNC_SWITCH = 10;
 H_EC_CONTROL = ec_control_window; % ec_control_windowを開く
 
@@ -1102,8 +1088,8 @@ TAPER_CALLED = 1;
 %-------------------------------------------------------------------------
 function menu_cartesian_Callback(hObject, eventdata, handles)
 global H_UTM
-global UTM_FLAG  % UTM_FLAG is used to identify if this is just a tool to know the coordinate (0) to make an input file from this (1) 
-                 % UTM_FLAGは、座標を知るためのツールであるかどうかを識別するために使用されます(0)、このツールから入力ファイルを作成します(1)
+global UTM_FLAG  % UTM_FLAGは、座標を知るためのツールであるかどうかを識別するために使用されます(0)、このツールから入力ファイルを作成します(1)
+                 
 %===== ユーザーがマッピングツールボックスを持っているかどうかを確認する =====
 if exist([matlabroot '/toolbox/map'],'dir')==0
     warndlg('Since you do not have mapping toolbox, this menu is unavailable. Sorry.',...
@@ -1273,7 +1259,8 @@ global GPS_DATA SIZE
 %-------------------------------------------------------------------------
 %           Trace faults and put them into input file (submenu) 断層をトレースして入力ファイルに入れるサブメニュー
 %-------------------------------------------------------------------------
-function menu_trace_put_faults_Callback(hObject, eventdata, handles) % 断層をトレースして入力ファイルに入れるサブメニューをクリックしたときのコールバック関数
+function menu_trace_put_faults_Callback(hObject, eventdata, handles)
+% 断層をトレースして入力ファイルに入れるサブメニューをクリックしたときのコールバック関数
 new_fault_mouse_clicks; % 新しい断層をマウスクリック
 
 %----------------------------------------------------------
@@ -1315,18 +1302,12 @@ set(findobj('Tag','menu_trace_put_faults'),'Enable','Off');
 
 % % --------------------------------------------------------------------
 function menu_tools_Callback(hObject, eventdata, handles)
-% % hObject    handle to menu_tools (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-
 
 %-------------------------------------------------------------------------
 %	Clear overlay data (submenu) オーバーレイデータをクリアするサブメニュー
 %-------------------------------------------------------------------------
-function menu_clear_overlay_Callback(hObject, eventdata, handles) % オーバーレイデータをクリアするサブメニューをクリックしたときのコールバック関数
-% hObject    handle to menu_clear_overlay (see GCBO) % menu_clear_overlayへのハンドル(参照)
-% eventdata  reserved - to be defined in a future version of MATLAB % 予約済み - MATLABの将来のバージョンで定義される予定
-% handles    structure with handles and user data (see GUIDATA) % handlesとユーザーデータを持つ構造体(参照)
+function menu_clear_overlay_Callback(hObject, eventdata, handles)
+% オーバーレイデータをクリアするサブメニューをクリックしたときのコールバック関数
 global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
 global VOLCANO
 if isempty(COAST_DATA)==1
@@ -1362,13 +1343,13 @@ function submenu_clear_coastlines_Callback(hObject, eventdata, handles)
 global COAST_DATA H_MAIN
 COAST_DATA = [];
 set(findobj('Tag','menu_coastlines'),'Checked','Off'); % 'Tag'が'menu_coastlines'のオブジェクトを取得
-        figure(H_MAIN);
-        try
-            h = findobj('Tag','CoastlineObj');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);
+try
+    h = findobj('Tag','CoastlineObj');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear active fault data (submenu) アクティブフォールトデータをクリアするサブメニュー
@@ -1377,13 +1358,13 @@ function submenu_clear_afaults_Callback(hObject, eventdata, handles)
 global AFAULT_DATA H_MAIN
 AFAULT_DATA = [];
 set(findobj('Tag','menu_activefaults'),'Checked','Off');
-        figure(H_MAIN);        
-        try
-            h = findobj('Tag','AfaultObj');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    h = findobj('Tag','AfaultObj');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear earthquake data (submenu) 地震データをクリアするサブメニュー
@@ -1393,19 +1374,19 @@ global EQ_DATA H_MAIN
 EQ_DATA = [];
 set(findobj('Tag','menu_earthquakes'),'Checked','Off');
 set(findobj('Tag','menu_focal_mech'),'Enable','Off');
-        figure(H_MAIN);        
-        try
-            h = findobj('Tag','EqObj');
-            delete(h);
-        catch
-            return
-        end
-        try
-            h = findobj('Tag','EqObj2');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    h = findobj('Tag','EqObj');
+    delete(h);
+catch
+    return
+end
+try
+    h = findobj('Tag','EqObj2');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear volcano data (submenu) 火山データをクリアするサブメニュー
@@ -1414,13 +1395,13 @@ function submenu_clear_volcanoes_Callback(hObject, eventdata, handles)
 global VOLCANO H_MAIN
 VOLCANO = [];
 set(findobj('Tag','menu_volcanoes'),'Checked','Off');
-        figure(H_MAIN);        
-        try
-            h = findobj('Tag','VolcanoObj');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    h = findobj('Tag','VolcanoObj');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear gps data (submenu) GPSデータをクリアするサブメニュー
@@ -1429,56 +1410,52 @@ function submenu_clear_gps_Callback(hObject, eventdata, handles)
 global GPS_DATA H_MAIN
 GPS_DATA = [];
 set(findobj('Tag','menu_gps'),'Checked','Off');
-        figure(H_MAIN);        
-        try
-            delete(findobj('Tag','GPSObj'));
-            delete(findobj('Tag','GPSOBSObj'));
-            delete(findobj('Tag','GPSCALCObj'));
-            delete(findobj('Tag','UNITObj'));
-            delete(findobj('Tag','UNITTEXTObj'));
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    delete(findobj('Tag','GPSObj'));
+    delete(findobj('Tag','GPSOBSObj'));
+    delete(findobj('Tag','GPSCALCObj'));
+    delete(findobj('Tag','UNITObj'));
+    delete(findobj('Tag','UNITTEXTObj'));
+catch
+    return
+end
 
 % --------------------------------------------------------------------
-function uimenu_fault_modifications_Callback(hObject, eventdata, handles) % uimenu_fault_modificationsをクリックしたときのコールバック関数
-% hObject    handle to uimenu_fault_modifications (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+function uimenu_fault_modifications_Callback(hObject, eventdata, handles)
+% uimenu_fault_modificationsをクリックしたときのコールバック関数
 disp('under construction')
 
 % --------------------------------------------------------------------
-function Context_functions_Callback(hObject, eventdata, handles) % Context_functionsをクリックしたときのコールバック関数
-% hObject    handle to Context_functions (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+function Context_functions_Callback(hObject, eventdata, handles)
+% Context_functionsをクリックしたときのコールバック関数
 function check_overlay_items % オーバーレイアイテムをチェックする
 global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
 global VOLCANO
-    if ~isempty(COAST_DATA)
-        set(findobj('Tag','menu_coastlines'),'Checked','On');
-    else
-        set(findobj('Tag','menu_coastlines'),'Checked','Off');
-    end
-    if ~isempty(AFAULT_DATA)
-        set(findobj('Tag','menu_activefaults'),'Checked','On');
-    else
-        set(findobj('Tag','menu_activefaults'),'Checked','Off');
-    end
-    if ~isempty(EQ_DATA)
-        set(findobj('Tag','menu_earthquakes'),'Checked','On');
-    else
-        set(findobj('Tag','menu_earthquakes'),'Checked','Off');
-    end
-    if ~isempty(VOLCANO)
-        set(findobj('Tag','menu_volcanoes'),'Checked','On');
-    else
-        set(findobj('Tag','menu_volcanoes'),'Checked','Off');
-    end
-    if ~isempty(GPS_DATA)
-        set(findobj('Tag','menu_gps'),'Checked','On');
-    else
-        set(findobj('Tag','menu_gps'),'Checked','Off');
-    end
+
+if ~isempty(COAST_DATA)
+    set(findobj('Tag','menu_coastlines'),'Checked','On');
+else
+    set(findobj('Tag','menu_coastlines'),'Checked','Off');
+end
+if ~isempty(AFAULT_DATA)
+    set(findobj('Tag','menu_activefaults'),'Checked','On');
+else
+    set(findobj('Tag','menu_activefaults'),'Checked','Off');
+end
+if ~isempty(EQ_DATA)
+    set(findobj('Tag','menu_earthquakes'),'Checked','On');
+else
+    set(findobj('Tag','menu_earthquakes'),'Checked','Off');
+end
+if ~isempty(VOLCANO)
+    set(findobj('Tag','menu_volcanoes'),'Checked','On');
+else
+    set(findobj('Tag','menu_volcanoes'),'Checked','Off');
+end
+if ~isempty(GPS_DATA)
+    set(findobj('Tag','menu_gps'),'Checked','On');
+else
+    set(findobj('Tag','menu_gps'),'Checked','Off');
+end
     
