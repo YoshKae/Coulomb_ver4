@@ -25,63 +25,124 @@ catch
 
 clear all;
 % 全てのグローバル変数を初期化します。グローバル変数はすべて大文字で定義され、プログラム実行中に値を確認できます。
-% 詳細については 'global_variable_explanatio.m' を参照してください。
 
 %===== グローバル変数の定義 ============================================
-global H_MAIN                           % メイングラフィックウィンドウのハンドル
-global SCRS SCRW_X SCRW_Y               % スクリーンサイズ制御用の変数
+global H_MAIN   % メイングラフィックウィンドウのハンドル
+global SCR_SIZE % スクリーンサイズ制御関連のカテゴリのグローバル変数構造体
+SCR_SIZE.SCRS = [];
+SCR_SIZE.SCRW_X = [];
+SCR_SIZE.SCRW_Y = [];
 
 % ----- 入力ファイルから読み取る基本的な変数 -----
-global HEAD NUM POIS CALC_DEPTH YOUNG FRIC 
-global R_STRESS ID INUM KODE ELEMENT
-global FCOMMENT GRID SIZE SECTION
+global INPUT_VARS % 入力ファイルから読み取る基本的な変数のカテゴリのグローバル変数構造体
+INPUT_VARS.HEAD = [];       % ヘッダー（入力ファイルの説明書き，2行１列）
+INPUT_VARS.NUM = [];        % 総断層数（integer、入力ファイルのデフォルト値は3）
+INPUT_VARS.POIS = [];       % ポアソン比（入力ファイルのデフォルト値はPR1 = 0.25）
+INPUT_VARS.CALC_DEPTH = []; % 計算深度
+INPUT_VARS.YOUNG = [];      % ヤング率（入力ファイルのデフォルト値はE1 = 8.0 * e5）
+INPUT_VARS.FRIC = [];       % 破壊摩擦係数（入力ファイルのデフォルト値はFRIC = 0.4）
+INPUT_VARS.R_STRESS = [];   % 地域応力（テクトニックストレス，応力場設定，３行(σ1, σ2, σ3)、４列(方位, プランジ, 応力地の初期値, 応力地の深さ方向の勾配)）
+INPUT_VARS.ID = [];         % 各入力エレメント（断層）の最初の列の値（通常は１）
+INPUT_VARS.INUM = [];       % 断層の総数
+INPUT_VARS.KODE = [];       % 計算のタイプを指定するコード（通常の計算では100）
+INPUT_VARS.ELEMENT = [];    % 断層の位置情報（x行：入力ファイルの断層数x，９列(断層始点のX座標値, Y座標値, 断層終点のX座標値, Y座標値, 右横ずれ成分, 逆断層変位成分, 断層の傾斜, 断層の上端の深さ, 断層の下端の深さ)）
+INPUT_VARS.FCOMMENT = [];   % 個々の断層への短いコメント（構造体として保存）
+INPUT_VARS.GRID = [];       % 列ベクトル（6行, 入力ファイルの’Grid Parameters’をそのまま保存）
+INPUT_VARS.SIZE = [];       % 列ベクトル（３行, 入力ファイルの’Size Parameters’をそのまま保存）
+INPUT_VARS.SECTION = [];    % 列ベクトル（7行, 入力ファイルの’Cross section default’をそのまま保存）
 
 % ----- 調査地域と座標制御用の変数 -----
-global ICOORD
-global XGRID YGRID XY_RATIO
-global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
-global LON_GRID LAT_GRID
+global COORD_VARS % 調査地域と座標制御用の変数のカテゴリのグローバル変数構造体
+COORD_VARS.ICOORD = [];   % 1: xy座標, 2: 経度緯度座標
+COORD_VARS.XGRID = [];    % グリッドのx座標、X grid vector (1行，複数列、x の刻み)
+COORD_VARS.YGRID = [];    % グリッドのy座標、Y grid vector (1行，複数列、y の刻み)
+COORD_VARS.XY_RATIO = []; % 縦横比
+COORD_VARS.MIN_LAT = [];  % 対象範囲の最小緯度
+COORD_VARS.MAX_LAT = [];  % 対象範囲の最大緯度
+COORD_VARS.ZERO_LAT = []; % 対象範囲の緯度の原点（リファレンス（0）となる緯度）
+COORD_VARS.MIN_LON = [];  % 対象範囲の最小経度
+COORD_VARS.MAX_LON = [];  % 対象範囲の最大経度
+COORD_VARS.ZERO_LON = []; % 対象範囲の経度の原点（リファレンス（0）となる経度）
+COORD_VARS.LON_GRID = []; % 経度のグリッド、Longitude grid vector (1行，複数列、x の刻み)
+COORD_VARS.LAT_GRID = []; % 緯度のグリッド、Latitude grid vector (1行，複数列、y の刻み)
 
 % ----- 計算制御に関する変数 ------
-global IACT
-global FUNC_SWITCH STRAIN_SWITCH
-global SHADE_TYPE STRESS_TYPE DEPTH_RANGE_TYPE
-global STRIKE DIP RAKE
-global IRAKE
-global MAPTLFLAG RECEIVERS
-global IND_RAKE
-global IIRET
+global CALC_CONTROL % 計算制御に関する変数のカテゴリのグローバル変数構造体
+CALC_CONTROL.IACT = [];
+CALC_CONTROL.FUNC_SWITCH = [];
+CALC_CONTROL.STRAIN_SWITCH = [];
+CALC_CONTROL.SHADE_TYPE = [];
+CALC_CONTROL.STRESS_TYPE = [];
+CALC_CONTROL.DEPTH_RANGE_TYPE = [];
+CALC_CONTROL.STRIKE = [];
+CALC_CONTROL.DIP = [];
+CALC_CONTROL.RAKE = [];
+CALC_CONTROL.IRAKE = [];
+CALC_CONTROL.MAPTLFLAG = [];
+CALC_CONTROL.RECEIVERS = [];
+CALC_CONTROL.IND_RAKE = [];
+CALC_CONTROL.IIRET = [];
 
 % ----- メモリ内に保持される出力 -----
-global DC3D DC3DS DC3DE S_ELEMENT CC
+global MEMORY_OUTPUT
+MEMORY_OUTPUT.DC3D = [];
+MEMORY_OUTPUT.DC3DS = [];
+MEMORY_OUTPUT.DC3DE = [];
+MEMORY_OUTPUT.S_ELEMENT = [];
+MEMORY_OUTPUT.CC = [];
 
 % ----- 断面図に関連する変数 -----
-global SEC_XS SEC_YS SEC_XF SEC_YF SEC_INCRE SEC_DEPTH SEC_DEPTHINC
-global SEC_FLAG SEC_DIP SEC_DOWNDIP_INC
+global SEC_VARS
+SECTION_VARS.SEC_XS = [];
+SECTION_VARS.SEC_YS = [];
+SECTION_VARS.SEC_XF = [];
+SECTION_VARS.SEC_YF = [];
+SECTION_VARS.SEC_INCRE = [];
+SECTION_VARS.SEC_DEPTH = [];
+SECTION_VARS.SEC_DEPTHINC = [];
+SECTION_VARS.SEC_FLAG = [];
+SECTION_VARS.SEC_DIP = [];
+SECTION_VARS.SEC_DOWNDIP_INC = [];
 
 % ----- オーバーレイデータとオーバーレイ制御に関連する変数 -----
-global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
-global GPS_FLAG                                % 'horizontal' または 'vertical'
-global GPS_SEQN_FLAG                           % 'on' で連続番号を表示
-global VOLCANO SEISSTATION
-global OVERLAYFLAG OVERLAY_MARGIN EQPICK_WIDTH
+global OVERLAY_VARS % オーバーレイデータと制御に関連する変数のカテゴリのグローバル変数構造体
+OVERLAY_VARS.COAST_DATA = [];
+OVERLAY_VARS.AFAULT_DATA = [];
+OVERLAY_VARS.EQ_DATA = [];
+OVERLAY_VARS.GPS_DATA = [];
+OVERLAY_VARS.GPS_FLAG = [];                           % 'horizontal' または 'vertical'
+OVERLAY_VARS.GPS_SEQN_FLAG  = [];                          % 'on' で連続番号を表示
+OVERLAY_VARS.VOLCANO = [];
+OVERLAY_VARS.SEISSTATION = [];
+OVERLAY_VARS.OVERLAYFLAG = [];
+OVERLAY_VARS.OVERLAY_MARGIN = [];
+OVERLAY_VARS.EQPICK_WIDTH = [];
 
 % ----- グラフィック制御に関する変数 ------
-global ANATOLIA SEIS_RATE                      % カラーマップ用の変数（このファイルでロード）
-global C_SAT CONT_INTERVAL
+global GRAPHICS_VARS % グラフィック制御に関する変数のカテゴリのグローバル変数構造体
+GRAPHICS_VARS.ANATOLIA
+GRAPHICS_VARS.SEIS_RATE % カラーマップ用の変数（このファイルでロード）
+GRAPHICS_VARS.C_SAT
+GRAPHICS_VARS.CONT_INTERVAL
 
 % ----- コンピュータID、ディレクトリ制御、設定 ------------------
-global PLATFORM CURRENT_VERSION PREF_DIR HOME_DIR INPUT_FILE PREF 
-global OUTFLAG                                 % 0: ユーザフォルダへの出力、1: デフォルトフォルダへの出力
-global C_SLIP_SAT
-global IVECTOR
-global IMAXSHEAR
+global SYSTEM_VARS
+SYSTEM_VARS.PLATFORM = [];
+SYSTEM_VARS.CURRENT_VERSION = [];
+SYSTEM_VARS.PREF_DIR = [];
+SYSTEM_VARS.HOME_DIR = [];
+SYSTEM_VARS.INPUT_FILE = [];
+SYSTEM_VARS.PREF = [];
+SYSTEM_VARS.OUTFLAG = []; % 0: ユーザフォルダへの出力、1: デフォルトフォルダへの出力
+SYSTEM_VARS.C_SLIP_SAT = [];
+SYSTEM_VARS.IVECTOR = [];
+SYSTEM_VARS.IMAXSHEAR = [];
+
 
 % 現行バージョンの設定
 CURRENT_VERSION = '4.0.0';
 % 全ての警告を無効化
 warning ('off','all');
-
 
 %===== ファイルパスの追加 ============================================
 % ファイルセパレータと現在の作業ディレクトリを取得
