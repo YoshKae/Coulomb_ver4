@@ -166,14 +166,14 @@ else
 end
 
 % ユーザのホームディレクトリをメモリに保持
-HOME_DIR = pwd;
+SYSTEM_VARS.HOME_DIR = pwd;
 
 
 %====== MATLABのバージョンをチェック ==================================
 % MATLABのバージョンを取得
 matlabv = version;
 % ユーザのホームディレクトリを保持
-HOME_DIR = pwd;
+SYSTEM_VARS.HOME_DIR = pwd;
 
 
 %===== 初期化 ====================================================
