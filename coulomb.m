@@ -41,7 +41,7 @@ global FCOMMENT GRID SIZE SECTION
 global ICOORD
 global XGRID YGRID XY_RATIO
 global MIN_LAT MAX_LAT ZERO_LAT MIN_LON MAX_LON ZERO_LON
-global LON_GRID LAT_GRID
+global LAT_GRID LON_GRID
 
 % ----- 計算制御に関する変数 ------
 global IACT
@@ -245,15 +245,15 @@ clear a afault_pref b c coast_pref color_pref d e eq_pref f fault_pref volcano_p
 clear fid g grid_pref h h_grid margin_ratio vector_pref w
 
 
-%===== メインウィンドウの表示 ========================================
-H_MAIN = main_menu_window;
-set(H_MAIN,'Toolbar','figure');                  % メインウィンドウにツールバーを設定
-set(H_MAIN,'Name',['Coulomb ',CURRENT_VERSION]); % メインウィンドウの名前を設定
-
-
 %===== コンソールにウェルカムメッセージを表示 ==============
 disp('====================================================');
 disp(['            Welcome to Coulomb ' CURRENT_VERSION]);
 disp('====================================================');
 disp('Start from Input menu to read or build an input file.');
 disp('  ');
+
+
+%===== メインウィンドウの表示 ========================================
+H_MAIN = main_menu_window;
+set(H_MAIN,'Toolbar','figure');                  % メインウィンドウにツールバーを設定
+set(H_MAIN,'Name',['Coulomb ',CURRENT_VERSION]); % メインウィンドウの名前を設定
