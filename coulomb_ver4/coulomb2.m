@@ -121,7 +121,7 @@ OVERLAY_VARS.EQPICK_WIDTH = [];
 
 % ----- グラフィック制御に関する変数 ------
 global GRAPHICS_VARS % グラフィック制御に関する変数のカテゴリのグローバル変数構造体
-GRAPHICS_VARS.ANATOLIA      % カラーコード（紫―白―赤，独自作成のもの）
+GRAPHICS_VARS.COAST_DATA      % カラーコード（紫―白―赤，独自作成のもの）
 GRAPHICS_VARS.SEIS_RATE     % カラーコード（青―白―赤，MATLABデフォルト）
 GRAPHICS_VARS.C_SAT         % カラーの飽和値（±）
 GRAPHICS_VARS.CONT_INTERVAL % 等値線の間隔
