@@ -1,4 +1,4 @@
-function varargout = viewpoint3d_window(varargin)
+function varargout = viewpoint3d_window2(varargin)
 % viewpoint3d_windowは、新しいVIEWPOINT3D_WINDOWを作成するか、既存のシングルトンをアクティブにします。
 % H = viewpoint3d_windowは、新しいviewpoint3d_windowまたは既存のシングルトンへのハンドルを返します。
 % VIEWPOINT3D_WINDOW('CALLBACK',hObject,eventData,handles,...)は、指定されたコールバックを実行します。
@@ -16,7 +16,6 @@ gui_State = struct('gui_Name', mfilename, ...
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1}); % コールバック関数を設定
 end
-
 if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:}); % 結果をコマンドラインに出力
 else
@@ -25,12 +24,12 @@ end
 
 % --- VIEWPOINT3D_WINDOWが表示される前に実行される関数
 function viewpoint3d_window_OpeningFcn(hObject, eventdata, handles, varargin)
-global SCRS SCRW_X SCRW_Y % スクリーンサイズと幅に関するグローバル変数
 global H_MAIN H_F3D_VIEW
+global SCR_SIZE
 
 % ウィンドウの位置とサイズを取得して調整
 h = get(hObject,'Position');
-wind_width = h(3); % ウィンドウの幅
+wind_width = h(3);  % ウィンドウの幅
 wind_height = h(4); % ウィンドウの高さ
 dummy = findobj('Tag','main_menu_window');
 if isempty(dummy)~=1
@@ -46,13 +45,12 @@ elseif isempty(dummy2)~=1
 	h = get(dummy2,'Position');
     ypos = h(2) - wind_height - 30; % 別のウィンドウが存在する場合の調整
 else
-    ypos = (SCRS(1,4) - SCRW_Y) - wind_height;
+    ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height;
 end
 set(hObject,'Position',[xpos ypos wind_width wind_height]); % ウィンドウの新しい位置を設定
 
 % デフォルトのコマンドライン出力を設定
 handles.output = hObject;
-
 % ハンドル構造を更新
 guidata(hObject, handles);
 
@@ -65,19 +63,21 @@ varargout{1} = handles.output;
 %     View (azimuth) - アジマス角の入力を受け付ける
 %-------------------------------------------------------------------------
 function edit_view_az_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH VIEW_AZ ELEMENT POIS YOUNG FRIC ID H_MAIN
-VIEW_AZ = str2num(get(hObject,'String')); % 入力されたアジマス角を取得
+global VIEW_AZ H_MAIN
+global INPUT_VARS
+global CALC_CONTROL
+VIEW_AZ = str2num(get(hObject,'String'));     % 入力されたアジマス角を取得
 set(hObject,'String',num2str(VIEW_AZ,'%4i')); % 取得した値をテキストボックスに表示
 
 % 条件に応じた3D描画の更新
-if FUNC_SWITCH == 1         % 3Dグリッドモデルの場合
-    grid_drawing_3d;
-    displ_open(2);
-    flag = check_lonlat_info;
+if CALC_CONTROL.FUNC_SWITCH == 1 % 3Dグリッドモデルの場合
+    grid_drawing_3d2;
+    displ_open2(2);
+    flag = check_lonlat_info2;
     if flag == 1
         all_overlay_enable_on;
     end
-elseif FUNC_SWITCH == 10    % 要素条件の計算の場合
+elseif CALC_CONTROL.FUNC_SWITCH == 10 % 要素条件の計算の場合
     ch = get(H_MAIN,'Children');
     n = length(ch) - 3;
     if n >= 1
@@ -86,14 +86,14 @@ elseif FUNC_SWITCH == 10    % 要素条件の計算の場合
         end
         set(H_MAIN,'Menubar','figure','Toolbar','none');
     end
-    element_condition(ELEMENT,POIS,YOUNG,FRIC,ID); % 要素の状態を計算
-    grid_drawing_3d;
-    displ_open(2);
-else                          % その他の3D表示の処理
-	grid_drawing_3d; hold on;
-    displ_open(2);
+    element_condition(INPUT_VARS.ELEMENT,INPUT_VARS.POIS,INPUT_VARS.YOUNG,INPUT_VARS.FRIC,INPUT_VARS.ID); % 要素の状態を計算
+    grid_drawing_3d2;
+    displ_open2(2);
+else % その他の3D表示の処理
+	grid_drawing_3d2; hold on;
+    displ_open2(2);
     h = findobj('Tag','xlines'); delete(h); % 既存のラインを削除
-    h = findobj('Tag','ylines'); delete(h);
+    h = findobj('Tag','ylines'); delete(h); % 既存のラインを削除
 end
 
 % --- edit_view_azのオブジェクトが作成されたときに実行される関数
@@ -108,19 +108,21 @@ set(hObject,'String',num2str(VIEW_AZ,'%4i')); % デフォルト値を設定
 %     View (vertical elevation) - 仰角の入力を受け付ける
 %-------------------------------------------------------------------------
 function edit_view_el_Callback(hObject, eventdata, handles)
-global FUNC_SWITCH VIEW_EL ELEMENT POIS YOUNG FRIC ID H_MAIN
-VIEW_EL = str2num(get(hObject,'String')); % 入力された仰角を取得
+global VIEW_EL H_MAIN
+global INPUT_VARS
+global CALC_CONTROL
+VIEW_EL = str2num(get(hObject,'String'));     % 入力された仰角を取得
 set(hObject,'String',num2str(VIEW_EL,'%4i')); % 取得した値をテキストボックスに表示
 
 % 条件に応じた3D描画の更新
-if FUNC_SWITCH == 1         % 3Dグリッドモデルの場合
-    grid_drawing_3d;
-    displ_open(2);
-    flag = check_lonlat_info;
+if CALC_CONTROL.FUNC_SWITCH == 1 % 3Dグリッドモデルの場合
+    grid_drawing_3d2;
+    displ_open2(2);
+    flag = check_lonlat_info2;
     if flag == 1
         all_overlay_enable_on;
     end
-elseif FUNC_SWITCH == 10    % 要素条件の計算の場合
+elseif CALC_CONTROL.FUNC_SWITCH == 10 % 要素条件の計算の場合
     ch = get(H_MAIN,'Children');
     n = length(ch) - 3;
     if n >= 1
@@ -129,14 +131,14 @@ elseif FUNC_SWITCH == 10    % 要素条件の計算の場合
         end
         set(H_MAIN,'Menubar','figure','Toolbar','none');
     end
-    element_condition(ELEMENT,POIS,YOUNG,FRIC,ID); % 要素の状態を計算
-    grid_drawing_3d;
-    displ_open(2);
-else                          % その他の3D表示の処理
-	grid_drawing_3d; hold on;
-    displ_open(2);
+    element_condition(INPUT_VARS.ELEMENT,INPUT_VARS.POIS,INPUT_VARS.YOUNG,INPUT_VARS.FRIC,INPUT_VARS.ID); % 要素の状態を計算
+    grid_drawing_3d2;
+    displ_open2(2);
+else % その他の3D表示の処理
+	grid_drawing_3d2; hold on;
+    displ_open2(2);
     h = findobj('Tag','xlines'); delete(h); % 既存のラインを削除
-    h = findobj('Tag','ylines'); delete(h);
+    h = findobj('Tag','ylines'); delete(h); % 既存のラインを削除
 end
 
 % --- edit_view_elのオブジェクトが作成されたときに実行される関数
