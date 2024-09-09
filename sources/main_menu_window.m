@@ -115,11 +115,14 @@ cd .. % 一つ上のディレクトリに移動
 %-------------------------------------------------------------------------
 %           NEW (submenu)  新規作成サブメニュー
 %-------------------------------------------------------------------------
-function menu_new_Callback(hObject, eventdata, handles) % 新規作成サブメニューをクリックしたときのコールバック関数
+function menu_new_Callback(hObject, eventdata, handles)
+% 新規作成サブメニューをクリックしたときのコールバック関数
+
 global GRID FUNC_SWITCH ICOORD % 直交座標か緯度経度のスイッチの定義
 global H_GRID_INPUT COAST_DATA AFAULT_DATA % グリッド入力ウィンドウのハンドル
 global ELEMENT IACT S_ELEMENT INPUT_FILE INUM % 要素、IACT、S_ELEMENT、入力ファイル、INUM
-coulomb_init; % coulomb_init: グローバル変数の初期化
+
+coulomb_init;         % coulomb_init: グローバル変数の初期化
 clear_obj_and_subfig; % clear_obj_and_subfig: オブジェクトとサブフィギュアをクリア
 IACT = 0; % IACT: アクティブな要素のインデックス
 INUM = 0; % INUM: 要素の数
