@@ -104,25 +104,26 @@ cd .. % 一つ上のディレクトリに移動
 function menu_new_Callback(hObject, eventdata, handles)
 % 新規作成サブメニューをクリックしたときのコールバック関数
 
-global H_GRID_INPUT% グリッド入力ウィンドウのハンドル
-global ELEMENT S_ELEMENT INPUT_FILE INUM
+global H_GRID_INPUT % グリッド入力ウィンドウのハンドル
 
 global INPUT_VARS
 global COORD_VARS
 global OVERLAY_VARS
 global CALC_CONTROL
+global SYSTEM_VARS
+global OKADA_OUTPUT
 
 coulomb_init2;
 clear_obj_and_subfig;
 
+OKADA_OUTPUT.S_ELEMENT = []; % 要素の初期化
 CALC_CONTROL.IACT = 0;
-INUM = 0; % INUM: 要素の数
-ELEMENT = []; 
-S_ELEMENT = []; % 要素の初期化
+INPUT_VARS.INUM = 0; % INUM: 要素の数
+INPUT_VARS.ELEMENT = []; 
 INPUT_VARS.GRID = []; % グリッドの初期化
 OVERLAY_VARS.COAST_DATA = [];
 OVERLAY_VARS.AFAULT_DATA = []; % 海岸データ、断層データの初期化
-INPUT_FILE = 'untitled'; % 入力ファイル名
+SYSTEM_VARS.INPUT_FILE = 'untitled'; % 入力ファイル名
 
 if COORD_VARS.ICOORD == 2          % in case the current coordinates mode is 'Lon & lat' (COORD_VARS.ICOORD=2) % 現在の座標モードが「経度と緯度」の場合
     h = warndlg('Coordinates mode automatically changes to ''Cartesian'' now','!! Warning !!'); % warndlg: 警告ダイアログを表示
@@ -130,7 +131,6 @@ if COORD_VARS.ICOORD == 2          % in case the current coordinates mode is 'Lo
     COORD_VARS.ICOORD = 1;         % change to x & y cartesian coordinates % xとyの直交座標に変更
 end
 if isempty(INPUT_VARS.GRID) % グリッドが空の場合
-    % default values
     INPUT_VARS.GRID(1,1) = -50.01; % x start
     INPUT_VARS.GRID(2,1) = -50.01; % y start
     INPUT_VARS.GRID(3,1) =  50.00; % x finish
@@ -139,7 +139,7 @@ if isempty(INPUT_VARS.GRID) % グリッドが空の場合
     INPUT_VARS.GRID(6,1) =   5.00; % y increment % yの増分
 end
 
-H_GRID_INPUT = grid_input_window; % grid_input_window: グリッド入力ウィンドウ
+H_GRID_INPUT = grid_input_window2;
 CALC_CONTROL.FUNC_SWITCH = 0; % 関数スイッチを0に設定
 if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on; % すべての関数を有効にする
@@ -154,27 +154,31 @@ end
 %-------------------------------------------------------------------------
 %           NEW from Map (submenu)  地図から新規作成サブメニュー
 %-------------------------------------------------------------------------
-function menu_new_map_Callback(hObject, eventdata, handles) % 地図から新規作成サブメニューをクリックしたときのコールバック関数
-global H_UTM COAST_DATA AFAULT_DATA % UTMウィンドウ、グリッド、海岸データ、断層データ
-global INPUT_FILE INUM
+function menu_new_map_Callback(hObject, eventdata, handles)
+% 地図から新規作成サブメニューをクリックしたときのコールバック関数
 
+global H_UTM % UTMウィンドウ
 global INPUT_VARS
 global CALC_CONTROL
+global OVERLAY_VARS
+global SYSTEM_VARS
 
 coulomb_init2; % グローバル変数の初期化
 clear_obj_and_subfig; % オブジェクトとサブフィギュアをクリア
+
 CALC_CONTROL.IACT = 0;
-INUM = 0;
-COAST_DATA = []; AFAULT_DATA = []; % 海岸データ、断層データの初期化
-INPUT_FILE = 'untitled'; % 入力ファイル名
-% all off
-set(findobj('Tag','menu_file_save'),'Enable','Off'); % ファイル保存メニュー
-set(findobj('Tag','menu_file_save_ascii'),'Enable','Off'); % ファイル保存メニュー
-set(findobj('Tag','menu_file_save_ascii2'),'Enable','Off'); % ファイル保存メニュー
+INPUT_VARS.INUM = 0;
+OVERLAY_VARS.COAST_DATA = [];
+OVERLAY_VARS.AFAULT_DATA = []; % 海岸データ、断層データの初期化
+SYSTEM_VARS.INPUT_FILE = 'untitled'; % 入力ファイル名
+
+set(findobj('Tag','menu_file_save'),'Enable','Off');
+set(findobj('Tag','menu_file_save_ascii'),'Enable','Off');
+set(findobj('Tag','menu_file_save_ascii2'),'Enable','Off');
 all_functions_enable_off; % すべての関数を無効にする
 all_overlay_enable_off; % すべてのオーバーレイを無効にする
-%
-H_UTM = utm_window; % utm_window: UTMウィンドウ
+
+H_UTM = utm_window;
 waitfor(H_UTM); % waitfor: モーダルダイアログボックスの終了を待つ
 if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on; % すべての関数を有効にする
@@ -189,15 +193,17 @@ end
 %-------------------------------------------------------------------------
 %           OPEN/most recent file (submenu) 最近使用したファイルを開くサブメニュー
 %-------------------------------------------------------------------------
-function menu_most_recent_file_Callback(hObject, eventdata, handles) % 最近使用したファイルを開くサブメニューをクリックしたときのコールバック関数
-global CALC_CONTROL.FUNC_SWITCH DIALOG_SKIP % 関数スイッチ、ダイアログスキップ
-global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA % 海岸データ、断層データ、地震データ、GPSデータ
-global VOLCANO % 火山データ
+function menu_most_recent_file_Callback(hObject, eventdata, handles)
+% 最近使用したファイルを開くサブメニューをクリックしたときのコールバック関数
 
+global DIALOG_SKIP % ダイアログスキップ
 global INPUT_VARS
+global CALC_CONTROL
+global OVERLAY_VARS
 
 coulomb_init2;
 clear_obj_and_subfig;
+
 DIALOG_SKIP = 0;
 last_input;
 CALC_CONTROL.FUNC_SWITCH = 0;
@@ -210,7 +216,7 @@ if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニ�
     all_overlay_enable_off;
     set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
 end
-if isempty(EQ_DATA) % 地震データが空の場合
+if isempty(OVERLAY_VARS.EQ_DATA) % 地震データが空の場合
     set(findobj('Tag','menu_focal_mech'),'Enable','Off'); % フォーカルメカニズムメニューを無効にする
 else
     set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
@@ -220,13 +226,11 @@ end
 %           OPEN (submenu) サブメニューを開く
 %-------------------------------------------------------------------------
 function menu_file_open_Callback(hObject, eventdata, handles) % サブメニューを開く
-global H_MAIN CALC_CONTROL.FUNC_SWITCH EQ_DATA DIALOG_SKIP % メインウィンドウ、関数スイッチ、地震データ、ダイアログスキップ
-
+global DIALOG_SKIP % ダイアログスキップ
 global INPUT_VARS
 
 DIALOG_SKIP = 0; % ダイアログスキップを0に設定
 input_open(1); % input_open: 入力を開く
-
 if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
@@ -236,23 +240,19 @@ if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニ�
     all_overlay_enable_off;
     set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
 end
-
 check_overlay_items; % オーバーレイアイテムをチェック
 
 %-------------------------------------------------------------------------
 %           OPEN/SKIPPING DIALOG (submenu) ダイアログをスキップして開くサブメニュー
 %-------------------------------------------------------------------------
-function menu_open_skipping_Callback(hObject, eventdata, handles) % ダイアログをスキップして開くサブメニューをクリックしたときのコールバック関数
-global INPUT_VARS.GRID CALC_CONTROL.FUNC_SWITCH % グリッド、関数スイッチ
+function menu_open_skipping_Callback(hObject, eventdata, handles)
+% ダイアログをスキップして開くサブメニューをクリックしたときのコールバック関数
 global DIALOG_SKIP % ダイアログスキップ
-
 global INPUT_VARS
 global CALC_CONTROL
 
 DIALOG_SKIP = 0;
 input_open(3); % 3はオープンウィンドウをスキップすることを意味する
-
-% CALC_CONTROL.FUNC_SWITCH = 0;
 if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
@@ -275,145 +275,149 @@ end
 %-------------------------------------------------------------------------
 %           SAVE  AS .MAT(submenu) .MAT形式で保存するサブメニュー  
 %-------------------------------------------------------------------------
-function menu_file_save_Callback(hObject, eventdata, handles) % .MAT形式で保存するサブメニューをクリックしたときのコールバック関数
+function menu_file_save_Callback(hObject, eventdata, handles)
+% .MAT形式で保存するサブメニューをクリックしたときのコールバック関数
 global INPUT_VARS
+global COORD_VARS
 global OVERLAY_VARS
 global SYSTEM_VARS
 
-    if isempty(SYSTEM_VARS.PREF)==1 % prefが空の場合
-       % デフォルト値を作成して保存する
-       PREF = [1.0 0.0 0.0 1.2;...
-               0.0 0.0 0.0 1.0;...
-               0.7 0.7 0.0 0.2;...
-               0.0 0.0 0.0 1.2;...
-               1.0 0.5 0.0 3.0;...
-               0.2 0.2 0.2 1.0;...
-               2.0 0.0 0.0 0.0;...
-               1.0 0.0 0.0 0.0;...
-               0.9 0.9 0.1 1.0];    % volcano 火山のデフォルト値
+if isempty(SYSTEM_VARS.PREF)==1 % prefが空の場合
+    % デフォルト値を作成して保存する
+    PREF = [1.0 0.0 0.0 1.2;...
+            0.0 0.0 0.0 1.0;...
+            0.7 0.7 0.0 0.2;...
+            0.0 0.0 0.0 1.2;...
+            1.0 0.5 0.0 3.0;...
+            0.2 0.2 0.2 1.0;...
+            2.0 0.0 0.0 0.0;...
+            1.0 0.0 0.0 0.0;...
+            0.9 0.9 0.1 1.0];    % volcano 火山のデフォルト値
+end
+if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
+    try
+        cd(SYSTEM_VARS.PREF_DIR); % PREF_DIRに移動
+    catch
+        cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
     end
-    if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
-        try
-            cd(SYSTEM_VARS.PREF_DIR); % PREF_DIRに移動
-        catch
-            cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
-        end
-    else
-        try
-            cd('input_files'); % input_filesに移動
-        catch
-            cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
-        end    
-    end
-    [filename,pathname] = uiputfile('*.mat',... % uiputfile: ファイルを保存するダイアログボックスを表示
-        ' Save Input File As'); % ファイルを保存するダイアログボックスを表示
-    if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
-        disp('User selected Cancel') % ユーザーがキャンセルを選択
-    else
-        disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
-    end
-    save(fullfile(pathname,filename), 'INPUT_VARS.HEAD','INPUT_VARS.NUM','INPUT_VARS.POIS','INPUT_VARS.CALC_DEPTH',... % save: ファイルに変数を保存
-        'INPUT_VARS.YOUNG','INPUT_VARS.FRIC','INPUT_VARS.R_STRESS','INPUT_VARS.ID','INPUT_VARS.KODE','INPUT_VARS.ELEMENT','INPUT_VARS.FCOMMENT',...
-        'INPUT_VARS.GRID','INPUT_VARS.SIZE','INPUT_VARS.SECTION','SYSTEM_VARS.PREF','COORD_VARS.MIN_LAT','COORD_VARS.MAX_LAT','COORD_VARS.ZERO_LAT',...
-        'COORD_VARS.MIN_LON','COORD_VARS.MAX_LON','COORD_VARS.ZERO_LON','OVERLAY_VARS.COAST_DATA','OVERLAY_VARS.FAULT_DATA',...
-        'OVERLAY_VARS.EQ_DATA','OVERLAY_VARS.GPS_DATA','OVERLAY_VARS.VOLCANO','OVERLAY_VARS.SEISSTATION',...
-        '-mat');
-    cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
+else
+    try
+        cd('input_files'); % input_filesに移動
+    catch
+        cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
+    end    
+end
+[filename,pathname] = uiputfile('*.mat',' Save Input File As'); % ファイルを保存するダイアログボックスを表示
+if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
+    disp('User selected Cancel') % ユーザーがキャンセルを選択
+else
+    disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
+end
+save(fullfile(pathname,filename), 'INPUT_VARS.HEAD','INPUT_VARS.NUM','INPUT_VARS.POIS','INPUT_VARS.CALC_DEPTH',... % save: ファイルに変数を保存
+    'INPUT_VARS.YOUNG','INPUT_VARS.FRIC','INPUT_VARS.R_STRESS','INPUT_VARS.ID','INPUT_VARS.KODE','INPUT_VARS.ELEMENT','INPUT_VARS.FCOMMENT',...
+    'INPUT_VARS.GRID','INPUT_VARS.SIZE','INPUT_VARS.SECTION','SYSTEM_VARS.PREF','COORD_VARS.MIN_LAT','COORD_VARS.MAX_LAT','COORD_VARS.ZERO_LAT',...
+    'COORD_VARS.MIN_LON','COORD_VARS.MAX_LON','COORD_VARS.ZERO_LON','OVERLAY_VARS.COAST_DATA','OVERLAY_VARS.FAULT_DATA',...
+    'OVERLAY_VARS.EQ_DATA','OVERLAY_VARS.GPS_DATA','OVERLAY_VARS.VOLCANO','OVERLAY_VARS.SEISSTATION','-mat');
+cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
     
 %-------------------------------------------------------------------------
 %           SAVE AS ASCII (submenu) ASCII形式で保存するサブメニュー  
 %-------------------------------------------------------------------------
-function menu_file_save_ascii_Callback(hObject, eventdata, handles) % ASCII形式で保存するサブメニューをクリックしたときのコールバック関数
-global PREF HOME_DIR PREF_DIR IRAKE
-    IRAKE = 0; % IRAKEを0に設定
-    if isempty(PREF)==1 % prefが空の場合
-       % デフォルト値を作成して保存する
-       PREF = [1.0 0.0 0.0 1.2;...
-               0.0 0.0 0.0 1.0;...
-               0.7 0.7 0.0 0.2;...
-               0.0 0.0 0.0 1.2;...
-               1.0 0.5 0.0 3.0;...
-               0.2 0.2 0.2 1.0;...
-               2.0 0.0 0.0 0.0;...
-               1.0 0.0 0.0 0.0]; % デフォルト値
+function menu_file_save_ascii_Callback(hObject, eventdata, handles)
+% ASCII形式で保存するサブメニューをクリックしたときのコールバック関数
+global CALC_CONTROL
+global SYSTEM_VARS
+
+CALC_CONTROL.IRAKE = 0; % IRAKEを0に設定
+if isempty(SYSTEM_VARS.PREF)==1 % prefが空の場合
+    % デフォルト値を作成して保存する
+    SYSTEM_VARS.PREF = [1.0 0.0 0.0 1.2;...
+                        0.0 0.0 0.0 1.0;...
+                        0.7 0.7 0.0 0.2;...
+                        0.0 0.0 0.0 1.2;...
+                        1.0 0.5 0.0 3.0;...
+                        0.2 0.2 0.2 1.0;...
+                        2.0 0.0 0.0 0.0;...
+                        1.0 0.0 0.0 0.0]; % デフォルト値
+end
+if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
+    try
+        cd(SYSTEM_VARS.PREF_DIR); % PREF_DIRに移動
+    catch
+        cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
     end
-    if isempty(PREF_DIR) ~= 1 % PREF_DIRが空でない場合
-        try
-            cd(PREF_DIR); % PREF_DIRに移動
-        catch
-            cd(HOME_DIR); % HOME_DIRに移動
-        end
-    else
-        try
-            cd('input_files'); % input_filesに移動
-        catch
-            cd(HOME_DIR); % HOME_DIRに移動
-        end    
-    end
-    [filename,pathname] = uiputfile('*.inp',... % uiputfile: ファイルを保存するダイアログボックスを表示
-        ' Save Input File As'); 
-    if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
-        disp('User selected Cancel') % ユーザーがキャンセルを選択
-    else
-        disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
-    end
-    cd(pathname); % pathnameに移動
-    input_save_ascii; % ASCII形式で保存
-    cd(HOME_DIR); % HOME_DIRに移動
+else
+    try
+        cd('input_files'); % input_filesに移動
+    catch
+        cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
+    end    
+end
+[filename,pathname] = uiputfile('*.inp',' Save Input File As'); 
+if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
+    disp('User selected Cancel') % ユーザーがキャンセルを選択
+else
+    disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
+end
+cd(pathname); % pathnameに移動
+input_save_ascii; % ASCII形式で保存
+cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
      
 %-------------------------------------------------------------------------
 %           SAVE AS ASCII2 (submenu)  - save as "rake" & "net slip" ASCII形式で保存するサブメニュー rakeとネットスリップとして保存
 %-------------------------------------------------------------------------
 function menu_file_save_ascii2_Callback(hObject, eventdata, handles)
-global PREF HOME_DIR PREF_DIR IRAKE
-    IRAKE = 1;
-    if isempty(PREF)==1
-       % デフォルト値を作成して保存する
-       PREF = [1.0 0.0 0.0 1.2;...
-               0.0 0.0 0.0 1.0;...
-               0.7 0.7 0.0 0.2;...
-               0.0 0.0 0.0 1.2;...
-               1.0 0.5 0.0 3.0;...
-               0.2 0.2 0.2 1.0;...
-               2.0 0.0 0.0 0.0;...
-               1.0 0.0 0.0 0.0];
+global CALC_CONTROL
+global SYSTEM_VARS
+
+CALC_CONTROL.IRAKE = 1;
+if isempty(SYSTEM_VARS.PREF)==1
+    % デフォルト値を作成して保存する
+    SYSTEM_VARS.PREF = [1.0 0.0 0.0 1.2;...
+                        0.0 0.0 0.0 1.0;...
+                        0.7 0.7 0.0 0.2;...
+                        0.0 0.0 0.0 1.2;...
+                        1.0 0.5 0.0 3.0;...
+                        0.2 0.2 0.2 1.0;...
+                        2.0 0.0 0.0 0.0;...
+                        1.0 0.0 0.0 0.0];
+end
+if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
+    try
+        cd(SYSTEM_VARS.PREF_DIR);
+    catch
+        cd(SYSTEM_VARS.HOME_DIR);
     end
-    if isempty(PREF_DIR) ~= 1 % PREF_DIRが空でない場合
-        try
-            cd(PREF_DIR);
-        catch
-            cd(HOME_DIR);
-        end
-    else
-        try
-            cd('input_files');
-        catch
-            cd(HOME_DIR);
-        end    
-    end
-    [filename,pathname] = uiputfile('*.inr',... % ファイルを保存するダイアログボックスを表示
-        ' Save Input File As');
-    if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
-        disp('User selected Cancel') % ユーザーがキャンセルを選択
-        cd(HOME_DIR); return
-    else
-        disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
-        cd(pathname); % pathnameに移動
-        input_save_ascii; % ASCII形式で保存
-        cd(HOME_DIR);
-    end
+else
+    try
+        cd('input_files');
+    catch
+        cd(SYSTEM_VARS.HOME_DIR);
+    end    
+end
+[filename,pathname] = uiputfile('*.inr',' Save Input File As');
+if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
+    disp('User selected Cancel') % ユーザーがキャンセルを選択
+    cd(SYSTEM_VARS.HOME_DIR); return
+else
+    disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
+    cd(pathname); % pathnameに移動
+    input_save_ascii; % ASCII形式で保存
+    cd(SYSTEM_VARS.HOME_DIR);
+end
 
 
 %-------------------------------------------------------------------------
 %           PUT MAP INFO (submenu) マップ情報を入力するサブメニュー
 %-------------------------------------------------------------------------
-function menu_map_info_Callback(hObject, eventdata, handles) % マップ情報を入力するサブメニューをクリックしたときのコールバック関数
+function menu_map_info_Callback(hObject, eventdata, handles)
+% マップ情報を入力するサブメニューをクリックしたときのコールバック関数
 global H_STUDY_AREA H_MAIN % スタディエリア、メインウィンドウ
 H_STUDY_AREA = study_area; % study_area: スタディエリア
 waitfor(H_STUDY_AREA);      % ユーザーの緯度と経度情報の入力を待つ
-h = findobj('Tag','main_menu_window'); % main_menu_windowのハンドルを取得
-if isempty(h)~=1 & isempty(H_MAIN)~=1 % main_menu_windowのハンドルが空でない場合、H_MAINが空でない場合
-    iflag = check_lonlat_info; % 経度と緯度の情報をチェック
+h = findobj('Tag','main_menu_window2'); % main_menu_windowのハンドルを取得
+if isempty(h)~=1 & isempty(H_MAIN)~=1 % main_menu_windowのハンドル、H_MAINが空でない場合
+    iflag = check_lonlat_info2; % 経度と緯度の情報をチェック
     if iflag == 1 % iflagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
     end
@@ -422,10 +426,11 @@ end
 %-------------------------------------------------------------------------
 %           PREFERENCES (submenu) プリファレンスサブメニュー
 %-------------------------------------------------------------------------
-function menu_preferences_Callback(hObject, eventdata, handles) % プリファレンスサブメニューをクリックしたときのコールバック関数
-global OUTFLAG
+function menu_preferences_Callback(hObject, eventdata, handles)
+% プリファレンスサブメニューをクリックしたときのコールバック関数
+global SYSTEM_VARS
 preference_window; % プリファレンスウィンドウ
-if OUTFLAG == 1
+if SYSTEM_VARS.OUTFLAG == 1
     h = findobj('Tag','Radiobutton_output'); % Radiobutton_outputのハンドルを取得
     set(h,'Value',1); % Valueを1に設定
     h = findobj('Tag','Radiobutton_input'); % Radiobutton_inputのハンドルを取得
@@ -440,25 +445,27 @@ end
 %-------------------------------------------------------------------------
 %           QUIT (submenu) 終了サブメニュー
 %-------------------------------------------------------------------------
-function menu_quit_Callback(hObject, eventdata, handles) % 終了サブメニューをクリックしたときのコールバック関数
-global PREF OUTFLAG PREF_DIR HOME_DIR H_HELP INPUT_FILE FNUM_ONOFF % プリファレンス、OUTFLAG、PREF_DIR、HOME_DIR、H_HELP、INPUT_FILE、FNUM_ONOFF
+function menu_quit_Callback(hObject, eventdata, handles)
+% 終了サブメニューをクリックしたときのコールバック関数
+global H_HELP FNUM_ONOFF 
+global SYSTEM_VARS
 subfig_clear; % サブフィギュアをクリア
 tempdir = pwd; % 現在のディレクトリを取得
-if ~strcmp(tempdir,HOME_DIR) % tempdirとHOME_DIRが異なる場合
-    cd(HOME_DIR);
+if ~strcmp(tempdir,SYSTEM_VARS.HOME_DIR) % tempdirとHOME_DIRが異なる場合
+    cd(SYSTEM_VARS.HOME_DIR);
 end
-cd preferences
-    dlmwrite('preferences.dat',PREF,'delimiter',' ','precision','%3.1f'); % プリファレンスを保存 delimiter: 区切り文字
-            if isempty(OUTFLAG) == 1 % OUTFLAGが空の場合
-                OUTFLAG = 1;
+cd preferences2
+    dlmwrite('preferences2.dat',SYSTEM_VARS.PREF,'delimiter',' ','precision','%3.1f'); % プリファレンスを保存 delimiter: 区切り文字
+            if isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが空の場合
+                SYSTEM_VARS.OUTFLAG = 1;
             end
-            if isempty(PREF_DIR) == 1 % PREF_DIRが空の場合
-                PREF_DIR = HOME_DIR;
+            if isempty(SYSTEM_VARS.PREF_DIR) == 1 % PREF_DIRが空の場合
+                SYSTEM_VARS.PREF_DIR = SYSTEM_VARS.HOME_DIR;
             end
-            if isempty(INPUT_FILE) == 1 % INPUT_FILEが空の場合
-                INPUT_FILE = 'empty';
+            if isempty(SYSTEM_VARS.INPUT_FILE) == 1 % INPUT_FILEが空の場合
+                SYSTEM_VARS.INPUT_FILE = 'empty';
             end
-    save preferences2.mat PREF_DIR INPUT_FILE OUTFLAG FNUM_ONOFF; % プリファレンスを保存
+    save preferences2.mat SYSTEM_VARS.PREF_DIR SYSTEM_VARS.INPUT_FILE SYSTEM_VARS.OUTFLAG FNUM_ONOFF; % プリファレンスを保存
 cd ..
 h = figure(gcf); % 現在の図を取得
 delete(h); % 図を削除
@@ -472,47 +479,47 @@ end
 %=========================================================================
 %    FUNCTIONS (menu) 関数メニュー
 %=========================================================================
-function function_menu_Callback(hObject, eventdata, handles) % 関数メニューをクリックしたときのコールバック関数
+function function_menu_Callback(hObject, eventdata, handles)
+% 関数メニューをクリックしたときのコールバック関数
 
 %-------------------------------------------------------------------------
 %           GRID (submenu) グリッドサブメニュー
 %-------------------------------------------------------------------------
-function menu_grid_Callback(hObject, eventdata, handles) % グリッドサブメニューをクリックしたときのコールバック関数
+function menu_grid_Callback(hObject, eventdata, handles)
+% グリッドサブメニューをクリックしたときのコールバック関数
 
 % --------------------------------------------------------------------
-function menu_grid_mapview_Callback(hObject, eventdata, handles) % グリッドマップビューをクリックしたときのコールバック関数
-global CALC_CONTROL.FUNC_SWITCH COAST_DATA EQ_DATA GPS_DATA AFAULT_DATA
-global ELEMENT ID KODE % 要素、ID、KODE
-
+function menu_grid_mapview_Callback(hObject, eventdata, handles)
+% グリッドマップビューをクリックしたときのコールバック関数
 global COORD_VARS
+global CALC_CONTROL
+global OVERLAY_VARS
 
-% global H_MAIN
 subfig_clear;
 CALC_CONTROL.FUNC_SWITCH = 1;
-grid_drawing;
+grid_drawing2;
 fault_overlay;
-if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
     hold on; % 現在の図を保持
     overlay_drawing; % オーバーレイの描画
 end
 CALC_CONTROL.FUNC_SWITCH = 0; %reset to 0
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
 end
 
 % --------------------------------------------------------------------
-function menu_grid_3d_Callback(hObject, eventdata, handles) % 3Dグリッドをクリックしたときのコールバック関数
-global CALC_CONTROL.FUNC_SWITCH F3D_SLIP_TYPE H_F3D_VIEW % 関数スイッチ、F3D_SLIP_TYPE、H_F3D_VIEW
-global ELEMENT POIS YOUNG FRIC ID H_MAIN H_VIEWPOINT % 要素、POIS、YOUNG、FRIC、ID、H_MAIN、H_VIEWPOINT
-global C_SLIP_SAT
-
+function menu_grid_3d_Callback(hObject, eventdata, handles)
+% 3Dグリッドをクリックしたときのコールバック関数
+global F3D_SLIP_TYPE H_F3D_VIEW
+global INPUT_VARS
 global COORD_VARS
-% これまでの3Dプロットで「注釈」を使用することはできません
+global SYSTEM_VARS
+
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
-    h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.',... % 警告ダイアログを表示
-        '!! Warning !!'); % 警告ダイアログを表示
+    h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.','!! Warning !!'); % 警告ダイアログを表示
     waitfor(h); % モーダルダイアログボックスの終了を待つ
     return
 end
@@ -520,16 +527,13 @@ subfig_clear; % サブフィギュアをクリア
 hc = wait_calc_window; % wait_calc_window: 計算ウィンドウを待つ
 CALC_CONTROL.FUNC_SWITCH = 1; % 関数スイッチを1に設定
 F3D_SLIP_TYPE = 1;  % ネットスリップ
-element_condition(ELEMENT,POIS,YOUNG,FRIC,ID); % 要素条件
-
-C_SLIP_SAT = []; % C_SLIP_SATを空にする
-grid_drawing_3d; % 3Dグリッドの描画
-displ_open(2); % 2を開く
-
-H_F3D_VIEW = f3d_view_control_window;
+element_condition(INPUT_VARS.ELEMENT, INPUT_VARS.POIS, INPUT_VARS.YOUNG, INPUT_VARS.FRIC, INPUT_VARS.ID); % 要素条件
+SYSTEM_VARS.C_SLIP_SAT = []; % C_SLIP_SATを空にする
+grid_drawing_3d2; % 3Dグリッドの描画
+displ_open2(2); % 2を開く
+H_F3D_VIEW = f3d_view_control_window2;
 gps_3d_overlay; % GPS 3Dオーバーレイ
-
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
 end
@@ -538,21 +542,21 @@ close(hc); % hcを閉じる
 %-------------------------------------------------------------------------
 %           DISPLACEMENT (submenu)  with sub-submenu ディスプレイスメントサブメニュー
 %-------------------------------------------------------------------------
-function menu_displacement_Callback(hObject, eventdata, handles) % ディスプレイスメントサブメニューをクリックしたときのコールバック関数
+function menu_displacement_Callback(hObject, eventdata, handles)
+% ディスプレイスメントサブメニューをクリックしたときのコールバック関数
 
 %-------------------------------------------------------------------------
 %                       VECTORS (sub-submenu) ベクトルサブサブメニュー
 %-------------------------------------------------------------------------
-function menu_vectors_Callback(hObject, eventdata, handles) % ベクトルサブサブメニューをクリックしたときのコールバック関数
-global CALC_CONTROL.FUNC_SWITCH % 関数スイッチ
-global DC3D
-global H_DISPL FIXFLAG INPUT_FILE
-global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
-global GPS_FLAG GPS_SEQN_FLAG
-global OUTFLAG PREF_DIR HOME_DIR H_MAIN
-
+function menu_vectors_Callback(hObject, eventdata, handles)
+% ベクトルサブサブメニューをクリックしたときのコールバック関数
+global H_DISPL FIXFLAG H_MAIN
+global INPUT_VARS
 global COORD_VARS
 global CALC_CONTROL
+global OKADA_OUTPUT
+global OVERLAY_VARS
+global SYSTEM_VARS
 
 subfig_clear; % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 2; % 関数スイッチを2に設定
@@ -562,16 +566,16 @@ if CALC_CONTROL.IACT ~= 1
     Okada_halfspace; % Okadaハーフスペースを計算
 end
 CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
-    a = DC3D(:,1:2); % DC3Dの1から2列を取得
-    b = DC3D(:,5:8); % DC3Dの5から8列を取得
+    a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
+    b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
     c = horzcat(a,b); % aとbを水平に連結
     format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1 % OUTFLAGが1または空の場合
+    if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが1または空の場合
 	    cd output_files; % output_filesに移動
     else
-	    cd (PREF_DIR);
+	    cd (PSYSTEM_VARS.REF_DIR);
     end
-    header1 = ['Input file selected: ',INPUT_FILE]; % 選択された入力ファイル
+    header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE]; % 選択された入力ファイル
     header2 = 'x y z UX UY UZ'; % ヘッダー
     header3 = '(km) (km) (km) (m) (m) (m)'; % ヘッダー
     dlmwrite('Displacement.cou',header1,'delimiter',''); % Displacement.couにheader1を書き込む
@@ -579,9 +583,9 @@ CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
     dlmwrite('Displacement.cou',header3,'-append','delimiter',''); % Displacement.couにheader3を追加
     dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f'); % Displacement.couにcを追加
     disp(['Displacement.cou is saved in ' pwd]); % Displacement.couが保存されました
-    cd (HOME_DIR);
-displ_open(2); % 2を開く
-H_DISPL = displ_h_window;
+    cd (SYSTEM_VARS.HOME_DIR);
+displ_open2(2); % 2を開く
+H_DISPL = displ_h_window2;
 if COORD_VARS.ICOORD == 1 % COORD_VARS.ICOORDが1の場合 → 経度と緯度のメニューを非表示
     set(findobj('Tag','radiobutton_fixlonlat'),'Visible','off'); % radiobutton_fixlonlatを非表示
     set(findobj('Tag','text_disp_lon'),'Visible','off'); % text_disp_lonを非表示
@@ -597,136 +601,133 @@ else % COORD_VARS.ICOORDが1でない場合 → カートジアン座標のメ�
     set(findobj('Tag','edit_fixx'),'Visible','off');
     set(findobj('Tag','edit_fixy'),'Visible','off');    
 end
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%	set(findobj('Tag','menu_focal_mech'),'Enable','On');
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
-if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-    figure(H_MAIN); hold on; % H_MAINの図を保持
+if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    figure(H_MAIN);
+    hold on;
     overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
 %                       WIREFRAME (sub-submenu) ワイヤフレームサブサブメニュー
 %-------------------------------------------------------------------------
-function menu_wireframe_Callback(hObject, eventdata, handles) % ワイヤフレームサブサブメニューをクリックしたときのコールバック関数
-global CALC_CONTROL.FUNC_SWITCH FIXFLAG % 関数スイッチ、FIXFLAG
-global DC3D
-global H_DISPL INPUT_FILE
-global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
-global OUTFLAG PREF_DIR HOME_DIR H_MAIN
-
+function menu_wireframe_Callback(hObject, eventdata, handles)
+% ワイヤフレームサブサブメニューをクリックしたときのコールバック関数
+global FIXFLAG H_DISPL H_MAIN
 global COORD_VARS
 global CALC_CONTROL
+global OKADA_OUTPUT
+global OVERLAY_VARS
+global SYSTEM_VARS
+
 subfig_clear; % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 3; % 関数スイッチを3に設定
-FIXFLAG    = 0; % FIXFLAGを0に設定
+FIXFLAG = 0; % FIXFLAGを0に設定
 % Okadaハーフスペースの再計算を回避するため
 if CALC_CONTROL.IACT ~= 1
-Okada_halfspace; % Okadaハーフスペースを計算
+    Okada_halfspace; % Okadaハーフスペースを計算
 end
 CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
-    a = DC3D(:,1:2); % DC3Dの1から2列を取得
-    b = DC3D(:,5:8); % DC3Dの5から8列を取得
-    c = horzcat(a,b); % aとbを水平に連結
-    format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1 % OUTFLAGが1または空の場合
-	cd output_files; % output_filesに移動
-    else
-	cd (PREF_DIR); % PREF_DIRに移動
-    end
-    % Displacement.couをASCII形式で保存
-    header1 = ['Input file selected: ',INPUT_FILE]; % 選択された入力ファイル
-    header2 = 'x y z UX UY UZ'; % ヘッダー
-    header3 = '(km) (km) (km) (m) (m) (m)'; % ヘッダー
-    dlmwrite('Displacement.cou',header1,'delimiter',''); % Displacement.couにheader1を書き込む
-    dlmwrite('Displacement.cou',header2,'-append','delimiter','\t'); % Displacement.couにheader2を追加
-    dlmwrite('Displacement.cou',header3,'-append','delimiter','\t'); % Displacement.couにheader3を追加
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f'); % Displacement.couにcを追加
-    disp(['Displacement.cou is saved in ' pwd]); % Displacement.couが保存されました
-    cd (HOME_DIR); % HOME_DIRに移動
-displ_open(2); % 2を開く
-H_DISPL = displ_h_window; % ディスプレイスメントウィンドウ
-    set(findobj('Tag','radiobutton_fixlonlat'),'Visible','off'); % radiobutton_fixlonlatを非表示
-    set(findobj('Tag','radiobutton_fixcart'),'Visible','off');
-    set(findobj('Tag','text_cart_x'),'Visible','off');
-    set(findobj('Tag','text_cart_y'),'Visible','off');
-    set(findobj('Tag','edit_fixx'),'Visible','off');
-    set(findobj('Tag','edit_fixy'),'Visible','off');
-    set(findobj('Tag','text_x_km'),'Visible','off');
-    set(findobj('Tag','text_y_km'),'Visible','off');
-    set(findobj('Tag','text_disp_lon'),'Visible','off');
-    set(findobj('Tag','text_disp_lat'),'Visible','off');
-    set(findobj('Tag','edit_fixlon'),'Visible','off');
-    set(findobj('Tag','edit_fixlat'),'Visible','off');
-    set(findobj('Tag','Mouse_click'),'Visible','off');
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
+b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
+c = horzcat(a,b); % aとbを水平に連結
+format long;
+if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが1または空の場合
+    cd output_files; % output_filesに移動
+else
+    cd (SYSTEM_VARS.PREF_DIR); % PREF_DIRに移動
+end
+% Displacement.couをASCII形式で保存
+header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE]; % 選択された入力ファイル
+header2 = 'x y z UX UY UZ'; % ヘッダー
+header3 = '(km) (km) (km) (m) (m) (m)'; % ヘッダー
+dlmwrite('Displacement.cou',header1,'delimiter',''); % Displacement.couにheader1を書き込む
+dlmwrite('Displacement.cou',header2,'-append','delimiter','\t'); % Displacement.couにheader2を追加
+dlmwrite('Displacement.cou',header3,'-append','delimiter','\t'); % Displacement.couにheader3を追加
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f'); % Displacement.couにcを追加
+disp(['Displacement.cou is saved in ' pwd]); % Displacement.couが保存されました
+cd (SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
+
+displ_open2(2); % 2を開く
+H_DISPL = displ_h_window2; % ディスプレイスメントウィンドウ
+set(findobj('Tag','radiobutton_fixlonlat'),'Visible','off'); % radiobutton_fixlonlatを非表示
+set(findobj('Tag','radiobutton_fixcart'),'Visible','off');
+set(findobj('Tag','text_cart_x'),'Visible','off');
+set(findobj('Tag','text_cart_y'),'Visible','off');
+set(findobj('Tag','edit_fixx'),'Visible','off');
+set(findobj('Tag','edit_fixy'),'Visible','off');
+set(findobj('Tag','text_x_km'),'Visible','off');
+set(findobj('Tag','text_y_km'),'Visible','off');
+set(findobj('Tag','text_disp_lon'),'Visible','off');
+set(findobj('Tag','text_disp_lat'),'Visible','off');
+set(findobj('Tag','edit_fixlon'),'Visible','off');
+set(findobj('Tag','edit_fixlat'),'Visible','off');
+set(findobj('Tag','Mouse_click'),'Visible','off');
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
-
-if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-    figure(H_MAIN); hold on; % H_MAINの図を保持
+if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    figure(H_MAIN);
+    hold on; % H_MAINの図を保持
     overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
 %                       CONTOURS (sub-submenu) コンターサブサブメニュー
 %-------------------------------------------------------------------------
-function menu_contours_Callback(hObject, eventdata, handles) % コンターサブサブメニューをクリックしたときのコールバック関数
-global CALC_CONTROL.FUNC_SWITCH
-global DC3D VD_CHECKED SHADE_TYPE INPUT_FILE
-global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
-global OUTFLAG PREF_DIR HOME_DIR H_MAIN
-
+function menu_contours_Callback(hObject, eventdata, handles)
+% コンターサブサブメニューをクリックしたときのコールバック関数
+global VD_CHECKED H_MAIN
 global CALC_CONTROL
+global OKADA_OUTPUT
+global OVERLAY_VARS
+global SYSTEM_VARS
 
 subfig_clear; % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 4; % 関数スイッチを4に設定
 VD_CHECKED = 0; % default
-SHADE_TYPE = 1; % default
-grid_drawing; % グリッドの描画
-% to escape recalculation of Okada half space
+CALC_CONTROL.SHADE_TYPE = 1; % default
+grid_drawing2; % グリッドの描画
 if CALC_CONTROL.IACT ~= 1
-Okada_halfspace; % Okadaハーフスペースを計算
+    Okada_halfspace; % Okadaハーフスペースを計算
 end
 CALC_CONTROL.IACT = 1; % to keep okada output
-    a = DC3D(:,1:2); % DC3Dの1から2列を取得
-    b = DC3D(:,5:8); % DC3Dの5から8列を取得
-    c = horzcat(a,b); % aとbを水平に連結
-    format long;
-    % save Displacement.cou a -ascii
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1
-	cd output_files; % output_filesに移動
-    else
-	cd (PREF_DIR);
-    end
-    header1 = ['Input file selected: ',INPUT_FILE];
-    header2 = 'x y z UX UY UZ';
-    header3 = '(km) (km) (km) (m) (m) (m)';
-    dlmwrite('Displacement.cou',header1,'delimiter',''); 
-    dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-    disp(['Displacement.cou is saved in ' pwd]);
-    cd (HOME_DIR);
-displ_open(2);
+a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
+b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
+c = horzcat(a,b); % aとbを水平に連結
+format long;
+% save Displacement.cou a -ascii
+if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1
+    cd output_files; % output_filesに移動
+else
+    cd (SYSTEM_VARS.PREF_DIR);
+end
+header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE];
+header2 = 'x y z UX UY UZ';
+header3 = '(km) (km) (km) (m) (m) (m)';
+dlmwrite('Displacement.cou',header1,'delimiter',''); 
+dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
+disp(['Displacement.cou is saved in ' pwd]);
+cd (SYSTEM_VARS.HOME_DIR);
+displ_open2(2);
 fault_overlay; % フォルトオーバーレイ
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1 % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
-%    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
-
-if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
     figure(H_MAIN); hold on; % H_MAINの図を保持
     overlay_drawing; % オーバーレイの描画
 end
@@ -753,24 +754,24 @@ if CALC_CONTROL.IACT ~= 1
 Okada_halfspace;
 end
 CALC_CONTROL.IACT = 1;           % to keep okada output
-    a = DC3D(:,1:2);
-    b = DC3D(:,5:8);
-    c = horzcat(a,b);
-    format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1
-	cd output_files;
-    else
-	cd (PREF_DIR);
-    end
-    header1 = ['Input file selected: ',INPUT_FILE];
-    header2 = 'x y z UX UY UZ';
-    header3 = '(km) (km) (km) (m) (m) (m)';
-    dlmwrite('Displacement.cou',header1,'delimiter',''); 
-    dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-    disp(['Displacement.cou is saved in ' pwd]);
-    cd (HOME_DIR);
+a = DC3D(:,1:2);
+b = DC3D(:,5:8);
+c = horzcat(a,b);
+format long;
+if OUTFLAG == 1 | isempty(OUTFLAG) == 1
+cd output_files;
+else
+cd (PREF_DIR);
+end
+header1 = ['Input file selected: ',INPUT_FILE];
+header2 = 'x y z UX UY UZ';
+header3 = '(km) (km) (km) (m) (m) (m)';
+dlmwrite('Displacement.cou',header1,'delimiter',''); 
+dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
+disp(['Displacement.cou is saved in ' pwd]);
+cd (HOME_DIR);
 grid_drawing_3d; hold on;
 displ_open(2);
 h = findobj('Tag','xlines'); delete(h);
@@ -951,7 +952,7 @@ end
 
 % --------------------------------------------------------------------
 function menu_stress_on_faults_Callback(hObject, eventdata, handles) % フォルト上の応力をクリックしたときのコールバック関数
-global ELEMENT POIS YOUNG FRIC ID
+global POIS YOUNG FRIC ID
 global h_grid
 global DC3D
 global H_MAIN H_EC_CONTROL H_VIEWPOINT
