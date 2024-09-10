@@ -736,34 +736,33 @@ end
 %                       3D IMAGE (sub-submenu) 3Dイメージサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_3d_Callback(hObject, eventdata, handles)
-global DC3D INPUT_FILE
-global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
-
+global H_VIEWPOINT
 global COORD_VARS
 global CALC_CONTROL
+global OKADA_OUTPUT
+global SYSTEM_VARS
 
 subfig_clear;
 CALC_CONTROL.FUNC_SWITCH = 5;
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1
-    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
-        '!! Warning !!'); % 警告ダイアログを表示
+    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.','!! Warning !!'); % 警告ダイアログを表示
     waitfor(h);
 end
 % Okadaハーフスペースの再計算を回避するため
 if CALC_CONTROL.IACT ~= 1        
 Okada_halfspace;
 end
-CALC_CONTROL.IACT = 1;           % to keep okada output
-a = DC3D(:,1:2);
-b = DC3D(:,5:8);
+CALC_CONTROL.IACT = 1;
+a = OKADA_OUTPUT.DC3D(:,1:2);
+b = OKADA_OUTPUT.DC3D(:,5:8);
 c = horzcat(a,b);
 format long;
-if OUTFLAG == 1 | isempty(OUTFLAG) == 1
-cd output_files;
+if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1
+    cd output_files;
 else
-cd (PREF_DIR);
+    cd (SYSTEM_VARS.PREF_DIR);
 end
-header1 = ['Input file selected: ',INPUT_FILE];
+header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE];
 header2 = 'x y z UX UY UZ';
 header3 = '(km) (km) (km) (m) (m) (m)';
 dlmwrite('Displacement.cou',header1,'delimiter',''); 
@@ -771,254 +770,241 @@ dlmwrite('Displacement.cou',header2,'-append','delimiter','');
 dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
 dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
 disp(['Displacement.cou is saved in ' pwd]);
-cd (HOME_DIR);
-grid_drawing_3d; hold on;
-displ_open(2);
+cd (SYSTEM_VARS.HOME_DIR);
+grid_drawing_3d2;
+hold on;
+displ_open2(2);
 h = findobj('Tag','xlines'); delete(h);
 h = findobj('Tag','ylines'); delete(h);
 
 % --------------------------------------------------------------------
-function menu_3d_wire_Callback(hObject, eventdata, handles) % 3Dワイヤをクリックしたときのコールバック関数
-global DC3D INPUT_FILE
-global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
-
+function menu_3d_wire_Callback(hObject, eventdata, handles)
+% 3Dワイヤをクリックしたときのコールバック関数
+global H_VIEWPOINT
 global COORD_VARS
 global CALC_CONTROL
+global OKADA_OUTPUT
+global SYSTEM_VARS
 
 subfig_clear;
 CALC_CONTROL.FUNC_SWITCH = 5.5; % 関数スイッチを5.5に設定
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
-    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
-        '!! Warning !!'); % 警告ダイアログを表示
+    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.','!! Warning !!'); % 警告ダイアログを表示
     waitfor(h);
 end
 % Okadaハーフスペースの再計算を回避するため
 if CALC_CONTROL.IACT ~= 1        
-Okada_halfspace; % Okadaハーフスペースを計算
+    Okada_halfspace; % Okadaハーフスペースを計算
 end
 CALC_CONTROL.IACT = 1;           % to keep okada output
-    a = DC3D(:,1:2); % DC3Dの1から2列を取得
-    b = DC3D(:,5:8); % DC3Dの5から8列を取得
-    c = horzcat(a,b); % aとbを水平に連結
-    format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1 % OUTFLAGが1または空の場合
-	cd output_files; % output_filesに移動
-    else
-	cd (PREF_DIR);
-    end
-    header1 = ['Input file selected: ',INPUT_FILE];
-    header2 = 'x y z UX UY UZ';
-    header3 = '(km) (km) (km) (m) (m) (m)';
-    dlmwrite('Displacement.cou',header1,'delimiter','');
-    dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-    disp(['Displacement.cou is saved in ' pwd]);
-    cd (HOME_DIR);
+a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
+b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
+c = horzcat(a,b); % aとbを水平に連結
+format long;
+if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが1または空の場合
+    cd output_files; % output_filesに移動
+else
+    cd (SYSTEM_VARS.PREF_DIR);
+end
+header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE];
+header2 = 'x y z UX UY UZ';
+header3 = '(km) (km) (km) (m) (m) (m)';
+dlmwrite('Displacement.cou',header1,'delimiter','');
+dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
+disp(['Displacement.cou is saved in ' pwd]);
+cd (SYSTEM_VARS.HOME_DIR);
 
-grid_drawing_3d; hold on; % 3Dグリッドの描画
-displ_open(2); % 2を開く
+grid_drawing_3d2;
+hold on; % 3Dグリッドの描画
+displ_open2(2); % 2を開く
 h = findobj('Tag','xlines'); delete(h); % xlinesを削除
 h = findobj('Tag','ylines'); delete(h); % ylinesを削除
 
-
 % --------------------------------------------------------------------
-function menu_3d_vectors_Callback(hObject, eventdata, handles) % 3Dベクトルをクリックしたときのコールバック関数
-global DC3D INPUT_FILE
-global OUTFLAG PREF_DIR HOME_DIR H_VIEWPOINT
-
+function menu_3d_vectors_Callback(hObject, eventdata, handles)
+% 3Dベクトルをクリックしたときのコールバック関数
+global H_VIEWPOINT
 global COORD_VARS
 global CALC_CONTROL
+global OKADA_OUTPUT
+global SYSTEM_VARS
 
 subfig_clear; % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 5.7; % 関数スイッチを5.7に設定
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
-    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.',...
-        '!! Warning !!'); % 警告ダイアログを表示
+    h = warndlg('Sorry faults would be invisible so far. To see complete view, change to Cartesian coordinates.','!! Warning !!'); % 警告ダイアログを表示
     waitfor(h); % モーダルダイアログボックスの終了を待つ
 end
-% to escape recalculation of Okada half space
 if CALC_CONTROL.IACT ~= 1        
-Okada_halfspace;
+    Okada_halfspace;
 end
-CALC_CONTROL.IACT = 1;           % to keep okada output
-    a = DC3D(:,1:2);
-    b = DC3D(:,5:8);
-    c = horzcat(a,b);
-    format long;
-    if OUTFLAG == 1 | isempty(OUTFLAG) == 1
-	cd output_files;
-    else
-	cd (PREF_DIR);
-    end
-    header1 = ['Input file selected: ',INPUT_FILE];
-    header2 = 'x y z UX UY UZ';
-    header3 = '(km) (km) (km) (m) (m) (m)';
-    dlmwrite('Displacement.cou',header1,'delimiter',''); 
-    dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
-    dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
-    disp(['Displacement.cou is saved in ' pwd]);
-    cd (HOME_DIR);
-grid_drawing_3d; hold on;
-displ_open(2);
+CALC_CONTROL.IACT = 1;
+a = OKADA_OUTPUT.DC3D(:,1:2);
+b = OKADA_OUTPUT.DC3D(:,5:8);
+c = horzcat(a,b);
+format long;
+if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1
+    cd output_files;
+else
+    cd (SYSTEM_VARS.PREF_DIR);
+end
+header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE];
+header2 = 'x y z UX UY UZ';
+header3 = '(km) (km) (km) (m) (m) (m)';
+dlmwrite('Displacement.cou',header1,'delimiter',''); 
+dlmwrite('Displacement.cou',header2,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',header3,'-append','delimiter',''); 
+dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
+disp(['Displacement.cou is saved in ' pwd]);
+cd (SYSTEM_VARS.HOME_DIR);
+grid_drawing_3d2;
+hold on;
+displ_open2(2);
 h = findobj('Tag','xlines'); delete(h);
 h = findobj('Tag','ylines'); delete(h);
-
 
 %-------------------------------------------------------------------------
 %           STRAIN (submenu) ひずみサブメニュー 
 %-------------------------------------------------------------------------
 function menu_strain_Callback(hObject, eventdata, handles)
 global H_STRAIN H_MAIN
-global SHADE_TYPE STRAIN_SWITCH
-global COAST_DATA EQ_DATA AFAULT_DATA GPS_DATA
-
 global CALC_CONTROL
+global OVERLAY_VARS
 
-subfig_clear; CALC_CONTROL.IACT = 0;
+subfig_clear;
+CALC_CONTROL.IACT = 0;
 CALC_CONTROL.FUNC_SWITCH = 6;
-SHADE_TYPE = 1; % default
-STRAIN_SWITCH = 1; % default sig XX
+CALC_CONTROL.SHADE_TYPE = 1; % default
+CALC_CONTROL.STRAIN_SWITCH = 1; % default sig XX
 H_STRAIN = strain_window; % strain_windowを開く
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
 end
 % ----- overlay drawing --------------------------------
-
-if isempty(COAST_DATA)~=1 | isempty(EQ_DATA)~=1 |...
-    isempty(AFAULT_DATA)~=1 | isempty(GPS_DATA)~=1
-    figure(H_MAIN); hold on;
+if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |...
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1
+    figure(H_MAIN);
+    hold on;
     overlay_drawing;
 end
 
 %-------------------------------------------------------------------------
 %           STRESS (submenu)        with sub-submenu 応力サブメニュー
 %-------------------------------------------------------------------------
-function menu_stress_Callback(hObject, eventdata, handles) % 応力サブメニューをクリックしたときのコールバック関数
+function menu_stress_Callback(hObject, eventdata, handles)
+% 応力サブメニューをクリックしたときのコールバック関数
 
 % --------------------------------------------------------------------
 function menu_shear_stress_change_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
 global H_COULOMB
-
 global CALC_CONTROL
-
 subfig_clear;
 CALC_CONTROL.IACT = 0;
-CALC_CONTROL.FUNC_SWITCH = 7;    STRESS_TYPE = 5;
+CALC_CONTROL.FUNC_SWITCH = 7;
+CALC_CONTROL.STRESS_TYPE = 5;
 H_COULOMB = coulomb_window;
 set(findobj('Tag','text_fric'),'Visible','off'); % text_fricを非表示
 set(findobj('Tag','edit_coul_fric'),'Visible','off'); % edit_coul_fricを非表示
-flag = check_lonlat_info;
+flag = check_lonlat_info2;
 if flag == 1
     all_overlay_enable_on;
 end
 
 % --------------------------------------------------------------------
 function menu_normal_stress_change_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
 global H_COULOMB
-
 global CALC_CONTROL
-
-subfig_clear; CALC_CONTROL.IACT = 0;
-CALC_CONTROL.FUNC_SWITCH = 8; STRESS_TYPE = 5;
+subfig_clear;
+CALC_CONTROL.IACT = 0;
+CALC_CONTROL.FUNC_SWITCH = 8;
+CALC_CONTROL.STRESS_TYPE = 5;
 H_COULOMB = coulomb_window; % coulomb_windowを開く
 set(findobj('Tag','text_fric'),'Visible','off');
 set(findobj('Tag','edit_coul_fric'),'Visible','off');
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
 end
 
 % --------------------------------------------------------------------
 function menu_coulomb_stress_change_Callback(hObject, eventdata, handles)
-global STRESS_TYPE
 global H_COULOMB
-
 global CALC_CONTROL
-
 subfig_clear;
 CALC_CONTROL.IACT = 0;
-CALC_CONTROL.FUNC_SWITCH = 9;    STRESS_TYPE = 5;
+CALC_CONTROL.FUNC_SWITCH = 9;
+CALC_CONTROL.STRESS_TYPE = 5;
 H_COULOMB = coulomb_window; % coulomb_windowを開く
 set(findobj('Tag','crosssection_toggle'),'Enable','off');
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
 end
 
 % --------------------------------------------------------------------
-function menu_stress_on_faults_Callback(hObject, eventdata, handles) % フォルト上の応力をクリックしたときのコールバック関数
-global POIS YOUNG FRIC ID
-global h_grid
-global DC3D
-global H_MAIN H_EC_CONTROL H_VIEWPOINT
-
+function menu_stress_on_faults_Callback(hObject, eventdata, handles)
+global H_EC_CONTROL
 global COORD_VARS
 global CALC_CONTROL
-
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
-    h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.',...
-        '!! Warning !!');
+    h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.','!! Warning !!');
     waitfor(h);
     return
 end
 subfig_clear;
-% clear_obj_and_subfig
 CALC_CONTROL.FUNC_SWITCH = 10;
-H_EC_CONTROL = ec_control_window; % ec_control_windowを開く
-
+H_EC_CONTROL = ec_control_window2; % ec_control_windowを開く
 
 % --------------------------------------------------------------------
 function menu_stress_on_a_fault_Callback(hObject, eventdata, handles)
 global H_VIEWPOINT
-
 global CALC_CONTROL
-
 CALC_CONTROL.IACT = 0;
 if CALC_CONTROL.FUNC_SWITCH ~= 7 && CALC_CONTROL.FUNC_SWITCH ~= 8 && CALC_CONTROL.FUNC_SWITCH ~= 9
     subfig_clear;
     CALC_CONTROL.FUNC_SWITCH = 1;
-    grid_drawing;
+    grid_drawing2;
     fault_overlay;
 end
 H_POINT = point_calc_window; % point_calc_windowを開く
-flag = check_lonlat_info; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2; % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
 end
 
 % --------------------------------------------------------------------
 function menu_focal_mech_Callback(hObject, eventdata, handles)
-global CALC_CONTROL.FUNC_SWITCH NODAL_ACT NODAL_STRESS HOME_DIR
+global NODAL_ACT NODAL_STRESS
+global CALC_CONTROL
+global SYSTEM_VARS
 CALC_CONTROL.FUNC_SWITCH = 11; % 関数スイッチを11に設定
 NODAL_ACT = 0; % NODAL_ACTを0に設定
 NODAL_STRESS = []; % NODAL_STRESSを空にする
-cd (HOME_DIR); % HOME_DIRに移動
+cd (SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
 focal_mech_calc; % フォーカルメカニズム計算
 
 %-------------------------------------------------------------------------
 %           CHANGE PARAMETERS (submenu) with sub-submenu パラメータ変更サブメニュー
 %-------------------------------------------------------------------------
-function menu_change_parameters_Callback(hObject, eventdata, handles) % パラメータ変更サブメニューをクリックしたときのコールバック関数
+function menu_change_parameters_Callback(hObject, eventdata, handles)
+% パラメータ変更サブメニューをクリックしたときのコールバック関数
 
 % --------------------------------------------------------------------
-function menu_all_parameters_Callback(hObject, eventdata, handles) % すべてのパラメータをクリックしたときのコールバック関数
+function menu_all_parameters_Callback(hObject, eventdata, handles)
+% すべてのパラメータをクリックしたときのコールバック関数
 global H_INPUT
 global CALC_CONTROL
 H_INPUT = input_window;
 waitfor(H_INPUT);
 CALC_CONTROL.IACT = 0;
-menu_grid_mapview_Callback;     % redraw the renewed grid
+menu_grid_mapview_Callback;
 
 % --------------------------------------------------------------------
 function menu_grid_size_Callback(hObject, eventdata, handles)
-global GRID
 global LON_PER_X LAT_PER_Y
-
 global INPUT_VARS
 global COORD_VARS
 global CALC_CONTROL
@@ -1039,9 +1025,9 @@ options.Resize = 'on'; % オプションのリサイズをオンに設定
 options.WindowStyle = 'normal'; % オプションのウィンドウスタイルを通常に設定
 answer = inputdlg(prompt,name,numlines,{defc1,defc2},options); % ダイアログボックスに入力する
 answer = [answer]; % answerを[answer]に設定
-    n = 5;
-    xlim = (INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/n; % xlimを(INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/nに設定
-    ylim = (INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/n; % ylimを(INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/nに設定
+n = 5;
+xlim = (INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/n; % xlimを(INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/nに設定
+ylim = (INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/n; % ylimを(INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/nに設定
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1
     INPUT_VARS.GRID(5,1) = str2double(answer(1))/LON_PER_X;
     INPUT_VARS.GRID(6,1) = str2double(answer(2))/LAT_PER_Y;
@@ -1065,19 +1051,18 @@ end
 if isnan(INPUT_VARS.GRID(6,1)) == 1 | isempty(INPUT_VARS.GRID(6,1)) == 1
     INPUT_VARS.GRID(6,1) = temp2;
 end
-% to calculate and save numbers for basic info
 calc_element; % 要素を計算
 CALC_CONTROL.IACT = 0; % CALC_CONTROL.IACTを0に設定
 menu_grid_mapview_Callback; % 更新されたグリッドを再描画
 
 % --------------------------------------------------------------------
-function menu_calc_depth_Callback(hObject, eventdata, handles) % 計算深度をクリックしたときのコールバック関数
-global CALC_DEPTH
+function menu_calc_depth_Callback(hObject, eventdata, handles)
+% 計算深度をクリックしたときのコールバック関数
 global H_DISPL
-
+global INPUT_VARS
 global CALC_CONTROL
 
-temp = CALC_DEPTH; % tempをCALC_DEPTHに設定
+temp = INPUT_VARS.CALC_DEPTH; % tempをCALC_DEPTHに設定
 prompt = 'Enter new calculation depth (positive):'; % 新しい計算深度(正)を入力してください
 name = 'Calc. Depth'; % Calc. Depth
 numlines = 1; % numlinesを1に設定
@@ -1089,21 +1074,22 @@ if str2double(answer) < 0.0
     warndlg('Put positive number. Not acceptable'); % 正の数を入力してください。受け入れられません。
 	return
 end
-CALC_DEPTH = str2double(answer);
-if isnan(CALC_DEPTH) == 1 | isempty(CALC_DEPTH) == 1
-    CALC_DEPTH = temp;
+INPUT_VARS.CALC_DEPTH = str2double(answer);
+if isnan(INPUT_VARS.CALC_DEPTH) == 1 | isempty(INPUT_VARS.CALC_DEPTH) == 1
+    INPUT_VARS.CALC_DEPTH = temp;
 end
 h = findobj('Tag','displ_h_window');
 if (isempty(h)~=1 && isempty(H_DISPL)~=1)
-    set(findobj('Tag','edit_displdepth'),'String',num2str(CALC_DEPTH,'%5.2f')); % edit_displdepthにCALC_DEPTHを設定
+    set(findobj('Tag','edit_displdepth'),'String',num2str(INPUT_VARS.CALC_DEPTH,'%5.2f')); % edit_displdepthにCALC_DEPTHを設定
 end
 CALC_CONTROL.IACT = 0;
-menu_grid_mapview_Callback;     % redraw the renewed grid
+menu_grid_mapview_Callback;
 
 % --------------------------------------------------------------------
-function menu_coeff_friction_Callback(hObject, eventdata, handles) % 摩擦係数をクリックしたときのコールバック関数
-global FRIC
-temp = FRIC;
+function menu_coeff_friction_Callback(hObject, eventdata, handles)
+% 摩擦係数をクリックしたときのコールバック関数
+global INPUT_VARS
+temp = INPUT_VARS.FRIC;
 prompt = 'Enter new friction (positive):'; % 新しい摩擦(正)を入力してください
 name = 'Coeff. Friction'; % Coeff. Friction
 numlines = 1;
@@ -1115,31 +1101,33 @@ if str2double(answer) < 0.0
     warndlg('Put positive number. Not acceptable'); % 正の数を入力してください。受け入れられません。
 	return
 end
-FRIC = str2double(answer); % FRICをanswerに設定
-if isnan(FRIC) == 1 | isempty(FRIC) == 1
-    FRIC = temp;
+INPUT_VARS.FRIC = str2double(answer); % FRICをanswerに設定
+if isnan(INPUT_VARS.FRIC) == 1 | isempty(INPUT_VARS.FRIC) == 1
+    INPUT_VARS.FRIC = temp;
 end
 
 % --------------------------------------------------------------------
-function menu_exaggeration_Callback(hObject, eventdata, handles) % 誇張をクリックしたときのコールバック関数
-global SIZE
-temp = SIZE(3);
+function menu_exaggeration_Callback(hObject, eventdata, handles)
+% 誇張をクリックしたときのコールバック関数
+global INPUT_VARS
+temp = INPUT_VARS.SIZE(3);
 prompt = 'Enter new displ. exaggeration:'; % 新しいdispl. exaggerationを入力してください
 name = 'Displ. exaggeration'; % Displ. exaggeration
 numlines = 1;
 options.Resize = 'on';
 options.WindowStyle = 'normal';
-defc = num2str(SIZE(3)); % defcをSIZE(3)に設定
+defc = num2str(INPUT_VARS.SIZE(3)); % defcをSIZE(3)に設定
 answer = inputdlg(prompt,name,numlines,{defc},options); % ダイアログボックスに入力する
-SIZE(3) = str2double(answer); % SIZE(3)をanswerに設定
-if isnan(SIZE(3)) == 1 | isempty(SIZE(3)) == 1
-    SIZE(3) = temp;
+INPUT_VARS.SIZE(3) = str2double(answer); % SIZE(3)をanswerに設定
+if isnan(INPUT_VARS.SIZE(3)) == 1 | isempty(INPUT_VARS.SIZE(3)) == 1
+    INPUT_VARS.SIZE(3) = temp;
 end
 
 %-------------------------------------------------------------------------
 %           TAPER & SPLIT (submenu) テーパーとスプリットサブメニュー
 %-------------------------------------------------------------------------
-function menu_taper_split_Callback(hObject, eventdata, handles) % テーパーとスプリットサブメニューをクリックしたときのコールバック関数
+function menu_taper_split_Callback(hObject, eventdata, handles)
+% テーパーとスプリットサブメニューをクリックしたときのコールバック関数
 global H_ELEMENT TAPER_CALLED
 H_ELEMENT = element_input_window;
 TAPER_CALLED = 1;
@@ -1153,12 +1141,11 @@ global UTM_FLAG  % UTM_FLAG is used to identify if this is just a tool to know t
                  % UTM_FLAGは、座標を知るためのツールであるかどうかを識別するために使用されます(0)、このツールから入力ファイルを作成します(1)
 %===== ユーザーがマッピングツールボックスを持っているかどうかを確認する =====
 if exist([matlabroot '/toolbox/map'],'dir')==0
-    warndlg('Since you do not have mapping toolbox, this menu is unavailable. Sorry.',...
-        '!!Warning!!');
+    warndlg('Since you do not have mapping toolbox, this menu is unavailable. Sorry.','!!Warning!!');
     return;
 end
 H_UTM = utm_window;
-UTM_FLAG = 0; % just a tool
+UTM_FLAG = 0;
 set(findobj('Tag','pushbutton_add'),'Visible','off');
 set(findobj('Tag','pushbutton_f_add'),'Visible','off');
 set(findobj('Tag','edit_all_input_params'),'Visible','off');
@@ -1166,7 +1153,8 @@ set(findobj('Tag','edit_all_input_params'),'Visible','off');
 %-------------------------------------------------------------------------
 %           CALC. PROPER PRINCIPAL AXES (submenu) 適切な主軸を計算するサブメニュー
 %-------------------------------------------------------------------------
-function menu_calc_principal_Callback(hObject, eventdata, handles) % 主軸を計算するサブメニューをクリックしたときのコールバック関数
+function menu_calc_principal_Callback(hObject, eventdata, handles)
+% 主軸を計算するサブメニューをクリックしたときのコールバック関数
 global H_CALC_PRINCIPAL
 H_CALC_PRINCIPAL = calc_principals_window; % calc_principals_windowを開く
 
@@ -1176,9 +1164,6 @@ H_CALC_PRINCIPAL = calc_principals_window; % calc_principals_windowを開く
 function menu_help_Callback(hObject, eventdata, handles)
 global H_HELP
 H_HELP = coulomb_help_window;
-% hObject    handle to menu_help (see GCBO) % menu_helpへのハンドル(参照)
-% eventdata  reserved - to be defined in a future version of MATLAB % 予約済み - MATLABの将来のバージョンで定義される予定
-% handles    structure with handles and user data (see GUIDATA) % handlesとユーザーデータを持つ構造体(参照)
 
 %=========================================================================
 %    OVERLAY (menu) オーバーレイメニュー
@@ -1188,141 +1173,139 @@ function overlay_menu_Callback(hObject, eventdata, handles)
 %-------------------------------------------------------------------------
 %           COASTLINES (submenu) 海岸線サブメニュー
 %-------------------------------------------------------------------------
-function menu_coastlines_Callback(hObject, eventdata, handles) % 海岸線サブメニューをクリックしたときのコールバック関数
-global H_MAIN COAST_DATA
-    if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
-        set(gcbo, 'Checked', 'off'); % gcboをoffに設定
-        figure(H_MAIN); % H_MAINの図
-        try
-            h = findobj('Tag','CoastlineObj'); % 'Tag'が'CoastlineObj'のオブジェクトを検索
-            delete(h);
-        catch
-            return
-        end
-    else 
-        set(gcbo, 'Checked', 'on'); % gcboをonに設定
-        hold off;
-        coastline_drawing; % 海岸線の描画
-        hold on;
+function menu_coastlines_Callback(hObject, eventdata, handles)
+% 海岸線サブメニューをクリックしたときのコールバック関数
+global H_MAIN
+if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
+    set(gcbo, 'Checked', 'off'); % gcboをoffに設定
+    figure(H_MAIN); % H_MAINの図
+    try
+        h = findobj('Tag','CoastlineObj'); % 'Tag'が'CoastlineObj'のオブジェクトを検索
+        delete(h);
+    catch
+        return
     end
+else 
+    set(gcbo, 'Checked', 'on'); % gcboをonに設定
+    hold off;
+    coastline_drawing; % 海岸線の描画
+    hold on;
+end
 
 %-------------------------------------------------------------------------
 %           ACTIVE FAULTS (submenu) アクティブフォールトサブメニュー
 %-------------------------------------------------------------------------
 function menu_activefaults_Callback(hObject, eventdata, handles) % アクティブフォールトサブメニューをクリックしたときのコールバック関数
-global H_MAIN AFAULT_DATA
-    if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
-        set(gcbo, 'Checked', 'off'); % gcboをoffに設定
-        figure(H_MAIN); % H_MAINの図
-        try
-            h = findobj('Tag','AfaultObj'); % 'Tag'が'AfaultObj'のオブジェクトを検索
-            delete(h);
-        catch
-            return
-        end
-    else 
-        set(gcbo, 'Checked', 'on'); % gcboをonに設定
-        hold off;
-        if isempty(AFAULT_DATA) == 1 % AFAULT_DATAが空の場合
-            afault_format_window; % afault_format_windowを開く
-        else
-            afault_drawing; % afault_drawingを実行
-        end
-        hold on;
+global H_MAIN
+global OVERLAY_VARS
+if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
+    set(gcbo, 'Checked', 'off'); % gcboをoffに設定
+    figure(H_MAIN); % H_MAINの図
+    try
+        h = findobj('Tag','AfaultObj'); % 'Tag'が'AfaultObj'のオブジェクトを検索
+        delete(h);
+    catch
+        return
     end
+else 
+    set(gcbo, 'Checked', 'on'); % gcboをonに設定
+    hold off;
+    if isempty(OVERLAY_VARS.AFAULT_DATA) == 1 % AFAULT_DATAが空の場合
+        afault_format_window; % afault_format_windowを開く
+    else
+        afault_drawing; % afault_drawingを実行
+    end
+    hold on;
+end
     
 %-------------------------------------------------------------------------
 %           EARTHQUAKES (submenu) 地震サブメニュー
 %-------------------------------------------------------------------------
 function menu_earthquakes_Callback(hObject, eventdata, handles)
 global H_MAIN H_F3D_VIEW H_EC_CONTROL
-    if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
-        set(gcbo, 'Checked', 'off'); % gcboをoffに設定
-        figure(H_MAIN); % H_MAINの図
-        try
-            h = findobj('Tag','EqObj'); % 'Tag'が'EqObj'のオブジェクトを検索
-            delete(h); % hを削除
-        catch
-            return
-        end
-        try
-            h = findobj('Tag','EqObj2'); % 'Tag'が'EqObj2'のオブジェクトを検索
-            delete(h);
-        catch
-            return
-        end
-    else 
-        set(gcbo, 'Checked', 'on'); % gcboをonに設定
-        hold off;
-        earthquake_plot; % 地震プロット
-        fault_overlay; % フォルトを再度プロット
-        hold on;
+if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
+    set(gcbo, 'Checked', 'off'); % gcboをoffに設定
+    figure(H_MAIN); % H_MAINの図
+    try
+        h = findobj('Tag','EqObj'); % 'Tag'が'EqObj'のオブジェクトを検索
+        delete(h); % hを削除
+    catch
+        return
     end
-
+    try
+        h = findobj('Tag','EqObj2'); % 'Tag'が'EqObj2'のオブジェクトを検索
+        delete(h);
+    catch
+        return
+    end
+else 
+    set(gcbo, 'Checked', 'on'); % gcboをonに設定
+    hold off;
+    earthquake_plot; % 地震プロット
+    fault_overlay; % フォルトを再度プロット
+    hold on;
+end
 
 %-------------------------------------------------------------------------
 %           VOLCANOES (submenu) 火山サブメニュー 
 %-------------------------------------------------------------------------
 function menu_volcanoes_Callback(hObject, eventdata, handles)
-global H_MAIN PREF
-    if strcmp(get(gcbo, 'Checked'),'on')
-        set(gcbo, 'Checked', 'off');
-        figure(H_MAIN);
-        try
-            h = findobj('Tag','VolcanoObj');
-            delete(h);
-        catch
-            return
-        end
-    else 
-        set(gcbo, 'Checked', 'on');
-        hold off;
-        volcano_overlay('MarkerSize',PREF(9,4)*14); % 火山オーバーレイ ('MarkerSize',PREF(9,4)*14)
-        hold on;
+global H_MAIN
+global SYSTEM_VARS
+if strcmp(get(gcbo, 'Checked'),'on')
+    set(gcbo, 'Checked', 'off');
+    figure(H_MAIN);
+    try
+        h = findobj('Tag','VolcanoObj');
+        delete(h);
+    catch
+        return
     end
+else 
+    set(gcbo, 'Checked', 'on');
+    hold off;
+    volcano_overlay('MarkerSize',SYSTEM_VARS.PREF(9,4)*14); % 火山オーバーレイ ('MarkerSize',PREF(9,4)*14)
+    hold on;
+end
 
-    
 %-------------------------------------------------------------------------
 %           GPS stations (submenu) GPSステーションサブメニュー
 %-------------------------------------------------------------------------
-function menu_gps_Callback(hObject, eventdata, handles) % GPSステーションサブメニューをクリックしたときのコールバック関数
-global H_MAIN PREF
-global H_F3D_VIEW % グラフィックが2Dか3Dかを識別する識別子
-global GPS_DATA SIZE
-
-global COORD_VARS
-
-    if strcmp(get(gcbo, 'Checked'),'on')
-        set(gcbo, 'Checked', 'off');
-        set(findobj('Tag','menu_gps'),'Checked','off'); 
-        figure(H_MAIN);
-        try
-            delete(findobj('Tag','GPSObj'));
-            delete(findobj('Tag','GPSOBSObj'));
-            delete(findobj('Tag','GPSCALCObj'));
-            delete(findobj('Tag','UNITObj'));
-            delete(findobj('Tag','UNITTEXTObj'));
-            delete(findobj('Tag','GPS3D_OBS_Obj'));
-            delete(findobj('Tag','GPS3D_CALC_Obj'));
-        catch
-            return
-        end
-    else 
-        set(gcbo, 'Checked', 'on');
-        hold off;
-        if isempty(H_F3D_VIEW)
-            gps_plot;
-            fault_overlay;  % plot fault again
-        else   
-            gps_3d_overlay; % 3Dオーバーレイ
-        end
-        hold on;
-   end
+function menu_gps_Callback(hObject, eventdata, handles)
+% GPSステーションサブメニューをクリックしたときのコールバック関数
+global H_MAIN H_F3D_VIEW % グラフィックが2Dか3Dかを識別する識別子
+if strcmp(get(gcbo, 'Checked'),'on')
+    set(gcbo, 'Checked', 'off');
+    set(findobj('Tag','menu_gps'),'Checked','off'); 
+    figure(H_MAIN);
+    try
+        delete(findobj('Tag','GPSObj'));
+        delete(findobj('Tag','GPSOBSObj'));
+        delete(findobj('Tag','GPSCALCObj'));
+        delete(findobj('Tag','UNITObj'));
+        delete(findobj('Tag','UNITTEXTObj'));
+        delete(findobj('Tag','GPS3D_OBS_Obj'));
+        delete(findobj('Tag','GPS3D_CALC_Obj'));
+    catch
+        return
+    end
+else 
+    set(gcbo, 'Checked', 'on');
+    hold off;
+    if isempty(H_F3D_VIEW)
+        gps_plot;
+        fault_overlay;  % plot fault again
+    else   
+        gps_3d_overlay; % 3Dオーバーレイ
+    end
+    hold on;
+end
 
 %-------------------------------------------------------------------------
 %           Trace faults and put them into input file (submenu) 断層をトレースして入力ファイルに入れるサブメニュー
 %-------------------------------------------------------------------------
-function menu_trace_put_faults_Callback(hObject, eventdata, handles) % 断層をトレースして入力ファイルに入れるサブメニューをクリックしたときのコールバック関数
+function menu_trace_put_faults_Callback(hObject, eventdata, handles)
+% 断層をトレースして入力ファイルに入れるサブメニューをクリックしたときのコールバック関数
 new_fault_mouse_clicks; % 新しい断層をマウスクリック
 
 %----------------------------------------------------------
@@ -1364,41 +1347,34 @@ set(findobj('Tag','menu_trace_put_faults'),'Enable','Off');
 
 % % --------------------------------------------------------------------
 function menu_tools_Callback(hObject, eventdata, handles)
-% % hObject    handle to menu_tools (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-
 
 %-------------------------------------------------------------------------
 %	Clear overlay data (submenu) オーバーレイデータをクリアするサブメニュー
 %-------------------------------------------------------------------------
-function menu_clear_overlay_Callback(hObject, eventdata, handles) % オーバーレイデータをクリアするサブメニューをクリックしたときのコールバック関数
-% hObject    handle to menu_clear_overlay (see GCBO) % menu_clear_overlayへのハンドル(参照)
-% eventdata  reserved - to be defined in a future version of MATLAB % 予約済み - MATLABの将来のバージョンで定義される予定
-% handles    structure with handles and user data (see GUIDATA) % handlesとユーザーデータを持つ構造体(参照)
-global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
-global VOLCANO
-if isempty(COAST_DATA)==1
+function menu_clear_overlay_Callback(hObject, eventdata, handles)
+% オーバーレイデータをクリアするサブメニューをクリックしたときのコールバック関数
+global OVERLAY_VARS
+if isempty(OVERLAY_VARS.COAST_DATA)==1
     set(findobj('Tag','submenu_clear_coastlines'),'Enable','Off');
 else
     set(findobj('Tag','submenu_clear_coastlines'),'Enable','On');
 end
-if isempty(AFAULT_DATA)==1
+if isempty(OVERLAY_VARS.AFAULT_DATA)==1
     set(findobj('Tag','submenu_clear_afaults'),'Enable','Off');
 else
     set(findobj('Tag','submenu_clear_afaults'),'Enable','On');
 end
-if isempty(EQ_DATA)==1
+if isempty(OVERLAY_VARS.EQ_DATA)==1
     set(findobj('Tag','submenu_clear_earthquakes'),'Enable','Off');
 else
     set(findobj('Tag','submenu_clear_earthquakes'),'Enable','On');
 end
-if isempty(VOLCANO)==1
+if isempty(OVERLAY_VARS.VOLCANO)==1
     set(findobj('Tag','submenu_clear_volcanoes'),'Enable','Off');
 else
     set(findobj('Tag','submenu_clear_volcanoes'),'Enable','On');
 end
-if isempty(GPS_DATA)==1
+if isempty(OVERLAY_VARS.GPS_DATA)==1
     set(findobj('Tag','submenu_clear_gps'),'Enable','Off');
 else
     set(findobj('Tag','submenu_clear_gps'),'Enable','On');
@@ -1408,126 +1384,127 @@ end
 %       Submenu clear coastline data (submenu) 海岸線データをクリアするサブメニュー
 %-------------------------------------------------------------------------
 function submenu_clear_coastlines_Callback(hObject, eventdata, handles)
-global COAST_DATA H_MAIN
-COAST_DATA = [];
+global H_MAIN
+global OVERLAY_VARS
+OVERLAY_VARS.COAST_DATA = [];
 set(findobj('Tag','menu_coastlines'),'Checked','Off'); % 'Tag'が'menu_coastlines'のオブジェクトを取得
-        figure(H_MAIN);
-        try
-            h = findobj('Tag','CoastlineObj');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);
+try
+    h = findobj('Tag','CoastlineObj');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear active fault data (submenu) アクティブフォールトデータをクリアするサブメニュー
 %-------------------------------------------------------------------------
 function submenu_clear_afaults_Callback(hObject, eventdata, handles)
-global AFAULT_DATA H_MAIN
-AFAULT_DATA = [];
+global H_MAIN
+global OVERLAY_VARS
+OVERLAY_VARS.AFAULT_DATA = [];
 set(findobj('Tag','menu_activefaults'),'Checked','Off');
-        figure(H_MAIN);        
-        try
-            h = findobj('Tag','AfaultObj');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    h = findobj('Tag','AfaultObj');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear earthquake data (submenu) 地震データをクリアするサブメニュー
 %-------------------------------------------------------------------------
 function submenu_clear_earthquakes_Callback(hObject, eventdata, handles)
-global EQ_DATA H_MAIN
-EQ_DATA = [];
+global H_MAIN
+global OVERLAY_VARS
+OVERLAY_VARS.EQ_DATA = [];
 set(findobj('Tag','menu_earthquakes'),'Checked','Off');
 set(findobj('Tag','menu_focal_mech'),'Enable','Off');
-        figure(H_MAIN);        
-        try
-            h = findobj('Tag','EqObj');
-            delete(h);
-        catch
-            return
-        end
-        try
-            h = findobj('Tag','EqObj2');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    h = findobj('Tag','EqObj');
+    delete(h);
+catch
+    return
+end
+try
+    h = findobj('Tag','EqObj2');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear volcano data (submenu) 火山データをクリアするサブメニュー
 %-------------------------------------------------------------------------
 function submenu_clear_volcanoes_Callback(hObject, eventdata, handles)
-global VOLCANO H_MAIN
-VOLCANO = [];
+global H_MAIN
+global OVERLAY_VARS
+OVERLAY_VARS.VOLCANO = [];
 set(findobj('Tag','menu_volcanoes'),'Checked','Off');
-        figure(H_MAIN);        
-        try
-            h = findobj('Tag','VolcanoObj');
-            delete(h);
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    h = findobj('Tag','VolcanoObj');
+    delete(h);
+catch
+    return
+end
 
 %-------------------------------------------------------------------------
 %       Submenu clear gps data (submenu) GPSデータをクリアするサブメニュー
 %-------------------------------------------------------------------------
 function submenu_clear_gps_Callback(hObject, eventdata, handles)
-global GPS_DATA H_MAIN
-GPS_DATA = [];
+global H_MAIN
+global OVERLAY_VARS
+OVERLAY_VARS.GPS_DATA = [];
 set(findobj('Tag','menu_gps'),'Checked','Off');
-        figure(H_MAIN);        
-        try
-            delete(findobj('Tag','GPSObj'));
-            delete(findobj('Tag','GPSOBSObj'));
-            delete(findobj('Tag','GPSCALCObj'));
-            delete(findobj('Tag','UNITObj'));
-            delete(findobj('Tag','UNITTEXTObj'));
-        catch
-            return
-        end
+figure(H_MAIN);        
+try
+    delete(findobj('Tag','GPSObj'));
+    delete(findobj('Tag','GPSOBSObj'));
+    delete(findobj('Tag','GPSCALCObj'));
+    delete(findobj('Tag','UNITObj'));
+    delete(findobj('Tag','UNITTEXTObj'));
+catch
+    return
+end
 
 % --------------------------------------------------------------------
-function uimenu_fault_modifications_Callback(hObject, eventdata, handles) % uimenu_fault_modificationsをクリックしたときのコールバック関数
-% hObject    handle to uimenu_fault_modifications (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+function uimenu_fault_modifications_Callback(hObject, eventdata, handles)
+% uimenu_fault_modificationsをクリックしたときのコールバック関数
 disp('under construction')
 
 % --------------------------------------------------------------------
-function Context_functions_Callback(hObject, eventdata, handles) % Context_functionsをクリックしたときのコールバック関数
-% hObject    handle to Context_functions (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+function Context_functions_Callback(hObject, eventdata, handles)
+% Context_functionsをクリックしたときのコールバック関数
 
+% --------------------------------------------------------------------
 function check_overlay_items % オーバーレイアイテムをチェックする
-global COAST_DATA AFAULT_DATA EQ_DATA GPS_DATA
-global VOLCANO
-    if ~isempty(COAST_DATA)
-        set(findobj('Tag','menu_coastlines'),'Checked','On');
-    else
-        set(findobj('Tag','menu_coastlines'),'Checked','Off');
-    end
-    if ~isempty(AFAULT_DATA)
-        set(findobj('Tag','menu_activefaults'),'Checked','On');
-    else
-        set(findobj('Tag','menu_activefaults'),'Checked','Off');
-    end
-    if ~isempty(EQ_DATA)
-        set(findobj('Tag','menu_earthquakes'),'Checked','On');
-    else
-        set(findobj('Tag','menu_earthquakes'),'Checked','Off');
-    end
-    if ~isempty(VOLCANO)
-        set(findobj('Tag','menu_volcanoes'),'Checked','On');
-    else
-        set(findobj('Tag','menu_volcanoes'),'Checked','Off');
-    end
-    if ~isempty(GPS_DATA)
-        set(findobj('Tag','menu_gps'),'Checked','On');
-    else
-        set(findobj('Tag','menu_gps'),'Checked','Off');
-    end
+global OVERLAY_VARS
+if ~isempty(OVERLAY_VARS.COAST_DATA)
+    set(findobj('Tag','menu_coastlines'),'Checked','On');
+else
+    set(findobj('Tag','menu_coastlines'),'Checked','Off');
+end
+if ~isempty(OVERLAY_VARS.AFAULT_DATA)
+    set(findobj('Tag','menu_activefaults'),'Checked','On');
+else
+    set(findobj('Tag','menu_activefaults'),'Checked','Off');
+end
+if ~isempty(OVERLAY_VARS.EQ_DATA)
+    set(findobj('Tag','menu_earthquakes'),'Checked','On');
+else
+    set(findobj('Tag','menu_earthquakes'),'Checked','Off');
+end
+if ~isempty(OVERLAY_VARS.VOLCANO)
+    set(findobj('Tag','menu_volcanoes'),'Checked','On');
+else
+    set(findobj('Tag','menu_volcanoes'),'Checked','Off');
+end
+if ~isempty(OVERLAY_VARS.GPS_DATA)
+    set(findobj('Tag','menu_gps'),'Checked','On');
+else
+    set(findobj('Tag','menu_gps'),'Checked','Off');
+end
     
