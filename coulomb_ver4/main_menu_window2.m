@@ -7,14 +7,14 @@ function varargout = main_menu_window(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0; % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。0は複数のインスタンスを許可。
 % gui_State: GUIの状態を管理する構造体
-gui_State = struct('gui_Name',       mfilename, ... % gui_Name: GUIの名前。mファイル名と同じ。
-                   'gui_Singleton',  gui_Singleton, ... % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。
+gui_State = struct('gui_Name',       mfilename, ...                    % gui_Name: GUIの名前。mファイル名と同じ。
+                   'gui_Singleton',  gui_Singleton, ...                % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。
                    'gui_OpeningFcn', @main_menu_window_OpeningFcn, ... % gui_OpeningFcn: GUIが開かれるときに呼び出される関数。
-                   'gui_OutputFcn',  @main_menu_window_OutputFcn, ... % gui_OutputFcn: GUIが閉じられるときに呼び出される関数。
-                   'gui_LayoutFcn',  [] , ... % gui_LayoutFcn: GUIのレイアウト関数。
-                   'gui_Callback',   []); % gui_Callback: GUIのコールバック関数。
-if nargin && ischar(varargin{1}) % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
-    gui_State.gui_Callback = str2func(varargin{1}); % str2func: 文字列を関数ハンドルに変換。
+                   'gui_OutputFcn',  @main_menu_window_OutputFcn, ...  % gui_OutputFcn: GUIが閉じられるときに呼び出される関数。
+                   'gui_LayoutFcn',  [] , ...                          % gui_LayoutFcn: GUIのレイアウト関数。
+                   'gui_Callback',   []);                              % gui_Callback: GUIのコールバック関数。
+if nargin && ischar(varargin{1})                                       % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
+    gui_State.gui_Callback = str2func(varargin{1});                    % str2func: 文字列を関数ハンドルに変換。
 end
 if nargout % nargout: 出力引数の数。gui_mainfcnはメイン関数を呼び出して、GUIの初期化や操作を行う。
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
@@ -31,37 +31,38 @@ function main_menu_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % main_menu_windowのデフォルトのコマンドライン出力を選択
 global SCR_SIZE
 
-handles.output = hObject; % handles.output: GUIの出力を設定。
-guidata(hObject, handles); % guidata: handles構造体を更新。
+handles.output = hObject;              % handles.output: GUIの出力を設定。
+guidata(hObject, handles);             % guidata: handles構造体を更新。
 h = findobj('Tag','main_menu_window'); % findobj: オブジェクトを検索。
-j = get(h,'Position'); % get: プロパティの値を取得。
-wind_width = j(1,3); % ウィンドウの幅
-wind_height = j(1,4); % ウィンドウの高さ
-xpos = SCR_SIZE.SCRW_X; % ウィンドウのx座標
+j = get(h,'Position');                 % get: プロパティの値を取得。
+wind_width = j(1,3);                   % ウィンドウの幅
+wind_height = j(1,4);                  % ウィンドウの高さ
+xpos = SCR_SIZE.SCRW_X;                % ウィンドウのx座標
 ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height; % ウィンドウのy座標
-set(hObject,'Position',[xpos ypos wind_width wind_height]); % set: プロパティの値を設定。
+set(hObject,'Position',[xpos ypos wind_width wind_height]);  % set: プロパティの値を設定。
 
 
 %-------------------------------------------------------------------------
 %   Main menu closing function　メインメニューを閉じる関数
 %-------------------------------------------------------------------------
 function varargout = main_menu_window_OutputFcn(hObject, eventdata, handles)
-% Get default command line output from handles structure
 varargout{1} = handles.output; % handles.output: GUIの出力を取得。
 
 %=========================================================================
 %    DATA (menu) データメニュー
 %=========================================================================
-function data_menu_Callback(hObject, eventdata, handles) % データメニューをクリックしたときのコールバック関数
+function data_menu_Callback(hObject, eventdata, handles)
+% データメニューをクリックしたときのコールバック関数
 
 %-------------------------------------------------------------------------
 %           ABOUT (submenu) アバウトサブメニュー
 %-------------------------------------------------------------------------
-function menu_about_Callback(hObject, eventdata, handles) % アバウトサブメニューをクリックしたときのコールバック関数
+function menu_about_Callback(hObject, eventdata, handles)
+% アバウトサブメニューをクリックしたときのコールバック関数
 global SYSTEM_VARS
-cd slides2 % slidesディレクトリに移動
+cd slides2                  % slidesディレクトリに移動
 str = ['About_image2.jpg']; % 画像ファイル名
-[x,imap] = imread(str); % imread: 画像ファイルを読み込む。
+[x,imap] = imread(str);     % imread: 画像ファイルを読み込む。
 if exist('x')==1
     h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
     axes('position',[0 0 1 1]); % 軸を作成。
@@ -71,7 +72,7 @@ if exist('x')==1
 
     %===== version check バージョンチェック ===========================
     try
-        temp  = '3.2.01'; % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
+        temp  = '3.2.01';          % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
         idx   = strfind(temp,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
         newvs = str2num([temp(1:idx(1)-1) temp(idx(1)+1:idx(2)-1) temp(idx(2)+1:end)]);
         idx   = strfind(SYSTEM_VARS.CURRENT_VERSION,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
@@ -105,7 +106,6 @@ function menu_new_Callback(hObject, eventdata, handles)
 % 新規作成サブメニューをクリックしたときのコールバック関数
 
 global H_GRID_INPUT % グリッド入力ウィンドウのハンドル
-
 global INPUT_VARS
 global COORD_VARS
 global OVERLAY_VARS
@@ -118,17 +118,17 @@ clear_obj_and_subfig;
 
 OKADA_OUTPUT.S_ELEMENT = []; % 要素の初期化
 CALC_CONTROL.IACT = 0;
-INPUT_VARS.INUM = 0; % INUM: 要素の数
+INPUT_VARS.INUM = 0;         % INUM: 要素の数
 INPUT_VARS.ELEMENT = []; 
-INPUT_VARS.GRID = []; % グリッドの初期化
+INPUT_VARS.GRID = [];        % グリッドの初期化
 OVERLAY_VARS.COAST_DATA = [];
-OVERLAY_VARS.AFAULT_DATA = []; % 海岸データ、断層データの初期化
+OVERLAY_VARS.AFAULT_DATA = [];       % 海岸データ、断層データの初期化
 SYSTEM_VARS.INPUT_FILE = 'untitled'; % 入力ファイル名
 
-if COORD_VARS.ICOORD == 2          % in case the current coordinates mode is 'Lon & lat' (COORD_VARS.ICOORD=2) % 現在の座標モードが「経度と緯度」の場合
+if COORD_VARS.ICOORD == 2  % 現在の座標モードが「経度と緯度」の場合
     h = warndlg('Coordinates mode automatically changes to ''Cartesian'' now','!! Warning !!'); % warndlg: 警告ダイアログを表示
-    waitfor(h); % waitfor: モーダルダイアログボックスの終了を待つ
-    COORD_VARS.ICOORD = 1;         % change to x & y cartesian coordinates % xとyの直交座標に変更
+    waitfor(h);            % waitfor: モーダルダイアログボックスの終了を待つ
+    COORD_VARS.ICOORD = 1; % xとyの直交座標に変更
 end
 if isempty(INPUT_VARS.GRID) % グリッドが空の場合
     INPUT_VARS.GRID(1,1) = -50.01; % x start
@@ -141,14 +141,14 @@ end
 
 H_GRID_INPUT = grid_input_window2;
 CALC_CONTROL.FUNC_SWITCH = 0; % 関数スイッチを0に設定
-if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
-    all_functions_enable_on; % すべての関数を有効にする
-    set(findobj('Tag','menu_file_save'),'Enable','On'); % ファイル保存メニュー
-    set(findobj('Tag','menu_file_save_ascii'),'Enable','On'); % ファイル保存メニュー
+if ~isempty(INPUT_VARS.GRID)  % グリッドが空でない場合、下のメニューを使えるようにする
+    all_functions_enable_on;  % すべての関数を有効にする
+    set(findobj('Tag','menu_file_save'),'Enable','On');        % ファイル保存メニュー
+    set(findobj('Tag','menu_file_save_ascii'),'Enable','On');  % ファイル保存メニュー
     set(findobj('Tag','menu_file_save_ascii2'),'Enable','On'); % ファイル保存メニュー
-    set(findobj('Tag','menu_map_info'),'Enable','On'); % マップ情報メニュー
-    all_overlay_enable_off; % すべてのオーバーレイを無効にする
-    set(findobj('Tag','menu_trace_put_faults'),'Enable','On');  % トレースプットフォルトメニュー
+    set(findobj('Tag','menu_map_info'),'Enable','On');         % マップ情報メニュー
+    all_overlay_enable_off;                                    % すべてのオーバーレイを無効にする
+    set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); % トレースプットフォルトメニュー
 end
 
 %-------------------------------------------------------------------------
@@ -163,23 +163,23 @@ global CALC_CONTROL
 global OVERLAY_VARS
 global SYSTEM_VARS
 
-coulomb_init2; % グローバル変数の初期化
+coulomb_init2;        % グローバル変数の初期化
 clear_obj_and_subfig; % オブジェクトとサブフィギュアをクリア
 
 CALC_CONTROL.IACT = 0;
 INPUT_VARS.INUM = 0;
 OVERLAY_VARS.COAST_DATA = [];
-OVERLAY_VARS.AFAULT_DATA = []; % 海岸データ、断層データの初期化
+OVERLAY_VARS.AFAULT_DATA = [];       % 海岸データ、断層データの初期化
 SYSTEM_VARS.INPUT_FILE = 'untitled'; % 入力ファイル名
 
 set(findobj('Tag','menu_file_save'),'Enable','Off');
 set(findobj('Tag','menu_file_save_ascii'),'Enable','Off');
 set(findobj('Tag','menu_file_save_ascii2'),'Enable','Off');
 all_functions_enable_off; % すべての関数を無効にする
-all_overlay_enable_off; % すべてのオーバーレイを無効にする
+all_overlay_enable_off;   % すべてのオーバーレイを無効にする
 
 H_UTM = utm_window;
-waitfor(H_UTM); % waitfor: モーダルダイアログボックスの終了を待つ
+waitfor(H_UTM);              % waitfor: モーダルダイアログボックスの終了を待つ
 if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on; % すべての関数を有効にする
     set(findobj('Tag','menu_file_save'),'Enable','On');
@@ -229,8 +229,8 @@ function menu_file_open_Callback(hObject, eventdata, handles) % サブメニュ�
 global DIALOG_SKIP % ダイアログスキップ
 global INPUT_VARS
 
-DIALOG_SKIP = 0; % ダイアログスキップを0に設定
-input_open(1); % input_open: 入力を開く
+DIALOG_SKIP = 0;             % ダイアログスキップを0に設定
+input_open(1);               % input_open: 入力を開く
 if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
     all_functions_enable_on;
     set(findobj('Tag','menu_file_save'),'Enable','On');
@@ -309,7 +309,7 @@ else
 end
 [filename,pathname] = uiputfile('*.mat',' Save Input File As'); % ファイルを保存するダイアログボックスを表示
 if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
-    disp('User selected Cancel') % ユーザーがキャンセルを選択
+    disp('User selected Cancel')             % ユーザーがキャンセルを選択
 else
     disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
 end
@@ -328,7 +328,7 @@ function menu_file_save_ascii_Callback(hObject, eventdata, handles)
 global CALC_CONTROL
 global SYSTEM_VARS
 
-CALC_CONTROL.IRAKE = 0; % IRAKEを0に設定
+CALC_CONTROL.IRAKE = 0;         % IRAKEを0に設定
 if isempty(SYSTEM_VARS.PREF)==1 % prefが空の場合
     % デフォルト値を作成して保存する
     SYSTEM_VARS.PREF = [1.0 0.0 0.0 1.2;...
@@ -348,19 +348,19 @@ if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
     end
 else
     try
-        cd('input_files'); % input_filesに移動
+        cd('input_files');        % input_filesに移動
     catch
         cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
     end    
 end
 [filename,pathname] = uiputfile('*.inp',' Save Input File As'); 
 if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
-    disp('User selected Cancel') % ユーザーがキャンセルを選択
+    disp('User selected Cancel')             % ユーザーがキャンセルを選択
 else
     disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
 end
-cd(pathname); % pathnameに移動
-input_save_ascii; % ASCII形式で保存
+cd(pathname);             % pathnameに移動
+input_save_ascii;         % ASCII形式で保存
 cd(SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
      
 %-------------------------------------------------------------------------
@@ -397,11 +397,11 @@ else
 end
 [filename,pathname] = uiputfile('*.inr',' Save Input File As');
 if isequal(filename,0) | isequal(pathname,0) % ファイル名が0またはパス名が0の場合
-    disp('User selected Cancel') % ユーザーがキャンセルを選択
+    disp('User selected Cancel')             % ユーザーがキャンセルを選択
     cd(SYSTEM_VARS.HOME_DIR); return
 else
     disp(['User saved as ', fullfile(pathname,filename)]) % ユーザーが保存した
-    cd(pathname); % pathnameに移動
+    cd(pathname);     % pathnameに移動
     input_save_ascii; % ASCII形式で保存
     cd(SYSTEM_VARS.HOME_DIR);
 end
@@ -414,12 +414,12 @@ function menu_map_info_Callback(hObject, eventdata, handles)
 % マップ情報を入力するサブメニューをクリックしたときのコールバック関数
 global H_STUDY_AREA H_MAIN % スタディエリア、メインウィンドウ
 H_STUDY_AREA = study_area; % study_area: スタディエリア
-waitfor(H_STUDY_AREA);      % ユーザーの緯度と経度情報の入力を待つ
+waitfor(H_STUDY_AREA);     % ユーザーの緯度と経度情報の入力を待つ
 h = findobj('Tag','main_menu_window2'); % main_menu_windowのハンドルを取得
-if isempty(h)~=1 & isempty(H_MAIN)~=1 % main_menu_windowのハンドル、H_MAINが空でない場合
-    iflag = check_lonlat_info2; % 経度と緯度の情報をチェック
-    if iflag == 1 % iflagが1の場合
-    all_overlay_enable_on; % すべてのオーバーレイを有効にする
+if isempty(h)~=1 & isempty(H_MAIN)~=1   % main_menu_windowのハンドル、H_MAINが空でない場合
+    iflag = check_lonlat_info2;         % 経度と緯度の情報をチェック
+    if iflag == 1                       % iflagが1の場合
+        all_overlay_enable_on;          % すべてのオーバーレイを有効にする
     end
 end
 
@@ -432,14 +432,14 @@ global SYSTEM_VARS
 preference_window; % プリファレンスウィンドウ
 if SYSTEM_VARS.OUTFLAG == 1
     h = findobj('Tag','Radiobutton_output'); % Radiobutton_outputのハンドルを取得
-    set(h,'Value',1); % Valueを1に設定
-    h = findobj('Tag','Radiobutton_input'); % Radiobutton_inputのハンドルを取得
-    set(h,'Value',0); % Valueを0に設定
+    set(h,'Value',1);                        % Valueを1に設定
+    h = findobj('Tag','Radiobutton_input');  % Radiobutton_inputのハンドルを取得
+    set(h,'Value',0);                        % Valueを0に設定
 else
     h = findobj('Tag','Radiobutton_output'); % Radiobutton_outputのハンドルを取得
-    set(h,'Value',0); % Valueを0に設定
-    h = findobj('Tag','Radiobutton_input'); % Radiobutton_inputのハンドルを取得
-    set(h,'Value',1); % Valueを1に設定
+    set(h,'Value',0);                        % Valueを0に設定
+    h = findobj('Tag','Radiobutton_input');  % Radiobutton_inputのハンドルを取得
+    set(h,'Value',1);                        % Valueを1に設定
 end
 
 %-------------------------------------------------------------------------
@@ -449,7 +449,7 @@ function menu_quit_Callback(hObject, eventdata, handles)
 % 終了サブメニューをクリックしたときのコールバック関数
 global H_HELP FNUM_ONOFF 
 global SYSTEM_VARS
-subfig_clear; % サブフィギュアをクリア
+subfig_clear;  % サブフィギュアをクリア
 tempdir = pwd; % 現在のディレクトリを取得
 if ~strcmp(tempdir,SYSTEM_VARS.HOME_DIR) % tempdirとHOME_DIRが異なる場合
     cd(SYSTEM_VARS.HOME_DIR);
@@ -471,9 +471,9 @@ h = figure(gcf); % 現在の図を取得
 delete(h); % 図を削除
 % ヘルプウィンドウ（H_HELP）のため
 h = findobj('Tag','coulomb_help_window'); % coulomb_help_windowのハンドルを取得
-if (isempty(h)~=1 && isempty(H_HELP)~=1) % hが空でなく、H_HELPが空でない場合
-    close(figure(H_HELP)) % ヘルプウィンドウを閉じる
-    H_HELP = []; % H_HELPを空にする
+if (isempty(h)~=1 && isempty(H_HELP)~=1)  % hが空でなく、H_HELPが空でない場合
+    close(figure(H_HELP))                 % ヘルプウィンドウを閉じる
+    H_HELP = [];                          % H_HELPを空にする
 end
 
 %=========================================================================
@@ -500,14 +500,14 @@ CALC_CONTROL.FUNC_SWITCH = 1;
 grid_drawing2;
 fault_overlay;
 if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
-    hold on; % 現在の図を保持
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1   % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    hold on;         % 現在の図を保持
     overlay_drawing; % オーバーレイの描画
 end
 CALC_CONTROL.FUNC_SWITCH = 0; %reset to 0
-flag = check_lonlat_info2; % 経度と緯度の情報をチェック
-if flag == 1 % flagが1の場合
-    all_overlay_enable_on; % すべてのオーバーレイを有効にする
+flag = check_lonlat_info2;    % 経度と緯度の情報をチェック
+if flag == 1                  % flagが1の場合
+    all_overlay_enable_on;    % すべてのオーバーレイを有効にする
 end
 
 % --------------------------------------------------------------------
@@ -523,21 +523,21 @@ if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOO
     waitfor(h); % モーダルダイアログボックスの終了を待つ
     return
 end
-subfig_clear; % サブフィギュアをクリア
-hc = wait_calc_window; % wait_calc_window: 計算ウィンドウを待つ
+subfig_clear;                 % サブフィギュアをクリア
+hc = wait_calc_window;        % wait_calc_window: 計算ウィンドウを待つ
 CALC_CONTROL.FUNC_SWITCH = 1; % 関数スイッチを1に設定
-F3D_SLIP_TYPE = 1;  % ネットスリップ
+F3D_SLIP_TYPE = 1;            % ネットスリップ
 element_condition(INPUT_VARS.ELEMENT, INPUT_VARS.POIS, INPUT_VARS.YOUNG, INPUT_VARS.FRIC, INPUT_VARS.ID); % 要素条件
-SYSTEM_VARS.C_SLIP_SAT = []; % C_SLIP_SATを空にする
-grid_drawing_3d2; % 3Dグリッドの描画
-displ_open2(2); % 2を開く
+SYSTEM_VARS.C_SLIP_SAT = [];  % C_SLIP_SATを空にする
+grid_drawing_3d2;             % 3Dグリッドの描画
+displ_open2(2);               % 2を開く
 H_F3D_VIEW = f3d_view_control_window2;
-gps_3d_overlay; % GPS 3Dオーバーレイ
-flag = check_lonlat_info2; % 経度と緯度の情報をチェック
+gps_3d_overlay;               % GPS 3Dオーバーレイ
+flag = check_lonlat_info2;    % 経度と緯度の情報をチェック
 if flag == 1
-    all_overlay_enable_on; % すべてのオーバーレイを有効にする
+    all_overlay_enable_on;    % すべてのオーバーレイを有効にする
 end
-close(hc); % hcを閉じる
+close(hc);                    % hcを閉じる
 
 %-------------------------------------------------------------------------
 %           DISPLACEMENT (submenu)  with sub-submenu ディスプレイスメントサブメニュー
@@ -558,17 +558,17 @@ global OKADA_OUTPUT
 global OVERLAY_VARS
 global SYSTEM_VARS
 
-subfig_clear; % サブフィギュアをクリア
+subfig_clear;                 % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 2; % 関数スイッチを2に設定
-FIXFLAG = 0; % FIXFLAGを0に設定
+FIXFLAG = 0;                  % FIXFLAGを0に設定
 % Okadaハーフスペースの再計算を回避するため
 if CALC_CONTROL.IACT ~= 1        
     Okada_halfspace; % Okadaハーフスペースを計算
 end
-CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
+CALC_CONTROL.IACT = 1;            % Okadaの出力を保持するため
     a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
     b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
-    c = horzcat(a,b); % aとbを水平に連結
+    c = horzcat(a,b);             % aとbを水平に連結
     format long;
     if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが1または空の場合
 	    cd output_files; % output_filesに移動
@@ -576,22 +576,22 @@ CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
 	    cd (PSYSTEM_VARS.REF_DIR);
     end
     header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE]; % 選択された入力ファイル
-    header2 = 'x y z UX UY UZ'; % ヘッダー
+    header2 = 'x y z UX UY UZ';             % ヘッダー
     header3 = '(km) (km) (km) (m) (m) (m)'; % ヘッダー
-    dlmwrite('Displacement.cou',header1,'delimiter',''); % Displacement.couにheader1を書き込む
+    dlmwrite('Displacement.cou',header1,'delimiter','');           % Displacement.couにheader1を書き込む
     dlmwrite('Displacement.cou',header2,'-append','delimiter',''); % Displacement.couにheader2を追加
     dlmwrite('Displacement.cou',header3,'-append','delimiter',''); % Displacement.couにheader3を追加
     dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f'); % Displacement.couにcを追加
-    disp(['Displacement.cou is saved in ' pwd]); % Displacement.couが保存されました
+    disp(['Displacement.cou is saved in ' pwd]);                                  % Displacement.couが保存されました
     cd (SYSTEM_VARS.HOME_DIR);
 displ_open2(2); % 2を開く
 H_DISPL = displ_h_window2;
 if COORD_VARS.ICOORD == 1 % COORD_VARS.ICOORDが1の場合 → 経度と緯度のメニューを非表示
     set(findobj('Tag','radiobutton_fixlonlat'),'Visible','off'); % radiobutton_fixlonlatを非表示
-    set(findobj('Tag','text_disp_lon'),'Visible','off'); % text_disp_lonを非表示
-    set(findobj('Tag','text_disp_lat'),'Visible','off'); % text_disp_latを非表示
-    set(findobj('Tag','edit_fixlon'),'Visible','off'); % edit_fixlonを非表示
-    set(findobj('Tag','edit_fixlat'),'Visible','off'); % edit_fixlatを非表示
+    set(findobj('Tag','text_disp_lon'),'Visible','off');         % text_disp_lonを非表示
+    set(findobj('Tag','text_disp_lat'),'Visible','off');         % text_disp_latを非表示
+    set(findobj('Tag','edit_fixlon'),'Visible','off');           % edit_fixlonを非表示
+    set(findobj('Tag','edit_fixlat'),'Visible','off');           % edit_fixlatを非表示
 else % COORD_VARS.ICOORDが1でない場合 → カートジアン座標のメニューを非表示
     set(findobj('Tag','radiobutton_fixcart'),'Visible','off');
     set(findobj('Tag','text_cart_x'),'Visible','off');
@@ -607,14 +607,14 @@ if flag == 1 % flagが1の場合
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
 if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1  % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
     figure(H_MAIN);
     hold on;
     overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
-%                       WIREFRAME (sub-submenu) ワイヤフレームサブサブメニュー
+%          WIREFRAME (sub-submenu) ワイヤフレームサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_wireframe_Callback(hObject, eventdata, handles)
 % ワイヤフレームサブサブメニューをクリックしたときのコールバック関数
@@ -625,33 +625,33 @@ global OKADA_OUTPUT
 global OVERLAY_VARS
 global SYSTEM_VARS
 
-subfig_clear; % サブフィギュアをクリア
+subfig_clear;                 % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 3; % 関数スイッチを3に設定
-FIXFLAG = 0; % FIXFLAGを0に設定
+FIXFLAG = 0;                  % FIXFLAGを0に設定
 % Okadaハーフスペースの再計算を回避するため
 if CALC_CONTROL.IACT ~= 1
-    Okada_halfspace; % Okadaハーフスペースを計算
+    Okada_halfspace;          % Okadaハーフスペースを計算
 end
-CALC_CONTROL.IACT = 1; % Okadaの出力を保持するため
+CALC_CONTROL.IACT = 1;        % Okadaの出力を保持するため
 a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
 b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
-c = horzcat(a,b); % aとbを水平に連結
+c = horzcat(a,b);             % aとbを水平に連結
 format long;
 if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが1または空の場合
-    cd output_files; % output_filesに移動
+    cd output_files;           % output_filesに移動
 else
     cd (SYSTEM_VARS.PREF_DIR); % PREF_DIRに移動
 end
 % Displacement.couをASCII形式で保存
 header1 = ['Input file selected: ',SYSTEM_VARS.INPUT_FILE]; % 選択された入力ファイル
-header2 = 'x y z UX UY UZ'; % ヘッダー
+header2 = 'x y z UX UY UZ';             % ヘッダー
 header3 = '(km) (km) (km) (m) (m) (m)'; % ヘッダー
-dlmwrite('Displacement.cou',header1,'delimiter',''); % Displacement.couにheader1を書き込む
+dlmwrite('Displacement.cou',header1,'delimiter','');             % Displacement.couにheader1を書き込む
 dlmwrite('Displacement.cou',header2,'-append','delimiter','\t'); % Displacement.couにheader2を追加
 dlmwrite('Displacement.cou',header3,'-append','delimiter','\t'); % Displacement.couにheader3を追加
 dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f'); % Displacement.couにcを追加
-disp(['Displacement.cou is saved in ' pwd]); % Displacement.couが保存されました
-cd (SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
+disp(['Displacement.cou is saved in ' pwd]);                                  % Displacement.couが保存されました
+cd (SYSTEM_VARS.HOME_DIR);                                                    % HOME_DIRに移動
 
 displ_open2(2); % 2を開く
 H_DISPL = displ_h_window2; % ディスプレイスメントウィンドウ
@@ -674,14 +674,14 @@ if flag == 1 % flagが1の場合
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
 if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1  % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
     figure(H_MAIN);
-    hold on; % H_MAINの図を保持
+    hold on;         % H_MAINの図を保持
     overlay_drawing; % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
-%                       CONTOURS (sub-submenu) コンターサブサブメニュー
+%              CONTOURS (sub-submenu) コンターサブサブメニュー
 %-------------------------------------------------------------------------
 function menu_contours_Callback(hObject, eventdata, handles)
 % コンターサブサブメニューをクリックしたときのコールバック関数
@@ -691,18 +691,18 @@ global OKADA_OUTPUT
 global OVERLAY_VARS
 global SYSTEM_VARS
 
-subfig_clear; % サブフィギュアをクリア
+subfig_clear;                 % サブフィギュアをクリア
 CALC_CONTROL.FUNC_SWITCH = 4; % 関数スイッチを4に設定
-VD_CHECKED = 0; % default
-CALC_CONTROL.SHADE_TYPE = 1; % default
-grid_drawing2; % グリッドの描画
+VD_CHECKED = 0;               % default
+CALC_CONTROL.SHADE_TYPE = 1;  % default
+grid_drawing2;                % グリッドの描画
 if CALC_CONTROL.IACT ~= 1
-    Okada_halfspace; % Okadaハーフスペースを計算
+    Okada_halfspace;          % Okadaハーフスペースを計算
 end
-CALC_CONTROL.IACT = 1; % to keep okada output
+CALC_CONTROL.IACT = 1;        % to keep okada output
 a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
 b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
-c = horzcat(a,b); % aとbを水平に連結
+c = horzcat(a,b);             % aとbを水平に連結
 format long;
 % save Displacement.cou a -ascii
 if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1
@@ -720,16 +720,16 @@ dlmwrite('Displacement.cou',c,'-append','delimiter','\t','precision','%.8f');
 disp(['Displacement.cou is saved in ' pwd]);
 cd (SYSTEM_VARS.HOME_DIR);
 displ_open2(2);
-fault_overlay; % フォルトオーバーレイ
+fault_overlay;             % フォルトオーバーレイ
 flag = check_lonlat_info2; % 経度と緯度の情報をチェック
-if flag == 1 % flagが1の場合
+if flag == 1               % flagが1の場合
     all_overlay_enable_on; % すべてのオーバーレイを有効にする
 end
 % ----- overlay drawing オーバーレイの描画 --------------------------------
 if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |... % COAST_DATAが空でない場合、EQ_DATAが空でない場合
-    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1 % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
+    isempty(OVERLAY_VARS.AFAULT_DATA)~=1 | isempty(OVERLAY_VARS.GPS_DATA)~=1  % AFAULT_DATAが空でない場合、GPS_DATAが空でない場合
     figure(H_MAIN); hold on; % H_MAINの図を保持
-    overlay_drawing; % オーバーレイの描画
+    overlay_drawing;         % オーバーレイの描画
 end
 
 %-------------------------------------------------------------------------
@@ -796,10 +796,10 @@ end
 if CALC_CONTROL.IACT ~= 1        
     Okada_halfspace; % Okadaハーフスペースを計算
 end
-CALC_CONTROL.IACT = 1;           % to keep okada output
+CALC_CONTROL.IACT = 1;        % to keep okada output
 a = OKADA_OUTPUT.DC3D(:,1:2); % DC3Dの1から2列を取得
 b = OKADA_OUTPUT.DC3D(:,5:8); % DC3Dの5から8列を取得
-c = horzcat(a,b); % aとbを水平に連結
+c = horzcat(a,b);             % aとbを水平に連結
 format long;
 if SYSTEM_VARS.OUTFLAG == 1 | isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが1または空の場合
     cd output_files; % output_filesに移動
@@ -817,8 +817,8 @@ disp(['Displacement.cou is saved in ' pwd]);
 cd (SYSTEM_VARS.HOME_DIR);
 
 grid_drawing_3d2;
-hold on; % 3Dグリッドの描画
-displ_open2(2); % 2を開く
+hold on;                                % 3Dグリッドの描画
+displ_open2(2);                         % 2を開く
 h = findobj('Tag','xlines'); delete(h); % xlinesを削除
 h = findobj('Tag','ylines'); delete(h); % ylinesを削除
 
@@ -876,12 +876,12 @@ global OVERLAY_VARS
 subfig_clear;
 CALC_CONTROL.IACT = 0;
 CALC_CONTROL.FUNC_SWITCH = 6;
-CALC_CONTROL.SHADE_TYPE = 1; % default
+CALC_CONTROL.SHADE_TYPE = 1;    % default
 CALC_CONTROL.STRAIN_SWITCH = 1; % default sig XX
-H_STRAIN = strain_window; % strain_windowを開く
-flag = check_lonlat_info2; % 経度と緯度の情報をチェック
+H_STRAIN = strain_window;       % strain_windowを開く
+flag = check_lonlat_info2;      % 経度と緯度の情報をチェック
 if flag == 1
-    all_overlay_enable_on; % すべてのオーバーレイを有効にする
+    all_overlay_enable_on;      % すべてのオーバーレイを有効にする
 end
 % ----- overlay drawing --------------------------------
 if isempty(OVERLAY_VARS.COAST_DATA)~=1 | isempty(OVERLAY_VARS.EQ_DATA)~=1 |...
@@ -906,7 +906,7 @@ CALC_CONTROL.IACT = 0;
 CALC_CONTROL.FUNC_SWITCH = 7;
 CALC_CONTROL.STRESS_TYPE = 5;
 H_COULOMB = coulomb_window;
-set(findobj('Tag','text_fric'),'Visible','off'); % text_fricを非表示
+set(findobj('Tag','text_fric'),'Visible','off');      % text_fricを非表示
 set(findobj('Tag','edit_coul_fric'),'Visible','off'); % edit_coul_fricを非表示
 flag = check_lonlat_info2;
 if flag == 1
@@ -970,7 +970,7 @@ if CALC_CONTROL.FUNC_SWITCH ~= 7 && CALC_CONTROL.FUNC_SWITCH ~= 8 && CALC_CONTRO
     fault_overlay;
 end
 H_POINT = point_calc_window; % point_calc_windowを開く
-flag = check_lonlat_info2; % 経度と緯度の情報をチェック
+flag = check_lonlat_info2;   % 経度と緯度の情報をチェック
 if flag == 1
     all_overlay_enable_on;
 end
@@ -981,10 +981,10 @@ global NODAL_ACT NODAL_STRESS
 global CALC_CONTROL
 global SYSTEM_VARS
 CALC_CONTROL.FUNC_SWITCH = 11; % 関数スイッチを11に設定
-NODAL_ACT = 0; % NODAL_ACTを0に設定
-NODAL_STRESS = []; % NODAL_STRESSを空にする
-cd (SYSTEM_VARS.HOME_DIR); % HOME_DIRに移動
-focal_mech_calc; % フォーカルメカニズム計算
+NODAL_ACT = 0;                 % NODAL_ACTを0に設定
+NODAL_STRESS = [];             % NODAL_STRESSを空にする
+cd (SYSTEM_VARS.HOME_DIR);     % HOME_DIRに移動
+focal_mech_calc;               % フォーカルメカニズム計算
 
 %-------------------------------------------------------------------------
 %           CHANGE PARAMETERS (submenu) with sub-submenu パラメータ変更サブメニュー
@@ -1019,12 +1019,12 @@ else
     defc1 = num2str(INPUT_VARS.GRID(5,1),'%9.3f'); % defc1を設定
     defc2 = num2str(INPUT_VARS.GRID(6,1),'%9.3f'); % defc2を設定
 end
-name = 'Grid Size'; % グリッドサイズ
-numlines = 1; % numlinesを1に設定
-options.Resize = 'on'; % オプションのリサイズをオンに設定
+name = 'Grid Size';             % グリッドサイズ
+numlines = 1;                   % numlinesを1に設定
+options.Resize = 'on';          % オプションのリサイズをオンに設定
 options.WindowStyle = 'normal'; % オプションのウィンドウスタイルを通常に設定
 answer = inputdlg(prompt,name,numlines,{defc1,defc2},options); % ダイアログボックスに入力する
-answer = [answer]; % answerを[answer]に設定
+answer = [answer];
 n = 5;
 xlim = (INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/n; % xlimを(INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/nに設定
 ylim = (INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/n; % ylimを(INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/nに設定
@@ -1051,8 +1051,8 @@ end
 if isnan(INPUT_VARS.GRID(6,1)) == 1 | isempty(INPUT_VARS.GRID(6,1)) == 1
     INPUT_VARS.GRID(6,1) = temp2;
 end
-calc_element; % 要素を計算
-CALC_CONTROL.IACT = 0; % CALC_CONTROL.IACTを0に設定
+calc_element;               % 要素を計算
+CALC_CONTROL.IACT = 0;      % CALC_CONTROL.IACTを0に設定
 menu_grid_mapview_Callback; % 更新されたグリッドを再描画
 
 % --------------------------------------------------------------------
@@ -1062,13 +1062,13 @@ global H_DISPL
 global INPUT_VARS
 global CALC_CONTROL
 
-temp = INPUT_VARS.CALC_DEPTH; % tempをCALC_DEPTHに設定
+temp = INPUT_VARS.CALC_DEPTH;                       % tempをCALC_DEPTHに設定
 prompt = 'Enter new calculation depth (positive):'; % 新しい計算深度(正)を入力してください
-name = 'Calc. Depth'; % Calc. Depth
-numlines = 1; % numlinesを1に設定
-options.Resize = 'on'; % オプションのリサイズをオンに設定
-options.WindowStyle = 'normal'; % オプションのウィンドウスタイルを通常に設定
-defc = num2str(CALC_DEPTH,'%6.2f'); % defcをCALC_DEPTHに設定
+name = 'Calc. Depth';                               % Calc. Depth
+numlines = 1;                                       % numlinesを1に設定
+options.Resize = 'on';                              % オプションのリサイズをオンに設定
+options.WindowStyle = 'normal';                     % オプションのウィンドウスタイルを通常に設定
+defc = num2str(CALC_DEPTH,'%6.2f');                 % defcをCALC_DEPTHに設定
 answer = inputdlg(prompt,name,numlines,{defc},options); % ダイアログボックスに入力する
 if str2double(answer) < 0.0
     warndlg('Put positive number. Not acceptable'); % 正の数を入力してください。受け入れられません。
@@ -1091,7 +1091,7 @@ function menu_coeff_friction_Callback(hObject, eventdata, handles)
 global INPUT_VARS
 temp = INPUT_VARS.FRIC;
 prompt = 'Enter new friction (positive):'; % 新しい摩擦(正)を入力してください
-name = 'Coeff. Friction'; % Coeff. Friction
+name = 'Coeff. Friction';                  % Coeff. Friction
 numlines = 1;
 options.Resize = 'on';
 options.WindowStyle = 'normal';
@@ -1112,13 +1112,13 @@ function menu_exaggeration_Callback(hObject, eventdata, handles)
 global INPUT_VARS
 temp = INPUT_VARS.SIZE(3);
 prompt = 'Enter new displ. exaggeration:'; % 新しいdispl. exaggerationを入力してください
-name = 'Displ. exaggeration'; % Displ. exaggeration
+name = 'Displ. exaggeration';
 numlines = 1;
 options.Resize = 'on';
 options.WindowStyle = 'normal';
-defc = num2str(INPUT_VARS.SIZE(3)); % defcをSIZE(3)に設定
+defc = num2str(INPUT_VARS.SIZE(3));                     % defcをSIZE(3)に設定
 answer = inputdlg(prompt,name,numlines,{defc},options); % ダイアログボックスに入力する
-INPUT_VARS.SIZE(3) = str2double(answer); % SIZE(3)をanswerに設定
+INPUT_VARS.SIZE(3) = str2double(answer);                % SIZE(3)をanswerに設定
 if isnan(INPUT_VARS.SIZE(3)) == 1 | isempty(INPUT_VARS.SIZE(3)) == 1
     INPUT_VARS.SIZE(3) = temp;
 end
@@ -1177,8 +1177,8 @@ function menu_coastlines_Callback(hObject, eventdata, handles)
 % 海岸線サブメニューをクリックしたときのコールバック関数
 global H_MAIN
 if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
-    set(gcbo, 'Checked', 'off'); % gcboをoffに設定
-    figure(H_MAIN); % H_MAINの図
+    set(gcbo, 'Checked', 'off');     % gcboをoffに設定
+    figure(H_MAIN);                  % H_MAINの図
     try
         h = findobj('Tag','CoastlineObj'); % 'Tag'が'CoastlineObj'のオブジェクトを検索
         delete(h);
@@ -1188,7 +1188,7 @@ if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
 else 
     set(gcbo, 'Checked', 'on'); % gcboをonに設定
     hold off;
-    coastline_drawing; % 海岸線の描画
+    coastline_drawing;          % 海岸線の描画
     hold on;
 end
 
@@ -1199,8 +1199,8 @@ function menu_activefaults_Callback(hObject, eventdata, handles) % アクティ�
 global H_MAIN
 global OVERLAY_VARS
 if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
-    set(gcbo, 'Checked', 'off'); % gcboをoffに設定
-    figure(H_MAIN); % H_MAINの図
+    set(gcbo, 'Checked', 'off');     % gcboをoffに設定
+    figure(H_MAIN);                  % H_MAINの図
     try
         h = findobj('Tag','AfaultObj'); % 'Tag'が'AfaultObj'のオブジェクトを検索
         delete(h);
@@ -1211,9 +1211,9 @@ else
     set(gcbo, 'Checked', 'on'); % gcboをonに設定
     hold off;
     if isempty(OVERLAY_VARS.AFAULT_DATA) == 1 % AFAULT_DATAが空の場合
-        afault_format_window; % afault_format_windowを開く
+        afault_format_window;                 % afault_format_windowを開く
     else
-        afault_drawing; % afault_drawingを実行
+        afault_drawing;                       % afault_drawingを実行
     end
     hold on;
 end
@@ -1224,11 +1224,11 @@ end
 function menu_earthquakes_Callback(hObject, eventdata, handles)
 global H_MAIN H_F3D_VIEW H_EC_CONTROL
 if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
-    set(gcbo, 'Checked', 'off'); % gcboをoffに設定
-    figure(H_MAIN); % H_MAINの図
+    set(gcbo, 'Checked', 'off');     % gcboをoffに設定
+    figure(H_MAIN);                  % H_MAINの図
     try
-        h = findobj('Tag','EqObj'); % 'Tag'が'EqObj'のオブジェクトを検索
-        delete(h); % hを削除
+        h = findobj('Tag','EqObj');  % 'Tag'が'EqObj'のオブジェクトを検索
+        delete(h);                   % hを削除
     catch
         return
     end
@@ -1241,8 +1241,8 @@ if strcmp(get(gcbo, 'Checked'),'on') % gcboのCheckedがonの場合
 else 
     set(gcbo, 'Checked', 'on'); % gcboをonに設定
     hold off;
-    earthquake_plot; % 地震プロット
-    fault_overlay; % フォルトを再度プロット
+    earthquake_plot;            % 地震プロット
+    fault_overlay;              % フォルトを再度プロット
     hold on;
 end
 
