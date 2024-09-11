@@ -239,33 +239,23 @@ if N~=2
         disp('No lat. & lon. information is included in the input file.');
     end
 
-    % すべてのパラメータが正しく読み込まれたかをチェック
-    if isempty(INPUT_VARS.NUM) == 1
-        errordlg('Number of faults is not read. Make sure the input file.');
-        return;
+    % ------------------すべてのパラメータが正しく読み込まれたかをチェック--------------------
+    function check_input_field(field, message)
+        if isempty(field)
+            errordlg(message);
+            return;
+        end
     end
-    if isempty(INPUT_VARS.POIS) == 1
-        errordlg('Poisson ratio is not read. Make sure the input file.');
-        return;
-    end
-    if isempty(INPUT_VARS.YOUNG) == 1
-        errordlg('Young modulus is not read. Make sure the input file.');
-        return;
-    end
-    if isempty(INPUT_VARS.FRIC) == 1
-        errordlg('Coefficient of friction is not read. Make sure the input file.');
-        return;
-    end
-    if isempty(INPUT_VARS.R_STRESS) == 1
-        errordlg('Regional stress values are not read. Make sure the input file.');
-        return;
-    end
-    if isempty(INPUT_VARS.GRID) == 1
-        errordlg('Grid info for study area is not read properly. Make sure the input file.');
-        return;
-    end
+    % エラーチェック
+    check_input_field(INPUT_VARS.NUM, 'Number of faults is not read. Make sure the input file.');
+    check_input_field(INPUT_VARS.POIS, 'Poisson ratio is not read. Make sure the input file.');
+    check_input_field(INPUT_VARS.YOUNG, 'Young modulus is not read. Make sure the input file.');
+    check_input_field(INPUT_VARS.FRIC, 'Coefficient of friction is not read. Make sure the input file.');
+    check_input_field(INPUT_VARS.R_STRESS, 'Regional stress values are not read. Make sure the input file.');
+    check_input_field(INPUT_VARS.GRID, 'Grid info for study area is not read properly. Make sure the input file.');
     fclose(fid); % ファイルを閉じる
     clear a b1 b2 c1 c2 d e f g h s dum flt gr sz cd mi;
+
 end
 
 % "rake"と"net slip"のタイプを"right-lat"と"reverse"タイプに変更する処理

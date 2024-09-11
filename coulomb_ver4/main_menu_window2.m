@@ -67,8 +67,8 @@ if exist('x')==1
     h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
     axes('position',[0 0 1 1]); % 軸を作成。
     axis image;                 % 軸の設定。
-    image(x)                    % 画像を表示。
-    drawnow                     % グラフィックスの更新。
+    image(x);                   % 画像を表示。
+    drawnow;                    % グラフィックスの更新。
 
     %===== version check バージョンチェック ===========================
     try
