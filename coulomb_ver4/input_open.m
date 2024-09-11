@@ -59,7 +59,7 @@ if DIALOG_SKIP ~= 1 || isempty(DIALOG_SKIP)
             disp(['User selected', fullfile(pathname, filename)]);
         end
     catch
-        errordlg('ファイル形式が正しくない可能性があります。');
+        errordlg('You might have opened wrong formatted file');
         return;
     end
 else
@@ -67,7 +67,7 @@ else
     pathname = SYSTEM_VARS.PREF_DIR;
     filename = SYSTEM_VARS.INPUT_FILE;
     if strcmp(filename,'empty')
-        disp('最近使用されたファイルがありません。メニューから既存の入力ファイルを開いてください。');
+        disp('No file most recently used. Use menu ''Open existing input file''');
         return
     end
     disp('---------------------------------------------------');
@@ -83,18 +83,22 @@ OVERLAY_VARS = [];
 try
     load(fullfile(pathname, filename)); % .matファイルを読み込む
 catch
-    % ASCIIファイルの場合
     try
-        fid = fopen(fullfile(pathname, filename),'r'); % ASCIIファイルを開く
+        try
+            fid = fopen(fullfile(pathname, filename),'r');
+        catch
+            errordlg('The file might be corrupted or wrong one');
+        return;
+        end
     catch
-        errordlg('ファイルが破損しているか、形式が間違っている可能性があります。');
+        errordlg('The file might be corrupted. Check the content.');
         return;
     end
 end
     
 % .matファイルの場合の処理
 if isempty(INPUT_VARS.HEAD) ~= 1
-    disp('mat形式のファイルが読み込まれました。');
+    disp('mat formatted file was read.');
     if size(SYSTEM_VARS.PREF,1)==8
         dummy = SYSTEM_VARS.PREF;
         SYSTEM_VARS.PREF  = [dummy; [0.9 0.9 0.1 1.0]];
@@ -285,7 +289,7 @@ end
 % 基本情報の計算
 calc_element;
 if ~isempty(INPUT_VARS.SECTION)
-   a = xy2lonlat(INPUT_VARS.[SECTION(1), INPUT_VARS.SECTION(2)]);
+   a = xy2lonlat([INPUT_VARS.SECTION(1), INPUT_VARS.SECTION(2)]);
    SECTION_VARS.SEC_XS = a(1,1);          
    SECTION_VARS.SEC_XF = a(1,2);
    a = xy2lonlat([INPUT_VARS.SECTION(3), INPUT_VARS.SECTION(4)]);
