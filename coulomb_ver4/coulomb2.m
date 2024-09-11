@@ -258,7 +258,7 @@ else
     g = [color_pref{:}];
     coord_pref  = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
     h = [coord_pref{:}];
-    if size(PSYSTEM_VARS.REF,1)==8
+    if size(SYSTEM_VARS.REF,1)==8
         i = [0.9 0.9 0.1 1.0];
     else
         volcano_pref = textscan(fid,'%3.1f32 %3.1f32 %3.1f32 %3.1f32',1);
