@@ -31,13 +31,13 @@ global SCR_SIZE
 h = get(hObject,'Position');
 wind_width = h(3);  % ウィンドウの幅
 wind_height = h(4); % ウィンドウの高さ
-dummy = findobj('Tag','main_menu_window');
+dummy = findobj('Tag','main_menu_window2');
 if isempty(dummy)~=1
 	h = get(dummy,'Position');
 end
 xpos = h(1) + h(3) + 5; % x座標の位置を計算
-dummy1 = findobj('Tag','f3d_view_control_window');
-dummy2 = findobj('Tag','ec_control_window');
+dummy1 = findobj('Tag','f3d_view_control_window2');
+dummy2 = findobj('Tag','ec_control_window2');
 if isempty(dummy1)~=1
 	h = get(dummy1,'Position');
     ypos = h(2) - wind_height - 30; % y座標の位置を調整
