@@ -165,9 +165,7 @@ function input_open(N)
             % ヘッダ情報の読み込み
             sp = ' ';
             head1 = textscan(fid,'%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s',1);
-            head1{:};
             head2 = textscan(fid,'%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s',1);
-            head2{:};
             a = [head1{:};head2{:}];
             b1 = char(a(1,:));  
             c1 = cellstr([deblank(b1(5,:)) sp deblank(b1(6,:)) sp deblank(b1(9,:)) sp...
