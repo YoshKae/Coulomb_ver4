@@ -59,7 +59,7 @@ else
     hx = xlabel('X (km)');
     hy = ylabel('Y (km)');
 end
-set(hx,'FontSize',18];
+set(hx,'FontSize',18);
 set(hy,'FontSize',18);
 
 % グリッド線の描画
