@@ -161,7 +161,7 @@ set(hObject,'String',num2str(INPUT_VARS.GRID(2,1),'%7.2f'));
 function edit_yfinish_Callback(hObject, eventdata, handles)
 % ユーザーがY終了位置を入力したときの処理
 global INPUT_VARS
-temp = INPUT_VARS.(4)
+temp = INPUT_VARS.(4);
 INPUT_VARS.GRID(4,1) = str2num(get(hObject,'String'));
 % Y終了位置が開始位置に対して適切かチェック
 if INPUT_VARS.GRID(4) < INPUT_VARS.GRID(2)+INPUT_VARS.GRID(6)*3.0
@@ -188,7 +188,7 @@ set(hObject,'String',num2str(INPUT_VARS.GRID(4,1),'%7.2f'));
 function edit_yinc_Callback(hObject, eventdata, handles)
 % ユーザーがY軸のインクリメントを入力したときの処理
 global INPUT_VARS
-temp = INPUT_VARS.GRID(6)
+temp = INPUT_VARS.GRID(6);
 INPUT_VARS.GRID(6,1) = str2num(get(hObject,'String'));
 set(hObject,'String',num2str(INPUT_VARS.GRID(6,1),'%7.2f'));
 % インクリメントが適切な範囲かチェック

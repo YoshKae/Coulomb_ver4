@@ -91,7 +91,7 @@ set(h,'String',num2str(INPUT_VARS.YOUNG,'%8.1f'));
 %-------------------------------------------------------------------------
 function edit_hline1_Callback(hObject, eventdata, handles) 
 global INPUT_VARS
-INPUT_VARS.HEAD(1,:) = get(hObject,'String')
+INPUT_VARS.HEAD(1,:) = get(hObject,'String');
 set (hObject,'String',INPUT_VARS.HEAD(1,:));
 %-----------------------------------
 function edit_hline1_CreateFcn(hObject, eventdata, handles)
@@ -107,7 +107,7 @@ set (h,'String',INPUT_VARS.HEAD(1,:));
 %-------------------------------------------------------------------------
 function edit_hline2_Callback(hObject, eventdata, handles) 
 global INPUT_VARS
-INPUT_VARS.HEAD(2,:) = get(hObject,'String')
+INPUT_VARS.HEAD(2,:) = get(hObject,'String');
 set (hObject,'String',INPUT_VARS.HEAD(2,:));
 %-----------------------------------
 function edit_hline2_CreateFcn(hObject, eventdata, handles)

@@ -369,7 +369,7 @@ elseif CALC_CONTROL.FUNC_SWITCH == 5 || CALC_CONTROL.FUNC_SWITCH == 1 ...
                 case 1
                     c_index = colormap(jet);
                 case 2
-                    if F3D_SLIP_TYPE == 1 & CALC_CONTROL.FUNC_SWITCH == 1
+                    if F3D_SLIP_TYPE == 1 && CALC_CONTROL.FUNC_SWITCH == 1
                         c_index = colormap(GRAPHICS_VARS.SEIS_RATE);
                     else
                         c_index = colormap(ANATOLIA);
@@ -604,19 +604,19 @@ if CALC_CONTROL.FUNC_SWITCH == 5 || CALC_CONTROL.FUNC_SWITCH == 5.5
     if isnan(GRAPHICS_VARS.GRAPHICS_VARS.C_SAT)==1
         GRAPHICS_VARS.GRAPHICS_VARS.C_SAT = 1.0;
     end
-    caxis([(-1.0)*GRAPHICS_VARS.GRAPHICS_VARS.C_SAT-INPUT_VARS.INPUT_VARS.CALC_DEPTH GRAPHICS_VARS.GRAPHICS_VARS.C_SAT-INPUT_VARS.INPUT_VARS.CALC_DEPTH]);
+    clim([(-1.0)*GRAPHICS_VARS.GRAPHICS_VARS.C_SAT-INPUT_VARS.INPUT_VARS.CALC_DEPTH GRAPHICS_VARS.GRAPHICS_VARS.C_SAT-INPUT_VARS.INPUT_VARS.CALC_DEPTH]);
     colorbar('location','SouthOutside');
     GRAPHICS_VARS.GRAPHICS_VARS.C_SAT = temp;
 elseif CALC_CONTROL.FUNC_SWITCH == 1
     if F3D_SLIP_TYPE == 1
         title('Amount of net slip on each fault (m)','FontSize',18);
-        caxis([0.0 SYSTEM_VARS.C_SLIP_SAT]);
+        clim([0.0 SYSTEM_VARS.C_SLIP_SAT]);
     elseif F3D_SLIP_TYPE == 2
         title('Amount of strike slip on each fault (m). Right lat. positive','FontSize',18);
-        caxis([-SYSTEM_VARS.C_SLIP_SAT SYSTEM_VARS.C_SLIP_SAT]);
+        clim([-SYSTEM_VARS.C_SLIP_SAT SYSTEM_VARS.C_SLIP_SAT]);
     else
         title('Amount of dip slip on each fault patch (m). Reverse. positive','FontSize',18);
-        caxis([-SYSTEM_VARS.C_SLIP_SAT SYSTEM_VARS.C_SLIP_SAT]);
+        clim([-SYSTEM_VARS.C_SLIP_SAT SYSTEM_VARS.C_SLIP_SAT]);
     end
     colorbar('location','SouthOutside');
 elseif CALC_CONTROL.FUNC_SWITCH == 10
@@ -634,7 +634,7 @@ elseif CALC_CONTROL.FUNC_SWITCH == 10
         otherwise
             title('Coulomb stress change (bar)','FontSize',18);
     end
-    caxis([(-1.0)*GRAPHICS_VARS.GRAPHICS_VARS.C_SAT GRAPHICS_VARS.GRAPHICS_VARS.C_SAT]);
+    clim([(-1.0)*GRAPHICS_VARS.GRAPHICS_VARS.C_SAT GRAPHICS_VARS.GRAPHICS_VARS.C_SAT]);
     colorbar('location','SouthOutside');
 elseif CALC_CONTROL.FUNC_SWITCH == 5.7
     title('3D displacement vectors','FontSize',18);

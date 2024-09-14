@@ -1002,17 +1002,12 @@ else         % 中央位置参照
     if xfn >= xdist
         if yfn >= ydist
             zx = -zx;
-            zy = zy;
-        else
-            zx = zx;
-            zy = zy;
         end
     else
         if yfn >= ydist
             zx = -zx;
             zy = -zy;
         else
-            zx = zx;
             zy = -zy;
         end
     end 

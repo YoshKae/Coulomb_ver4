@@ -94,7 +94,7 @@ DISP_SCALE = get(hObject,'Value'); % スケールの初期値を設定
 function uipanel_reference_SelectionChangeFcn(hObject,eventdata,handles)
 % パネルの選択が変更されたときの処理
 global COORD_VARS
-selection = get(hObject,'SelectedObject')
+selection = get(hObject,'SelectedObject');
 switch get(selection,'Tag')
     case 'radiobutton_nofix'
         radiobutton_nofix_Callback;
@@ -115,7 +115,7 @@ global H_MAIN FIXFLAG
 global CALC_CONTROL 
 set(findobj('Tag','Mouse_click'),'Enable','off'); % マウスクリックを無効にする
 x = get(hObject,'Value');
-if x==1;
+if x==1
     temp_reserve = CALC_CONTROL.FUNC_SWITCH;
     FIXFLAG = 0;
     figure(H_MAIN);
@@ -135,7 +135,7 @@ global FIXFLAG FIXX FIXY
 global CALC_CONTROL
 set(findobj('Tag','Mouse_click'),'Enable','on'); % マウスクリックを有効にする
 x = get(hObject,'Value');
-if x==1;
+if x==1
     CALC_CONTROL.ICOORD = 1;
     FIXFLAG = 1;
     h = findobj('Tag','edit_fixx');
@@ -153,7 +153,7 @@ global FIXFLAG FIXX FIXY
 global COORD_VARS
 set(findobj('Tag','Mouse_click'),'Enable','on'); % マウスクリックを有効にする
 x = get(hObject,'Value');
-if x==1;
+if x==1
     FIXFLAG = 2;
     mid_lon = (COORD_VARS.MIN_LON + COORD_VARS.MAX_LON) / 2.0; % 中央経度を計算
     mid_lat = (COORD_VARS.MIN_LAT + COORD_VARS.MAX_LAT) / 2.0; % 中央緯度を計算

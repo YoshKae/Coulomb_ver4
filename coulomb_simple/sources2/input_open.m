@@ -205,7 +205,7 @@ function input_open(N)
             CALC_CONTROL.IRAKE = 0;
             CALC_CONTROL.IND_RAKE = [];
             for k = 1:20
-                if isempty(strmatch('rake',dum0{k}(:))) ~= 1
+                if isempty(validatestring('rake',dum0{k}(:))) ~= 1
                     CALC_CONTROL.IRAKE = 1;
                 end
             end
