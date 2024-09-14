@@ -123,7 +123,7 @@ set(hObject,'String',num2str(INPUT_VARS.GRID(5,1),'%7.2f'));
 %------------------------------------------------------------
 function edit_xinc_CreateFcn(hObject, eventdata, handles) 
 % X軸インクリメントの入力フィールドの初期化
-global GRID
+global INPUT_VARS
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -250,7 +250,6 @@ function pushbutton_ok_Callback(hObject, eventdata, handles)
 global H_MAIN H_ELEMENT
 global DONOTSHOW
 global INPUT_VARS
-global COORD_VARS
 global CALC_CONTROL
 global SYSTEM_VARS
 

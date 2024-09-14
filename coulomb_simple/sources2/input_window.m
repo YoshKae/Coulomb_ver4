@@ -741,7 +741,6 @@ end
 %-------------------------------------------------------------------------
 function edit_dips_Callback(hObject, eventdata, handles) 
 global INPUT_VARS
-global IND_RAKE
 INPUT_VARS.ELEMENT(INPUT_VARS.INUM,6) = str2num(get(hObject,'String'));
 if INPUT_VARS.KODE(INPUT_VARS.INUM) == 400 || INPUT_VARS.KODE(INPUT_VARS.INUM) == 500
     set(hObject,'String',num2str(INPUT_VARS.ELEMENT(INPUT_VARS.INUM,6),'%4.1e')); 
@@ -756,7 +755,6 @@ end
 %-----------------------------------
 function edit_dips_CreateFcn(hObject, eventdata, handles)
 global INPUT_VARS
-global IND_RAKE
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end

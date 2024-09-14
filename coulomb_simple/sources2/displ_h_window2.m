@@ -192,7 +192,7 @@ FIXX = str2double(get(hObject,'String'));
 %-------------------------------------------------------------------------
 function edit_fixy_Callback(hObject, eventdata, handles)
 % 固定されたY座標が入力されたときの処理
-global FIXFLAG FIXX FIXY
+global FIXX FIXY
 FIXY = str2double(get(hObject,'String'));
 h = findobj('Tag','edit_fixx');
 FIXX = str2double(get(h,'String'));

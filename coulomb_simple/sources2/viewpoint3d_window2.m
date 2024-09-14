@@ -24,7 +24,6 @@ end
 
 % --- VIEWPOINT3D_WINDOWが表示される前に実行される関数
 function viewpoint3d_window_OpeningFcn(hObject, eventdata, handles, varargin)
-global H_MAIN H_F3D_VIEW
 global SCR_SIZE
 
 % ウィンドウの位置とサイズを取得して調整
