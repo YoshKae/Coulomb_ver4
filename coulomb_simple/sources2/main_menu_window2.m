@@ -1,4 +1,4 @@
-function varargout = main_menu_window(varargin)
+function varargout = main_menu_window2(varargin)
 % 関数の役割: メインメニューウィンドウのエントリポイント。GUIの初期化を行う。
 % varargout: 可変長出力引数
 % varargin: 可変長入力引数
@@ -28,19 +28,26 @@ end
 %-------------------------------------------------------------------------
 function main_menu_window_OpeningFcn(hObject, eventdata, handles, varargin)
 % hObject: GUIのハンドル。handles: GUIのハンドルを格納する構造体。
-% main_menu_windowのデフォルトのコマンドライン出力を選択
+% main_menu_window2のデフォルトのコマンドライン出力を選択
 global SCR_SIZE
 
 handles.output = hObject;              % handles.output: GUIの出力を設定。
 guidata(hObject, handles);             % guidata: handles構造体を更新。
-h = findobj('Tag','main_menu_window2'); % findobj: オブジェクトを検索。
-j = get(h,'Position');                 % get: プロパティの値を取得。
-wind_width = j(1,3);                   % ウィンドウの幅
-wind_height = j(1,4);                  % ウィンドウの高さ
+% main_menu_window2.fig ファイルを開く
+hFig = openfig('main_menu_window2.fig', 'reuse');
+
+% タグを設定
+set(hFig, 'Tag', 'main_menu_window2');
+
+% オブジェクトの位置情報を取得
+j = get(hFig, 'Position');  % オブジェクトの位置情報を取得
+
+% ウィンドウの幅と高さを取得
+wind_width = j(3);  % ウィンドウの幅
+wind_height = j(4);  % ウィンドウの高さ
 xpos = SCR_SIZE.SCRW_X;                % ウィンドウのx座標
 ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height; % ウィンドウのy座標
 set(hObject,'Position',[xpos ypos wind_width wind_height]);  % set: プロパティの値を設定。
-
 
 %-------------------------------------------------------------------------
 %   Main menu closing function　メインメニューを閉じる関数
@@ -61,7 +68,7 @@ function menu_about_Callback(hObject, eventdata, handles)
 % アバウトサブメニューをクリックしたときのコールバック関数
 global SYSTEM_VARS
 cd slides2                  % slidesディレクトリに移動
-str = ['About_image2.jpg']; % 画像ファイル名
+str = 'About_image2.jpg'; % 画像ファイル名
 [x,imap] = imread(str);     % imread: 画像ファイルを読み込む。
 if exist('x')==1
     h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
@@ -284,15 +291,15 @@ global SYSTEM_VARS
 
 if isempty(SYSTEM_VARS.PREF)==1 % prefが空の場合
     % デフォルト値を作成して保存する
-    PREF = [1.0 0.0 0.0 1.2;...
-            0.0 0.0 0.0 1.0;...
-            0.7 0.7 0.0 0.2;...
-            0.0 0.0 0.0 1.2;...
-            1.0 0.5 0.0 3.0;...
-            0.2 0.2 0.2 1.0;...
-            2.0 0.0 0.0 0.0;...
-            1.0 0.0 0.0 0.0;...
-            0.9 0.9 0.1 1.0];    % volcano 火山のデフォルト値
+    SYSTEM_VARS.PREF = [1.0 0.0 0.0 1.2;...
+                        0.0 0.0 0.0 1.0;...
+                        0.7 0.7 0.0 0.2;...
+                        0.0 0.0 0.0 1.2;...
+                        1.0 0.5 0.0 3.0;...
+                        0.2 0.2 0.2 1.0;...
+                        2.0 0.0 0.0 0.0;...
+                        1.0 0.0 0.0 0.0;...
+                        0.9 0.9 0.1 1.0];    % volcano 火山のデフォルト値
 end
 if isempty(SYSTEM_VARS.PREF_DIR) ~= 1 % PREF_DIRが空でない場合
     try
@@ -405,7 +412,6 @@ else
     input_save_ascii; % ASCII形式で保存
     cd(SYSTEM_VARS.HOME_DIR);
 end
-
 
 %-------------------------------------------------------------------------
 %           PUT MAP INFO (submenu) マップ情報を入力するサブメニュー
@@ -1024,7 +1030,7 @@ numlines = 1;                   % numlinesを1に設定
 options.Resize = 'on';          % オプションのリサイズをオンに設定
 options.WindowStyle = 'normal'; % オプションのウィンドウスタイルを通常に設定
 answer = inputdlg(prompt,name,numlines,{defc1,defc2},options); % ダイアログボックスに入力する
-answer = [answer];
+answer = answer;
 n = 5;
 xlim = (INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/n; % xlimを(INPUT_VARS.GRID(3)-INPUT_VARS.GRID(1))/nに設定
 ylim = (INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/n; % ylimを(INPUT_VARS.GRID(4)-INPUT_VARS.GRID(2))/nに設定
@@ -1158,13 +1164,6 @@ function menu_calc_principal_Callback(hObject, eventdata, handles)
 global H_CALC_PRINCIPAL
 H_CALC_PRINCIPAL = calc_principals_window; % calc_principals_windowを開く
 
-%-------------------------------------------------------------------------
-%           HELP (submenu) ヘルプサブメニュー 
-%-------------------------------------------------------------------------
-function menu_help_Callback(hObject, eventdata, handles)
-global H_HELP
-H_HELP = coulomb_help_window;
-
 %=========================================================================
 %    OVERLAY (menu) オーバーレイメニュー
 %=========================================================================
@@ -1247,61 +1246,6 @@ else
 end
 
 %-------------------------------------------------------------------------
-%           VOLCANOES (submenu) 火山サブメニュー 
-%-------------------------------------------------------------------------
-function menu_volcanoes_Callback(hObject, eventdata, handles)
-global H_MAIN
-global SYSTEM_VARS
-if strcmp(get(gcbo, 'Checked'),'on')
-    set(gcbo, 'Checked', 'off');
-    figure(H_MAIN);
-    try
-        h = findobj('Tag','VolcanoObj');
-        delete(h);
-    catch
-        return
-    end
-else 
-    set(gcbo, 'Checked', 'on');
-    hold off;
-    volcano_overlay('MarkerSize',SYSTEM_VARS.PREF(9,4)*14); % 火山オーバーレイ ('MarkerSize',PREF(9,4)*14)
-    hold on;
-end
-
-%-------------------------------------------------------------------------
-%           GPS stations (submenu) GPSステーションサブメニュー
-%-------------------------------------------------------------------------
-function menu_gps_Callback(hObject, eventdata, handles)
-% GPSステーションサブメニューをクリックしたときのコールバック関数
-global H_MAIN H_F3D_VIEW % グラフィックが2Dか3Dかを識別する識別子
-if strcmp(get(gcbo, 'Checked'),'on')
-    set(gcbo, 'Checked', 'off');
-    set(findobj('Tag','menu_gps'),'Checked','off'); 
-    figure(H_MAIN);
-    try
-        delete(findobj('Tag','GPSObj'));
-        delete(findobj('Tag','GPSOBSObj'));
-        delete(findobj('Tag','GPSCALCObj'));
-        delete(findobj('Tag','UNITObj'));
-        delete(findobj('Tag','UNITTEXTObj'));
-        delete(findobj('Tag','GPS3D_OBS_Obj'));
-        delete(findobj('Tag','GPS3D_CALC_Obj'));
-    catch
-        return
-    end
-else 
-    set(gcbo, 'Checked', 'on');
-    hold off;
-    if isempty(H_F3D_VIEW)
-        gps_plot;
-        fault_overlay;  % plot fault again
-    else   
-        gps_3d_overlay; % 3Dオーバーレイ
-    end
-    hold on;
-end
-
-%-------------------------------------------------------------------------
 %           Trace faults and put them into input file (submenu) 断層をトレースして入力ファイルに入れるサブメニュー
 %-------------------------------------------------------------------------
 function menu_trace_put_faults_Callback(hObject, eventdata, handles)
@@ -1330,8 +1274,6 @@ function all_overlay_enable_on
 set(findobj('Tag','menu_coastlines'),'Enable','On');
 set(findobj('Tag','menu_activefaults'),'Enable','On');
 set(findobj('Tag','menu_earthquakes'),'Enable','On');
-set(findobj('Tag','menu_volcanoes'),'Enable','On');
-set(findobj('Tag','menu_gps'),'Enable','On'); 
 set(findobj('Tag','menu_clear_overlay'),'Enable','On');
 set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
 
@@ -1340,8 +1282,6 @@ function all_overlay_enable_off
 set(findobj('Tag','menu_coastlines'),'Enable','Off');
 set(findobj('Tag','menu_activefaults'),'Enable','Off');
 set(findobj('Tag','menu_earthquakes'),'Enable','Off');
-set(findobj('Tag','menu_volcanoes'),'Enable','Off');
-set(findobj('Tag','menu_gps'),'Enable','Off'); 
 set(findobj('Tag','menu_clear_overlay'),'Enable','Off'); 
 set(findobj('Tag','menu_trace_put_faults'),'Enable','Off'); 
 
@@ -1368,16 +1308,6 @@ if isempty(OVERLAY_VARS.EQ_DATA)==1
     set(findobj('Tag','submenu_clear_earthquakes'),'Enable','Off');
 else
     set(findobj('Tag','submenu_clear_earthquakes'),'Enable','On');
-end
-if isempty(OVERLAY_VARS.VOLCANO)==1
-    set(findobj('Tag','submenu_clear_volcanoes'),'Enable','Off');
-else
-    set(findobj('Tag','submenu_clear_volcanoes'),'Enable','On');
-end
-if isempty(OVERLAY_VARS.GPS_DATA)==1
-    set(findobj('Tag','submenu_clear_gps'),'Enable','Off');
-else
-    set(findobj('Tag','submenu_clear_gps'),'Enable','On');
 end
 
 %-------------------------------------------------------------------------
@@ -1435,49 +1365,10 @@ catch
     return
 end
 
-%-------------------------------------------------------------------------
-%       Submenu clear volcano data (submenu) 火山データをクリアするサブメニュー
-%-------------------------------------------------------------------------
-function submenu_clear_volcanoes_Callback(hObject, eventdata, handles)
-global H_MAIN
-global OVERLAY_VARS
-OVERLAY_VARS.VOLCANO = [];
-set(findobj('Tag','menu_volcanoes'),'Checked','Off');
-figure(H_MAIN);        
-try
-    h = findobj('Tag','VolcanoObj');
-    delete(h);
-catch
-    return
-end
-
-%-------------------------------------------------------------------------
-%       Submenu clear gps data (submenu) GPSデータをクリアするサブメニュー
-%-------------------------------------------------------------------------
-function submenu_clear_gps_Callback(hObject, eventdata, handles)
-global H_MAIN
-global OVERLAY_VARS
-OVERLAY_VARS.GPS_DATA = [];
-set(findobj('Tag','menu_gps'),'Checked','Off');
-figure(H_MAIN);        
-try
-    delete(findobj('Tag','GPSObj'));
-    delete(findobj('Tag','GPSOBSObj'));
-    delete(findobj('Tag','GPSCALCObj'));
-    delete(findobj('Tag','UNITObj'));
-    delete(findobj('Tag','UNITTEXTObj'));
-catch
-    return
-end
-
 % --------------------------------------------------------------------
 function uimenu_fault_modifications_Callback(hObject, eventdata, handles)
 % uimenu_fault_modificationsをクリックしたときのコールバック関数
 disp('under construction')
-
-% --------------------------------------------------------------------
-function Context_functions_Callback(hObject, eventdata, handles)
-% Context_functionsをクリックしたときのコールバック関数
 
 % --------------------------------------------------------------------
 function check_overlay_items % オーバーレイアイテムをチェックする
@@ -1496,15 +1387,5 @@ if ~isempty(OVERLAY_VARS.EQ_DATA)
     set(findobj('Tag','menu_earthquakes'),'Checked','On');
 else
     set(findobj('Tag','menu_earthquakes'),'Checked','Off');
-end
-if ~isempty(OVERLAY_VARS.VOLCANO)
-    set(findobj('Tag','menu_volcanoes'),'Checked','On');
-else
-    set(findobj('Tag','menu_volcanoes'),'Checked','Off');
-end
-if ~isempty(OVERLAY_VARS.GPS_DATA)
-    set(findobj('Tag','menu_gps'),'Checked','On');
-else
-    set(findobj('Tag','menu_gps'),'Checked','Off');
 end
     

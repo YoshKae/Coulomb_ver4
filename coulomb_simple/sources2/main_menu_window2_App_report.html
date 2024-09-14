@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Migration Report for main_menu_window2</title>
+    <style type="text/css">
+        html body {
+            height: 100%;
+            padding: 0; margin: 0;
+            color: #474747;
+            font: 13px/1.384 Arial, Helvetica, sans-serif;
+        }
+        /*Report Title Header*/
+        h1 {
+            font-family: Futura, Arial, Helvetica, sans-serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: #fff;
+            margin: 0;
+            padding: 15px;
+        }
+        /*Report Section Headers*/
+        h2 {
+            padding-bottom: 2px;
+            margin: 20px 0 17px 0;
+            border-bottom: 1px solid #cbcbcb;
+            color: #c45400;
+            font: normal normal 22px/1.136 Arial,Helvetica,sans-serif;
+        }
+        /*Report Subsection Headers*/
+        h3 {
+            margin: 20px 0 20px 0;
+            font: normal bold 17px/1.35 Arial, Helvetica, sans-serif;
+        }
+        ul.childHasIcon {
+            padding-left: 20px;
+        }
+        ul > li.success {
+            list-style: none;
+            /*Check-mark image*/
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAK2SURBVHjaVJNPaFRXFMZ/b96MmUZGURMyHaoTa0QrRReD4KIlwriRRhPpoi1ddeNG4krFRbAbceOf0qJuSoWWWlooIiKlCSkp1ARksEmpi8GSQjKJUSYk/p1J5r17vi7ee609cFf3+33n3HvO8SgdJYn+oZFODw4DBxB7hYoSMzJVZBo12a2fzr9X55XwEoOBoZGyYNCDfgEyIQkMzIRkBKupYXN89svVg8OJgU+hxMDQSBk45+GVJSJQQk5IYGbIhIfrcSF78ttrC3P336wC+ANXlzqBs0A5EgtkSMJMMRxXFN11mSm/pr05sTSXX0qBDkvqj0Qx6MBC/QuVt77Pp/uvkV9bxJzhZ5r7cx2LHwGZtMQBGUhRmSaB/Zd9rb+OD98+zub1Paxbs5FjNw9GJm2NXuDLtMz2RuUC8VsVG2T9di4fGqaQ6+ZubZTvJ69goWEy/PTKTmBDykxFc0LOOLHvMu+8cQjnjDRtXDsyTiHXTaU2xpmfP6EyO4Y5Q6EgFXQBubRMM+a0zcx4t9hHb3c/j5/Ncbr3Cpva80w9HOfU7Q8IwhbmonaagQv8x0A25ZxVzAxz4tupS0jG5323eT1XZHL+DoM3+mgFLZwzEp2c0WpmqsBKypxGLb785vcLfH3vAgCT878xeKMvAp1FM5Ecg5Wn6+8Bz1Pm3K1W0xu2UFhofDf5BX8t/snFsZPxDMSZzaLOSKw2suOPHuyaAJb9v+c+bmze/aBuTnuE6wrCgJt/fMVyox6NcNwRCTARtjLV5fkt1+vTb1WAmk+hxOzUjumOrTMLkuVTXtCdgMmHJTux2nxt/Ml88Xptat+vwCzw0qdQAmCh2lPNZBsTJluU8ySsDazdhf6j1sts5cVS548P75d+qE/vrMTw8v+28ZXIAB3ABiAHZIEV4HkMLQJBIv5nAPq180UQOlmCAAAAAElFTkSuQmCC') no-repeat;
+            padding-left: 20px;
+            margin-bottom: 5px;
+        }
+        ul.verifications > li {
+            margin: 7px 0 7px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table,th,tr,td {
+            border: 1px solid #ccc;
+            text-align: left;
+            vertical-align: top;
+            padding: 8px 15px;
+        }
+        tr:nth-child(odd) {
+            background-color: #fafafa;
+        }
+        a { color: #187dbb; text-decoration: none; }
+        a:visited { color: #004b87; text-decoration: none; }
+        a:hover { color: #004b87; text-decoration: underline;}
+        code {
+            font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+        }
+        .reportTitle {
+            min-height: 52px;
+            background: #2f7eb2;
+        }
+        .reportBody {
+            padding: 0 15px 0 15px;
+        }
+        /*Classes that are used by HTML that is added dynamically by the report generator */
+        .detailsWorkaround {
+            padding: 10px 0px;
+        }
+        .detailsWorkaroundHeader {
+            padding-right: 5px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        .visible {
+            display: block;
+        }
+        .showMore {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reportTitle">
+        <h1>Migration Report for <code>main_menu_window2</code></h1>
+    </div>
+    <div class="reportBody">
+        <section>
+            <h3>Your GUIDE app was migrated to App Designer and some action is required.</h3>
+            <h2>Migration Results</h2>
+            <ul class="childHasIcon">
+                <li class="success"><b>main_menu_window2_App.mlapp</b> file created</li>
+                <li class="success"><b>1391</b> lines of code analyzed in main_menu_window2.m</li>
+                <li class="success"><b>57</b> components created and initialized</li>
+                <li class="success"><b>50</b> callbacks and utility functions configured and enabled to function in App Designer</li>
+            </ul>
+        </section>
+        <section>
+    <h2>Issues Requiring Action</h2>
+    <table>
+        <tr>
+            <th>Functionality</th>
+            <th>GUIDE Line #</th>
+            <th>Details</th>
+        </tr>
+        <tr><td><code>findobj</code></td><td><div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 153)">line 153</a></div>
+<div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 154)">line 154</a></div>
+<div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 155)">line 155</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 156)">line 156</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 158)">line 158</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 182)">line 182</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 183)">line 183</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 184)">line 184</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 192)">line 192</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 193)">line 193</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 194)">line 194</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 195)">line 195</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 197)">line 197</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 219)">line 219</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 220)">line 220</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 221)">line 221</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 222)">line 222</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 224)">line 224</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 227)">line 227</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 229)">line 229</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 243)">line 243</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 244)">line 244</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 245)">line 245</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 246)">line 246</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 248)">line 248</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 265)">line 265</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 266)">line 266</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 267)">line 267</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 268)">line 268</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 270)">line 270</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 424)">line 424</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 440)">line 440</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 442)">line 442</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 445)">line 445</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 447)">line 447</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 479)">line 479</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 596)">line 596</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 597)">line 597</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 598)">line 598</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 599)">line 599</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 600)">line 600</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 602)">line 602</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 603)">line 603</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 604)">line 604</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 605)">line 605</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 606)">line 606</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 607)">line 607</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 608)">line 608</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 664)">line 664</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 665)">line 665</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 666)">line 666</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 667)">line 667</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 668)">line 668</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 669)">line 669</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 670)">line 670</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 671)">line 671</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 672)">line 672</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 673)">line 673</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 674)">line 674</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 675)">line 675</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 676)">line 676</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 783)">line 783</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 784)">line 784</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 828)">line 828</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 829)">line 829</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 871)">line 871</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 872)">line 872</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 915)">line 915</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 916)">line 916</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 931)">line 931</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 932)">line 932</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 947)">line 947</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1087)">line 1087</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1089)">line 1089</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1155)">line 1155</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1156)">line 1156</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1157)">line 1157</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1182)">line 1182</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1204)">line 1204</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1229)">line 1229</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1235)">line 1235</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1257)">line 1257</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1258)">line 1258</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1259)">line 1259</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1260)">line 1260</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1261)">line 1261</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1262)">line 1262</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1266)">line 1266</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1267)">line 1267</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1268)">line 1268</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1269)">line 1269</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1270)">line 1270</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1274)">line 1274</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1275)">line 1275</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1276)">line 1276</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1277)">line 1277</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1278)">line 1278</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1282)">line 1282</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1283)">line 1283</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1284)">line 1284</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1285)">line 1285</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1286)">line 1286</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1298)">line 1298</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1300)">line 1300</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1303)">line 1303</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1305)">line 1305</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1308)">line 1308</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1310)">line 1310</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1320)">line 1320</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1323)">line 1323</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1336)">line 1336</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1339)">line 1339</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1352)">line 1352</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1353)">line 1353</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1356)">line 1356</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1362)">line 1362</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1377)">line 1377</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1379)">line 1379</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1382)">line 1382</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1384)">line 1384</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1387)">line 1387</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1389)">line 1389</a></div>
+<div class="showMore"><a href="#" onclick="toggleShowMore(this); return false;">Show more (119)</a></div>
+<div class="showMore hidden"><a href="#" onclick="toggleShowMore(this); return false;">Show less</a></div></td><td rowspan="2"><div>Using <code>findobj</code>, <code>findall</code> or <code>gcbo</code> to locate a <code>UIControl</code> object requires updates to your code.</div><div class="detailsWorkaround"><span class="detailsWorkaroundHeader">Action:</span><span class="detailsWorkaroundText">Access your app component using the <code>handles</code> structure instead, or update your code to use the associated App Designer component. For more details, see <a href="matlab:helpview('matlab','migration_considerations');">GUIDE Migration Strategies</a>.</span></div></tr>
+<tr><td><code>gcbo</code></td><td><div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1178)">line 1178</a></div>
+<div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1179)">line 1179</a></div>
+<div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1188)">line 1188</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1200)">line 1200</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1201)">line 1201</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1210)">line 1210</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1225)">line 1225</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1226)">line 1226</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1241)">line 1241</a></div>
+<div class="showMore"><a href="#" onclick="toggleShowMore(this); return false;">Show more (6)</a></div>
+<div class="showMore hidden"><a href="#" onclick="toggleShowMore(this); return false;">Show less</a></div></td></tr>
+<tr><td><code>menu_grid_mapview_Callback</code></td><td><div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 275)">line 275</a></div>
+<div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1009)">line 1009</a></div>
+<div class=""><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1062)">line 1062</a></div>
+<div class="hidden"><a href="matlab:opentoline('C:\Users\maple\Desktop\coulomb3402\coulomb_simple\sources2\main_menu_window2.m', 1092)">line 1092</a></div>
+<div class="showMore"><a href="#" onclick="toggleShowMore(this); return false;">Show more (1)</a></div>
+<div class="showMore hidden"><a href="#" onclick="toggleShowMore(this); return false;">Show less</a></div></td><td rowspan="1"><div>Calling a callback programmatically from another function or callback is not recommended and will error in a migrated app.</div><div class="detailsWorkaround"><span class="detailsWorkaroundHeader">Action:</span><span class="detailsWorkaroundText">In your migrated app, move the callback code to a separate app helper function and then call this helper function instead.</span></div></tr>
+    </table>
+</section>
+        <section>
+            <h2>Validate Your Migrated App</h2>
+            <p>The migration tool enables most of your app code to execute. Now, you need to fully validate your migrated app to make sure it behaves as expected. Consider doing the following verifications:</p>
+            <ul>
+                <li>Verify Layout
+                    <ul class="verifications">
+                        <li>Run your app and verify the initial layout of all components is as expected.</li>
+                        <li>If your app dynamically shows, hides, or enables additional components or options in response to selections made within the app, confirm these behave as expected.</li>
+                    </ul>
+                </li>
+                <li>Verify Callbacks
+                    <ul class="verifications">
+                        <li>Run and close your app to confirm there are no startup or termination errors.</li>
+                        <li>Exercise the workflows specific to your app, starting with the most basic, and gradually proceeding to the more complex ones.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>If unexpected errors occur, either within the app or at the MATLAB command line, address those issues before continuing with the validation. For troubleshooting assistance and additional information, see <a href="matlab:helpview(fullfile(docroot,'matlab', 'creating_guis', 'differences-between-app-designer-and-guide.html#mw_7f306e19-74d0-4c0b-989d-74ed63e32ddd'));">GUIDE Migration Strategies</a>.</p>
+        </section>
+    </div>
+    <script type="text/javascript">
+        // Toggles showing the "Show More (10)" hyperlink with the "Show less" hyperlink
+        function toggleShowMore(selectedHyperlink) {
+            // Find the parent td for the selected hyperlink ("Show more" or "Show less")
+            var td = selectedHyperlink.parentElement.parentElement;
+
+            // Toggle the "hidden" class on all of the elements but the first 3. The first 3 we want to always be
+            // visible.
+            var tags = td.children;
+            for (var i=3; i<tags.length; i++) {
+                tags[i].classList.toggle("hidden");
+            }
+        }
+    </script>
+</body>
+</html>

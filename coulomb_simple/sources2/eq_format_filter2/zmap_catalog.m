@@ -1,0 +1,56 @@
+function [outData,pathname,flag] = zmap_catalog
+%
+%   Read zmap formatted catalog
+%
+
+    flag = 1;
+    [filename,pathname] = uigetfile({'*.*'},'Open earthquake file');
+    if isequal(filename,0)
+        disp('  User selected Cancel');
+        return
+    else
+        disp('  ----- earthquake data -----');
+        disp(['  User selected', fullfile(pathname, filename)]);
+    end
+    dir = fullfile(pathname, filename);
+	fid = fopen(fullfile(pathname, filename),'r');
+    a = textscan(fid,'%f %f %f %f %f %f %f %f %f');
+    myData = [a{:}];
+    [m,n] = size(myData);
+
+% 	myData = textread(filename, '%s', 'delimiter', '\n', 'whitespace', '');
+	outData = zeros(m, 15);
+
+%for i = 1:m
+	try 
+             outData(:,1) = myData(:,1);      % Longitude
+             outData(:,2) = myData(:,2);      % Latitude              
+             outData(:,3) = myData(:,3);      % Year
+             outData(:,4) = myData(:,4);      % Month
+             outData(:,5) = myData(:,5);      % Day
+             outData(:,6) = myData(:,6);      % Magnitude  
+             outData(:,7) = myData(:,7);      % Depth             
+             outData(:,8) = myData(:,8);      % Hour
+             outData(:,9) = myData(:,9);      % Minute
+             outData(:,10) = 0.0;                           % Nodal 1: strike
+             outData(:,11) = 0.0;                           % Nodal 1: dip
+             outData(:,12) = 0.0;                           % Nodal 1: rake
+             outData(:,13) = 0.0;                           % Nodal 2: strike
+             outData(:,14) = 0.0;                           % Nodal 2: dip
+             outData(:,15) = 0.0;                           % Nodal 2: rake
+    catch
+          disp('!! Warning !! This may not be a properly formatted ZMAP catalog.');
+          flag = 0;
+          h = errordlg('This may not be a properly formatted ZMAP catalog.');
+          waitfor(h);
+          return;
+    end;
+%end
+  
+% fclose(fid);
+
+% z map format
+%
+% 1)lon, 2)lat, 3)year, 4)month, 5)day, 6)M, 7)depth, 8)hr, 9)min, 10)strike1, 11)dip1, 12)rake1,
+% 13)strike2, 14)dip2, 15)rake2
+%
