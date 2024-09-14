@@ -57,7 +57,7 @@ SYSTEM_VARS.IMAXSHEAR = 2; % 1: 検索, 2: スキップ
 OVERLAY_VARS.COAST_DATA  = [];  % 海岸線データ
 OVERLAY_VARS.AFAULT_DATA = [];  % 活断層データ
 OVERLAY_VARS.EQ_DATA     = [];  % 地震データ
-GOVERLAY_VARS.PS_DATA    = [];  % GPSデータ
+OVERLAY_VARS.PS_DATA    = [];  % GPSデータ
 OVERLAY_VARS.GPS_FLAG      = 'horizontal'; % GPSフラグ（初期値: 水平）
 OVERLAY_VARS.GPS_SEQN_FLAG = 'off';        % GPSシーケンスフラグ（初期値: オフ）
 

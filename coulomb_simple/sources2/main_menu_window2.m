@@ -523,6 +523,7 @@ global F3D_SLIP_TYPE H_F3D_VIEW
 global INPUT_VARS
 global COORD_VARS
 global SYSTEM_VARS
+global CALC_CONTROL
 
 if COORD_VARS.ICOORD == 2 && isempty(COORD_VARS.LON_GRID) ~= 1 % COORD_VARS.ICOORDが2で、COORD_VARS.LON_GRIDが空でない場合
     h = warndlg('Sorry this is not available for lat/lon coordinates. Change to Cartesian coordinates.','!! Warning !!'); % 警告ダイアログを表示
