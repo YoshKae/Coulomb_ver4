@@ -1,0 +1,41 @@
+function [outData] = scec_catalog
+%
+%   Read southern california earthquake center catalog
+%
+
+    [filename,pathname] = uigetfile({'*.*'},' Open input file');
+    if isequal(filename,0)
+        disp('User selected Cancel');
+        return
+    else
+        disp(['User selected', fullfile(pathname, filename)]);
+    end
+% 	fid = fopen(filename,'r');             % for ascii file
+%  	myData = textscan(filename,'%s','headerLines',3,'delimiter', '\n');
+% textscan should be used for a large file but does not work properly here
+	myData = textread(filename, '%s', 'delimiter', '\n', 'whitespace', '');
+	outData = zeros(length(myData), 9);
+
+for i = 1:length(myData)
+	try 
+             outData(i,1) = str2num(myData{i}(44:51));      % Longitude
+             outData(i,2) = str2num(myData{i}(36:42));      % Latitude              
+             outData(i,3) = str2num(myData{i}(1:4));        % Year
+             outData(i,4) = str2num(myData{i}(6:7));        % Month
+             outData(i,5) = str2num(myData{i}(9:10));       % Day
+             outData(i,6) = str2num(myData{i}(27:30));      % Magnitude  
+             outData(i,7) = str2num(myData{i}(53:57));      % Depth             
+             outData(i,8) = str2num(myData{i}(12:13));      % Hour
+             outData(i,9) = str2num(myData{i}(15:16));     % Minute
+    catch
+      disp(['Import: Problem in line ' num2str(i) ' of ' filename '. Line ignored.']);
+    end;
+end
+  
+% fclose(fid);
+
+% z map format
+%
+% 1)lon, 2)lat, 3)year, 4)month, 5)day, 6)M, 7)depth, 8)hr, 9)min, 10)strike1, 11)dip1, 12)rake1,
+% 13)strike2, 14)dip2, 15)rake2
+%
