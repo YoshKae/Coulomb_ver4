@@ -45,21 +45,18 @@ function main_menu_window_OpeningFcn(hObject, eventdata, handles, varargin)
     xpos = SCR_SIZE.SCRW_X;                % ウィンドウのx座標
     ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height; % ウィンドウのy座標
     set(hObject,'Position',[xpos ypos wind_width wind_height]);  % set: プロパティの値を設定。
-end
 
 %-------------------------------------------------------------------------
 %   Main menu closing function　メインメニューを閉じる関数
 %-------------------------------------------------------------------------
 function varargout = main_menu_window_OutputFcn(hObject, eventdata, handles)
     varargout{1} = handles.output; % handles.output: GUIの出力を取得。
-end
 
 %=========================================================================
 %    DATA (menu) データメニュー
 %=========================================================================
 function data_menu_Callback(hObject, eventdata, handles)
     % データメニューをクリックしたときのコールバック関数
-end
 
 %-------------------------------------------------------------------------
 %           About Coulomb 3.3
@@ -107,7 +104,6 @@ function menu_about_Callback(hObject, eventdata, handles)
         % https://temblor.net/coulomb/
     end
     cd .. % 一つ上のディレクトリに移動
-end
 
 %-------------------------------------------------------------------------
 %           Open most recent input file
@@ -139,7 +135,6 @@ function menu_most_recent_file_Callback(hObject, eventdata, handles)
     else
         set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
     end
-end
 
 %-------------------------------------------------------------------------
 %           Open & edit input file
@@ -160,7 +155,6 @@ function menu_file_open_Callback(hObject, eventdata, handles) % サブメニュ�
         set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
     end
     check_overlay_items; % オーバーレイアイテムをチェック
-end
 
 %-------------------------------------------------------------------------
 %          Open existing input file
@@ -191,7 +185,6 @@ function menu_open_skipping_Callback(hObject, eventdata, handles)
     catch
         return
     end
-end
 
 %-------------------------------------------------------------------------
 %           SAVE  AS .MAT(submenu) .MAT形式で保存するサブメニュー  
