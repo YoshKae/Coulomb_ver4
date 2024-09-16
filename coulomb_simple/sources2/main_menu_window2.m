@@ -22,7 +22,6 @@ function varargout = main_menu_window2(varargin)
         gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
     end
     % End initialization code - DO NOT EDIT
-end
 
 %-------------------------------------------------------------------------
 %   Main menu opening function メインメニューを開く関数
