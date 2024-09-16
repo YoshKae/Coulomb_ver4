@@ -1,193 +1,197 @@
 function varargout = main_menu_window2(varargin)
-% 関数の役割: メインメニューウィンドウのエントリポイント。GUIの初期化を行う。
-% varargout: 可変長出力引数
-% varargin: 可変長入力引数
+    % 関数の役割: メインメニューウィンドウのエントリポイント。GUIの初期化を行う。
+    % varargout: 可変長出力引数
+    % varargin: 可変長入力引数
 
-% GUIの状態を設定
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 0; % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。0は複数のインスタンスを許可。
-% gui_State: GUIの状態を管理する構造体
-gui_State = struct('gui_Name',       mfilename, ...                    % gui_Name: GUIの名前。mファイル名と同じ。
-                   'gui_Singleton',  gui_Singleton, ...                % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。
-                   'gui_OpeningFcn', @main_menu_window_OpeningFcn, ... % gui_OpeningFcn: GUIが開かれるときに呼び出される関数。
-                   'gui_OutputFcn',  @main_menu_window_OutputFcn, ...  % gui_OutputFcn: GUIが閉じられるときに呼び出される関数。
-                   'gui_LayoutFcn',  [] , ...                          % gui_LayoutFcn: GUIのレイアウト関数。
-                   'gui_Callback',   []);                              % gui_Callback: GUIのコールバック関数。
-if nargin && ischar(varargin{1})                                       % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
-    gui_State.gui_Callback = str2func(varargin{1});                    % str2func: 文字列を関数ハンドルに変換。
+    % GUIの状態を設定
+    % Begin initialization code - DO NOT EDIT
+    gui_Singleton = 0; % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。0は複数のインスタンスを許可。
+    % gui_State: GUIの状態を管理する構造体
+    gui_State = struct('gui_Name',       mfilename, ...                    % gui_Name: GUIの名前。mファイル名と同じ。
+                    'gui_Singleton',  gui_Singleton, ...                % gui_Singleton: GUIのインスタンスが1つだけかどうかを指定。
+                    'gui_OpeningFcn', @main_menu_window_OpeningFcn, ... % gui_OpeningFcn: GUIが開かれるときに呼び出される関数。
+                    'gui_OutputFcn',  @main_menu_window_OutputFcn, ...  % gui_OutputFcn: GUIが閉じられるときに呼び出される関数。
+                    'gui_LayoutFcn',  [] , ...                          % gui_LayoutFcn: GUIのレイアウト関数。
+                    'gui_Callback',   []);                              % gui_Callback: GUIのコールバック関数。
+    if nargin && ischar(varargin{1})                                       % nargin: 関数に渡された引数の数。ischar: 文字列かどうかを判定。
+        gui_State.gui_Callback = str2func(varargin{1});                    % str2func: 文字列を関数ハンドルに変換。
+    end
+    if nargout % nargout: 出力引数の数。gui_mainfcnはメイン関数を呼び出して、GUIの初期化や操作を行う。
+        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
+    else
+        gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
+    end
+    % End initialization code - DO NOT EDIT
 end
-if nargout % nargout: 出力引数の数。gui_mainfcnはメイン関数を呼び出して、GUIの初期化や操作を行う。
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
-else
-    gui_mainfcn(gui_State, varargin{:}); % gui_mainfcn: GUIのメイン関数。
-end
-% End initialization code - DO NOT EDIT
 
 %-------------------------------------------------------------------------
 %   Main menu opening function メインメニューを開く関数
 %-------------------------------------------------------------------------
 function main_menu_window_OpeningFcn(hObject, eventdata, handles, varargin)
-% hObject: GUIのハンドル。handles: GUIのハンドルを格納する構造体。
-% main_menu_window2のデフォルトのコマンドライン出力を選択
-global SCR_SIZE
+    % hObject: GUIのハンドル。handles: GUIのハンドルを格納する構造体。
+    % main_menu_window2のデフォルトのコマンドライン出力を選択
+    global SCR_SIZE
+    handles.output = hObject;              % handles.output: GUIの出力を設定。
+    guidata(hObject, handles);             % guidata: handles構造体を更新。
+    % main_menu_window2.fig ファイルを開く
+    hFig = openfig('main_menu_window2.fig', 'reuse');
+    % タグを設定
+    set(hFig, 'Tag', 'main_menu_window2');
+    % オブジェクトの位置情報を取得
+    j = get(hFig, 'Position');  % オブジェクトの位置情報を取得
 
-handles.output = hObject;              % handles.output: GUIの出力を設定。
-guidata(hObject, handles);             % guidata: handles構造体を更新。
-% main_menu_window2.fig ファイルを開く
-hFig = openfig('main_menu_window2.fig', 'reuse');
-
-% タグを設定
-set(hFig, 'Tag', 'main_menu_window2');
-
-% オブジェクトの位置情報を取得
-j = get(hFig, 'Position');  % オブジェクトの位置情報を取得
-
-% ウィンドウの幅と高さを取得
-wind_width = j(3);  % ウィンドウの幅
-wind_height = j(4);  % ウィンドウの高さ
-xpos = SCR_SIZE.SCRW_X;                % ウィンドウのx座標
-ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height; % ウィンドウのy座標
-set(hObject,'Position',[xpos ypos wind_width wind_height]);  % set: プロパティの値を設定。
+    % ウィンドウの幅と高さを取得
+    wind_width = j(3);  % ウィンドウの幅
+    wind_height = j(4);  % ウィンドウの高さ
+    xpos = SCR_SIZE.SCRW_X;                % ウィンドウのx座標
+    ypos = (SCR_SIZE.SCRS(1,4) - SCR_SIZE.SCRW_Y) - wind_height; % ウィンドウのy座標
+    set(hObject,'Position',[xpos ypos wind_width wind_height]);  % set: プロパティの値を設定。
+end
 
 %-------------------------------------------------------------------------
 %   Main menu closing function　メインメニューを閉じる関数
 %-------------------------------------------------------------------------
 function varargout = main_menu_window_OutputFcn(hObject, eventdata, handles)
-varargout{1} = handles.output; % handles.output: GUIの出力を取得。
+    varargout{1} = handles.output; % handles.output: GUIの出力を取得。
+end
 
 %=========================================================================
 %    DATA (menu) データメニュー
 %=========================================================================
 function data_menu_Callback(hObject, eventdata, handles)
-% データメニューをクリックしたときのコールバック関数
+    % データメニューをクリックしたときのコールバック関数
+end
 
 %-------------------------------------------------------------------------
 %           About Coulomb 3.3
 %-------------------------------------------------------------------------
 function menu_about_Callback(hObject, eventdata, handles)
-% アバウトサブメニューをクリックしたときのコールバック関数
-global SYSTEM_VARS
-cd slides2                  % slidesディレクトリに移動
-str = 'About_image2.jpg'; % 画像ファイル名
-[x,imap] = imread(str);     % imread: 画像ファイルを読み込む。
-if exist('x')==1
-    h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
-    axes('position',[0 0 1 1]); % 軸を作成。
-    axis image;                 % 軸の設定。
-    image(x);                   % 画像を表示。
-    drawnow;                    % グラフィックスの更新。
+    % アバウトサブメニューをクリックしたときのコールバック関数
+    global SYSTEM_VARS
+    cd slides2                  % slidesディレクトリに移動
+    str = 'About_image2.jpg'; % 画像ファイル名
+    [x,imap] = imread(str);     % imread: 画像ファイルを読み込む。
+    if exist('x')==1
+        h = figure('Menubar','none','NumberTitle','off'); % figure: 新しい図を作成。
+        axes('position',[0 0 1 1]); % 軸を作成。
+        axis image;                 % 軸の設定。
+        image(x);                   % 画像を表示。
+        drawnow;                    % グラフィックスの更新。
 
-    %===== version check バージョンチェック ===========================
-    try
-        temp  = '3.2.01';          % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
-        idx   = strfind(temp,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
-        newvs = str2num([temp(1:idx(1)-1) temp(idx(1)+1:idx(2)-1) temp(idx(2)+1:end)]);
-        idx   = strfind(SYSTEM_VARS.CURRENT_VERSION,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
-        curvs = str2num([SYSTEM_VARS.CURRENT_VERSION(1:idx(1)-1) SYSTEM_VARS.CURRENT_VERSION(idx(1)+1:idx(2)-1) SYSTEM_VARS.CURRENT_VERSION(idx(2)+1:end)]);
-        if newvs > curvs % 新しいのがあれば更新表示
-            versionmsg = [' New version ' temp ' is found. Visit the following website.'];
-        else
-            versionmsg = '';
+        %===== version check バージョンチェック ===========================
+        try
+            temp  = '3.2.01';          % temporal for Sep. 12 2010 SCEC class % urlreadが使えないため、一時的にバージョンを設定
+            idx   = strfind(temp,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
+            newvs = str2num([temp(1:idx(1)-1) temp(idx(1)+1:idx(2)-1) temp(idx(2)+1:end)]);
+            idx   = strfind(SYSTEM_VARS.CURRENT_VERSION,'.'); % strfind: 文字列内の特定の文字列の位置を検索。
+            curvs = str2num([SYSTEM_VARS.CURRENT_VERSION(1:idx(1)-1) SYSTEM_VARS.CURRENT_VERSION(idx(1)+1:idx(2)-1) SYSTEM_VARS.CURRENT_VERSION(idx(2)+1:end)]);
+            if newvs > curvs % 新しいのがあれば更新表示
+                versionmsg = [' New version ' temp ' is found. Visit the following website.'];
+            else
+                versionmsg = '';
+            end
+        catch
+            % インターネットとつながっていなかった場合、あとでバージョンをチェックするようにメッセージを表示
+            versionmsg = 'No internet connection. Check the version later.'; 
         end
-    catch
-        % インターネットとつながっていなかった場合、あとでバージョンをチェックするようにメッセージを表示
-        versionmsg = 'No internet connection. Check the version later.'; 
+        
+        th = text(460.0,385.0,['  version ' SYSTEM_VARS.CURRENT_VERSION '  ']); % 現在のバージョンを表示
+        set(th,'fontsize',16,'fontweight','b','Color','w',...                   % set: プロパティの値を設定。
+            'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
+        th1 = text(305.0,420.0,versionmsg);                                     % 新しいバージョンがある場合、メッセージを表示
+        set(th1,'fontsize',14,'fontweight','b','Color','w',...                  % set: プロパティの値を設定。
+            'horizontalalignment','center','verticalalignment','middle','backgroundcolor','k','edgecolor','none')
+        th2 = text(320.0,420.0,' http://earthquake.usgs.gov/research/modeling/coulomb/ '); % USGSのサイトへのリンク
+        set(th2,'fontsize',12,'fontweight','b','Color','w',...                             % set: プロパティの値を設定。
+            'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
+        % Coulomb temblor
+        % https://temblor.net/coulomb/
     end
-    
-    th = text(460.0,385.0,['  version ' SYSTEM_VARS.CURRENT_VERSION '  ']); % 現在のバージョンを表示
-    set(th,'fontsize',16,'fontweight','b','Color','w',...                   % set: プロパティの値を設定。
-        'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
-    th1 = text(305.0,420.0,versionmsg);                                     % 新しいバージョンがある場合、メッセージを表示
-    set(th1,'fontsize',14,'fontweight','b','Color','w',...                  % set: プロパティの値を設定。
-        'horizontalalignment','center','verticalalignment','middle','backgroundcolor','k','edgecolor','none')
-    th2 = text(320.0,420.0,' http://earthquake.usgs.gov/research/modeling/coulomb/ '); % USGSのサイトへのリンク
-    set(th2,'fontsize',12,'fontweight','b','Color','w',...                             % set: プロパティの値を設定。
-        'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
-    % Coulomb temblor
-    % https://temblor.net/coulomb/
-    end
-cd .. % 一つ上のディレクトリに移動
+    cd .. % 一つ上のディレクトリに移動
+end
 
 %-------------------------------------------------------------------------
 %           Open most recent input file
 %-------------------------------------------------------------------------
 function menu_most_recent_file_Callback(hObject, eventdata, handles)
-% 最近使用したファイルを開くサブメニューをクリックしたときのコールバック関数
+    % 最近使用したファイルを開くサブメニューをクリックしたときのコールバック関数
 
-global DIALOG_SKIP % ダイアログスキップ
-global INPUT_VARS
-global CALC_CONTROL
-global OVERLAY_VARS
+    global DIALOG_SKIP % ダイアログスキップ
+    global INPUT_VARS
+    global CALC_CONTROL
+    global OVERLAY_VARS
 
-coulomb_init2;
-clear_obj_and_subfig;
-
-DIALOG_SKIP = 0;
-last_input;
-CALC_CONTROL.FUNC_SWITCH = 0;
-if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
-    all_functions_enable_on;
-    set(findobj('Tag','menu_file_save'),'Enable','On');
-    set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
-    set(findobj('Tag','menu_file_save_ascii2'),'Enable','On');
-    set(findobj('Tag','menu_map_info'),'Enable','On');
-    all_overlay_enable_off;
-    set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
-end
-if isempty(OVERLAY_VARS.EQ_DATA) % 地震データが空の場合
-    set(findobj('Tag','menu_focal_mech'),'Enable','Off'); % フォーカルメカニズムメニューを無効にする
-else
-    set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
+    coulomb_init2;
+    clear_obj_and_subfig;
+    DIALOG_SKIP = 0;
+    last_input;
+    CALC_CONTROL.FUNC_SWITCH = 0;
+    if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+        all_functions_enable_on;
+        set(findobj('Tag','menu_file_save'),'Enable','On');
+        set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
+        set(findobj('Tag','menu_file_save_ascii2'),'Enable','On');
+        set(findobj('Tag','menu_map_info'),'Enable','On');
+        all_overlay_enable_off;
+        set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
+    end
+    if isempty(OVERLAY_VARS.EQ_DATA) % 地震データが空の場合
+        set(findobj('Tag','menu_focal_mech'),'Enable','Off'); % フォーカルメカニズムメニューを無効にする
+    else
+        set(findobj('Tag','menu_focal_mech'),'Enable','On'); % フォーカルメカニズムメニューを有効にする
+    end
 end
 
 %-------------------------------------------------------------------------
 %           Open & edit input file
 %-------------------------------------------------------------------------
 function menu_file_open_Callback(hObject, eventdata, handles) % サブメニューを開く
-global DIALOG_SKIP % ダイアログスキップ
-global INPUT_VARS
+    global DIALOG_SKIP % ダイアログスキップ
+    global INPUT_VARS
 
-DIALOG_SKIP = 0;             % ダイアログスキップを0に設定
-input_open(1);               % input_open: 入力を開く
-if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
-    all_functions_enable_on;
-    set(findobj('Tag','menu_file_save'),'Enable','On');
-    set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
-    set(findobj('Tag','menu_file_save_ascii2'),'Enable','On');
-    set(findobj('Tag','menu_map_info'),'Enable','On');
-    all_overlay_enable_off;
-    set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
+    DIALOG_SKIP = 0;             % ダイアログスキップを0に設定
+    input_open(1);               % input_open: 入力を開く
+    if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+        all_functions_enable_on;
+        set(findobj('Tag','menu_file_save'),'Enable','On');
+        set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
+        set(findobj('Tag','menu_file_save_ascii2'),'Enable','On');
+        set(findobj('Tag','menu_map_info'),'Enable','On');
+        all_overlay_enable_off;
+        set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
+    end
+    check_overlay_items; % オーバーレイアイテムをチェック
 end
-check_overlay_items; % オーバーレイアイテムをチェック
 
 %-------------------------------------------------------------------------
 %          Open existing input file
 %-------------------------------------------------------------------------
 function menu_open_skipping_Callback(hObject, eventdata, handles)
-% ダイアログをスキップして開くサブメニューをクリックしたときのコールバック関数
-global DIALOG_SKIP % ダイアログスキップ
-global INPUT_VARS
-global CALC_CONTROL
+    % ダイアログをスキップして開くサブメニューをクリックしたときのコールバック関数
+    global DIALOG_SKIP % ダイアログスキップ
+    global INPUT_VARS
+    global CALC_CONTROL
 
-DIALOG_SKIP = 0;
-input_open(3); % 3はオープンウィンドウをスキップすることを意味する
-if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
-    all_functions_enable_on;
-    set(findobj('Tag','menu_file_save'),'Enable','On');
-    set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
-    set(findobj('Tag','menu_file_save_ascii2'),'Enable','On');
-    set(findobj('Tag','menu_map_info'),'Enable','On');
-    all_overlay_enable_off;
-    set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
-end
-try % 例外処理
-    check_overlay_items; % オーバーレイアイテムをチェック
-    if CALC_CONTROL.IACT == 0 % ユーザーがキャンセルを選択した場合、CALC_CONTROL.IACTは1から 'input_open.m' に転送される
-        menu_grid_mapview_Callback;
-        CALC_CONTROL.FUNC_SWITCH = 0;
+    DIALOG_SKIP = 0;
+    input_open(3); % 3はオープンウィンドウをスキップすることを意味する
+    if ~isempty(INPUT_VARS.GRID) % グリッドが空でない場合、下のメニューを使えるようにする
+        all_functions_enable_on;
+        set(findobj('Tag','menu_file_save'),'Enable','On');
+        set(findobj('Tag','menu_file_save_ascii'),'Enable','On');
+        set(findobj('Tag','menu_file_save_ascii2'),'Enable','On');
+        set(findobj('Tag','menu_map_info'),'Enable','On');
+        all_overlay_enable_off;
+        set(findobj('Tag','menu_trace_put_faults'),'Enable','On'); 
     end
-catch
-    return
+    try % 例外処理
+        check_overlay_items; % オーバーレイアイテムをチェック
+        if CALC_CONTROL.IACT == 0 % ユーザーがキャンセルを選択した場合、CALC_CONTROL.IACTは1から 'input_open.m' に転送される
+            menu_grid_mapview_Callback;
+            CALC_CONTROL.FUNC_SWITCH = 0;
+        end
+    catch
+        return
+    end
 end
 
 %-------------------------------------------------------------------------
@@ -373,15 +377,15 @@ if ~strcmp(tempdir,SYSTEM_VARS.HOME_DIR) % tempdirとHOME_DIRが異なる場合
 end
 cd preferences2
     dlmwrite('preferences2.dat',SYSTEM_VARS.PREF,'delimiter',' ','precision','%3.1f'); % プリファレンスを保存 delimiter: 区切り文字
-            if isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが空の場合
-                SYSTEM_VARS.OUTFLAG = 1;
-            end
-            if isempty(SYSTEM_VARS.PREF_DIR) == 1 % PREF_DIRが空の場合
-                SYSTEM_VARS.PREF_DIR = SYSTEM_VARS.HOME_DIR;
-            end
-            if isempty(SYSTEM_VARS.INPUT_FILE) == 1 % INPUT_FILEが空の場合
-                SYSTEM_VARS.INPUT_FILE = 'empty';
-            end
+    if isempty(SYSTEM_VARS.OUTFLAG) == 1 % OUTFLAGが空の場合
+        SYSTEM_VARS.OUTFLAG = 1;
+    end
+    if isempty(SYSTEM_VARS.PREF_DIR) == 1 % PREF_DIRが空の場合
+        SYSTEM_VARS.PREF_DIR = SYSTEM_VARS.HOME_DIR;
+    end
+    if isempty(SYSTEM_VARS.INPUT_FILE) == 1 % INPUT_FILEが空の場合
+        SYSTEM_VARS.INPUT_FILE = 'empty';
+    end
     save preferences2.mat SYSTEM_VARS.PREF_DIR SYSTEM_VARS.INPUT_FILE SYSTEM_VARS.OUTFLAG FNUM_ONOFF; % プリファレンスを保存
 cd ..
 h = figure(gcf); % 現在の図を取得
@@ -408,7 +412,6 @@ function menu_grid_Callback(hObject, eventdata, handles)
 % --------------------------------------------------------------------
 function menu_grid_mapview_Callback(hObject, eventdata, handles)
 % グリッドマップビューをクリックしたときのコールバック関数
-global COORD_VARS
 global CALC_CONTROL
 global OVERLAY_VARS
 
@@ -469,7 +472,6 @@ function menu_displacement_Callback(hObject, eventdata, handles)
 function menu_vectors_Callback(hObject, eventdata, handles)
 % ベクトルサブサブメニューをクリックしたときのコールバック関数
 global H_DISPL FIXFLAG H_MAIN
-global INPUT_VARS
 global COORD_VARS
 global CALC_CONTROL
 global OKADA_OUTPUT
@@ -537,7 +539,6 @@ end
 function menu_wireframe_Callback(hObject, eventdata, handles)
 % ワイヤフレームサブサブメニューをクリックしたときのコールバック関数
 global FIXFLAG H_DISPL H_MAIN
-global COORD_VARS
 global CALC_CONTROL
 global OKADA_OUTPUT
 global OVERLAY_VARS
