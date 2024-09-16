@@ -77,10 +77,10 @@ CALC_CONTROL.DEPTH_RANGE_TYPE = []; % 計算深度の種類(1:単一の深度, 2
 CALC_CONTROL.STRIKE = [];
 CALC_CONTROL.DIP = [];
 CALC_CONTROL.RAKE = [];
-CALC_CONTROL.IRAKE = [];
+CALC_CONTROL.IRAKE = [];            % 計算方法（rakeとネットスリップによる計算:1, その他（dipなど）による計算;0)。入力ファイルのスタイルを示すフラグ (0: lateral/reverse, 1: rake/netslip)
 CALC_CONTROL.MAPTLFLAG = [];
 CALC_CONTROL.RECEIVERS = [];
-CALC_CONTROL.IND_RAKE = [];
+CALC_CONTROL.IND_RAKE = [];         % 個々のrake情報を保持するための変数
 CALC_CONTROL.IIRET = [];
 
 % ----- メモリ内に保持される出力 -----
@@ -149,15 +149,15 @@ f = filesep;
 w = cd;
 
 % 必要なパスを追加
-addpath([w f 'sources2'],[w f 'sources2/eq_format_filter2'],[w f 'input_files2'],...
-    [w f 'slides2'],[w f 'okada_source_conversion2'],[w f 'output_files2'],[w f 'preferences2']);
+addpath([w f 'coulomb_simple/sources2'],[w f 'coulomb_simple/sources2/eq_format_filter2'],[w f 'coulomb_simple/input_files2'],...
+    [w f 'coulomb_simple/sources2/slides2'],[w f 'coulomb_simple/okada_source_conversion2'],[w f 'coulomb_simple/output_files2'],[w f 'coulomb_simple/preferences2']);
 
 % プラットフォーム依存の処理を行うためにコンピュータの種類を取得
 SYSTEM_VARS.PLATFORM = computer;
 if ispc
-    addpath([w f 'sources2/figures_for_windows']);   % Windowsの場合、Windows専用のパスを追加
+    addpath([w f 'coulomb_simple/sources2/figures_for_windows']);   % Windowsの場合、Windows専用のパスを追加
 else
-	addpath([w f 'sources2/figures_for_mac']);       % macOSの場合、macOS専用のパスを追加
+	addpath([w f 'coulomb_simple/sources2/figures_for_mac']);       % macOSの場合、macOS専用のパスを追加
 end
 
 % ユーザのホームディレクトリをメモリに保持
@@ -171,7 +171,9 @@ SYSTEM_VARS.HOME_DIR = pwd;
 
 %===== 初期化 ====================================================
 % 初期化関数を呼び出し
+cd sources2
 coulomb_init2;
+cd ..
 
 % 追加の初期化
 CALC_CONTROL.IACT = repmat(uint8(0),1,1);          % デフォルトでは計算しない
@@ -212,9 +214,11 @@ else
 end
 
 %===== ウェルカムスクリーンの表示 =====================================
+cd sources2
 h = about_box_window2; % ウェルカムウィンドウを表示
 pause(2);              % 2秒間待機
 close(h);              % ウィンドウを閉じる
+cd ..
 
 %===== 設定ファイルを開く ============================================
 cd preferences2
@@ -293,6 +297,7 @@ disp('Start from Input menu to read or build an input file.');
 disp('  ');
 
 %===== メインウィンドウの表示 ========================================
+cd sources2
 H_MAIN = main_menu_window2;
 set(H_MAIN,'Toolbar','figure');                  % メインウィンドウにツールバーを設定
 set(H_MAIN,'Name',['Coulomb ',SYSTEM_VARS.CURRENT_VERSION]); % メインウィンドウの名前を設定
