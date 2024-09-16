@@ -1,4 +1,4 @@
-function grid_drawing % グリッド描画
+function grid_drawing2 % グリッド描画
 % グリッドオプションのためのグリッドメッシュ描画関数
 % この関数は、他のプロット関数の基本地図として頻繁に使用されます。
 % coded by Shinji Toda

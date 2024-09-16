@@ -103,7 +103,9 @@ if exist('x')==1
     th2 = text(320.0,420.0,' http://earthquake.usgs.gov/research/modeling/coulomb/ '); % USGSのサイトへのリンク
     set(th2,'fontsize',12,'fontweight','b','Color','w',...                             % set: プロパティの値を設定。
         'horizontalalignment','center','verticalalignment','middle','backgroundcolor','none','edgecolor','none')
-end
+    % Coulomb temblor
+    % https://temblor.net/coulomb/
+    end
 cd .. % 一つ上のディレクトリに移動
 
 %-------------------------------------------------------------------------
