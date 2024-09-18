@@ -74,7 +74,7 @@ function Okada_halfspace()
         ncount = 0;
         ntotal = NYINC * NXINC * int32(INPUT_VARS.NUM);
     else
-        if CALC_DEPTH == CALC_DEPTH_RANGE(1)
+        if INPUT_VARS.CALC_DEPTH == CALC_DEPTH_RANGE(1)
             H_WAITBR = waitbar(0, 'Calculating deformation... please wait...');
             NCOUNT = 0;
         end
