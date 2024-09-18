@@ -10,7 +10,7 @@ function Okada_halfspace()
     global N_CELL XYCOORD NXINC NYINC
     global CALC_CONTROL
     global NSEC NDEPTH AX AY AZ
-    global DEPTH_RANGE_TYPE CALC_DEPTH_RANGE
+    global CALC_DEPTH_RANGE
     persistent H_WAITBR
 
     % 岡田モデルのパラメータ初期化
@@ -69,7 +69,7 @@ function Okada_halfspace()
     end
 
     % 変位の計算
-    if DEPTH_RANGE_TYPE == 0
+    if CALC_CONTROL.DEPTH_RANGE_TYPE == 0
         h = waitbar(0, 'Calculating deformation... please wait...');
         ncount = 0;
         ntotal = NYINC * NXINC * int32(INPUT_VARS.NUM);
@@ -128,7 +128,7 @@ function Okada_halfspace()
     end
 
     % 終了処理
-    if DEPTH_RANGE_TYPE == 0
+    if CALC_CONTROL.DEPTH_RANGE_TYPE == 0
         close(h);
     else
         if INPUT_VARS.CALC_DEPTH == CALC_DEPTH_RANGE(end)
