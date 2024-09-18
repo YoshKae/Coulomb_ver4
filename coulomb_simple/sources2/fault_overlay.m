@@ -38,7 +38,7 @@ function fault_overlay()
         % 計算深度でのプロジェクション
         e = fault_corners(INPUT_VARS.ELEMENT(n,1), INPUT_VARS.ELEMENT(n,2), ...
                           INPUT_VARS.ELEMENT(n,3), INPUT_VARS.ELEMENT(n,4), ...
-                          INPUT_VARS.ELEMENT(n,7), INPUT_VARS.ELEMENT(n,8), SYSTEM_VARS.CALC_DEPTH);
+                          INPUT_VARS.ELEMENT(n,7), INPUT_VARS.ELEMENT(n,8), INPUT_VARS.CALC_DEPTH);
 
         % 深度範囲が選択されていない場合に計算
         if DEPTH_RANGE_TYPE == 0
