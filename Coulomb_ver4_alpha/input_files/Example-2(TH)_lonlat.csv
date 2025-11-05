@@ -1,0 +1,60 @@
+ValName,Value
+Header1,This is a test file for the Coulomb 1.0
+Header2,This file is prepared to check mainly thrust faulting calculation
+fixed,1
+Poisson`s ratio,0.25
+Depth [km],7.5
+Young`s modules [bars],800000
+Friction coefficient,0.800000011920929
+S1DR,24.0001
+S1DP,0.0001
+S1IN,100
+S1GD,0
+S2DR,114.0001
+S2DP,0.0001
+S2IN,30
+S2GD,0
+S3DR,89.9999
+S3DP,-89.999
+S3IN,0
+S3GD,0
+ID,1
+Kode,100
+X-start,-10
+Y-start,25
+X-fin,25
+Y-fin,-5
+IRAKE,0
+Right-lateral slip [m]/ rake [°],0
+reverse slip [m]/ net-slip [m],2
+Dip-angle [°],45
+Top [km],0
+Bottom [km],15
+Comment,WN-1
+Grid-Parameters,
+Start-x [km],-50
+Start-y [km],-50
+Finish-x [km],50.0999984741211
+Finish-y [km],50.0999984741211
+x-increment,4
+y-increment,4
+Size-Parameters,
+Plot size,2
+Shade/Color increment,1
+Exaggeration for disp.& dist.,10000
+Cross-section-default,
+Start-x,-118.98
+Start-y,-117.96
+Finish-x,33.68
+Finish-y,34.52
+Distant-increment,1
+Z-depth,30
+Z-increment,1
+Map-infomation,
+min. lon,-120
+max. lon,-117
+zero lon,-118
+min. lat,33
+max. lat,35
+zero lat,34
+Saved Date,2025-10-12 02:04:20
